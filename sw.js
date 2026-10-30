@@ -3,7 +3,7 @@
  * Estrategia de caché para funcionamiento 100% offline
  */
 
-const CACHE_NAME = "abraveses-2027-v1.2.0";
+const CACHE_NAME = "abraveses-2027-v1.3.0";
 
 const PRECACHE_ASSETS = [
   "./",
@@ -13,6 +13,7 @@ const PRECACHE_ASSETS = [
   "./js/app.js",
   "./js/countdown.js",
   "./data/events.json",
+  "./data/events-data.js",
   "./images/abraveses.jpg",
   "./images/cartel-oficial.jpg",
   "./images/bendicion-boyas.jpg",
@@ -63,18 +64,27 @@ self.addEventListener("fetch", (event) => {
   // Solo gestionar peticiones del mismo origen
   if (url.origin !== self.location.origin) return;
 
-  // Para events.json: Network-first con fallback a caché (para tener cambios de última hora)
-  if (url.pathname.endsWith("events.json")) {
+  // Para events.json y events-data.js: Network-first con fallback a caché
+  if (url.pathname.endsWith("events.json") || url.pathname.endsWith("events-data.js")) {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          if (response.status === 200) {
+          if (response && response.status === 200) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           }
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          const altCached = await caches.match("./data/events.json");
+          if (altCached) return altCached;
+          return new Response("{}", {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+          });
+        })
     );
     return;
   }
@@ -103,11 +113,13 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, responseToCache));
           return networkResponse;
         })
-        .catch(() => {
+        .catch(async () => {
           // Si falla y es navegación HTML, retornar index.html
           if (request.headers.get("accept")?.includes("text/html")) {
-            return caches.match("./index.html");
+            const indexCached = await caches.match("./index.html");
+            if (indexCached) return indexCached;
           }
+          return new Response("", { status: 408 });
         });
     })
   );

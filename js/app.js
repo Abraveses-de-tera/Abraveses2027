@@ -110,13 +110,50 @@
 
   // --- Carga Inicial de Datos ---
   async function loadData() {
+    let initialized = false;
+
+    // 1. Carga inmediata desde datos precargados si están disponibles
+    if (window.ABRAVESES_DATA && Array.isArray(window.ABRAVESES_DATA.days)) {
+      appData = window.ABRAVESES_DATA;
+      try {
+        initApp();
+        initialized = true;
+      } catch (e) {
+        console.error("Error al inicializar con datos precargados:", e);
+      }
+    }
+
+    // 2. Cargar o actualizar desde data/events.json dinámicamente
     try {
-      const response = await fetch("data/events.json");
-      if (!response.ok) throw new Error("No se pudo cargar events.json");
-      appData = await response.json();
-      initApp();
+      const basePath = window.location.pathname.endsWith("/")
+        ? window.location.pathname
+        : window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
+      const jsonUrl = window.location.origin + basePath + "data/events.json?v=" + Date.now();
+
+      const response = await fetch(jsonUrl);
+      if (response.ok) {
+        const freshData = await response.json();
+        if (freshData && Array.isArray(freshData.days) && freshData.days.length > 0) {
+          appData = freshData;
+          if (!initialized) {
+            initApp();
+            initialized = true;
+          } else {
+            renderDayTabs();
+            renderCategoryFilters();
+            renderLocationsModal();
+            updateFavoritesUI();
+            renderEvents();
+          }
+          return;
+        }
+      }
     } catch (err) {
-      console.error("Error al inicializar los datos:", err);
+      console.warn("Aviso al consultar events.json en red:", err);
+    }
+
+    // 3. Si por alguna razón crítica no se pudo inicializar
+    if (!initialized) {
       eventsContainerEl.innerHTML = `
         <div class="no-results">
           <p class="no-results-title">Error al cargar el programa</p>
@@ -321,14 +358,16 @@
       photoHtml = `<img class="event-photo" src="${ev.photo}" alt="${ev.title}" loading="lazy" />`;
     }
 
-    // Mapa URL
+    // Ubicación y URLs para mapa y calendario
+    const locationQuery = `${ev.location || "Plaza del pueblo"}, Abraveses de Tera, Zamora`;
+    const mapsQuery = encodeURIComponent(locationQuery);
+
     let mapsUrl = ev.mapUrl;
     if (!mapsUrl) {
       const locationObj = appData.locations?.find((l) => l.name === ev.location);
       if (locationObj && locationObj.mapUrl) {
         mapsUrl = locationObj.mapUrl;
       } else {
-        const mapsQuery = encodeURIComponent(`${ev.location || "Plaza del pueblo"}, Abraveses de Tera, Zamora`);
         mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
       }
     }
@@ -553,7 +592,11 @@
   }
 
   // --- Controladores de Eventos ---
+  let eventListenersAttached = false;
   function setupEventListeners() {
+    if (eventListenersAttached) return;
+    eventListenersAttached = true;
+
     // Selección de día
     dayTabsEl.addEventListener("click", (e) => {
       const tab = e.target.closest(".day-tab");
