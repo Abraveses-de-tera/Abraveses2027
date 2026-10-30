@@ -91,9 +91,9 @@ img {
 }
 
 /* --------------------------------------------------------------------------
-   DECORACIONES Y BANDERINES ANIMADOS (HERO BUNTING)
+   BANDERINES ANIMADOS (HERO)
    -------------------------------------------------------------------------- */
-.hero-bunting-wrapper {
+.hero-bunting {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -101,85 +101,45 @@ img {
   z-index: 0;
 }
 
-/* Guirnaldas vectoriales en las esquinas superiores */
-.corner-garland {
+/* Guirnaldas PNG en las esquinas superiores */
+.bunting-corner {
   position: absolute;
-  top: 0;
-  width: clamp(100px, 20%, 155px);
+  top: -2px;
+  width: 110px;
   height: auto;
   z-index: 2;
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
-}
-
-.corner-garland.garland-left {
-  left: 0;
-  transform-origin: top left;
-  animation: garland-sway-left 3.5s ease-in-out infinite alternate;
-}
-
-.corner-garland.garland-right {
-  right: 0;
-  transform-origin: top right;
-  transform: scaleX(-1);
-  animation: garland-sway-right 3.8s ease-in-out infinite alternate;
-}
-
-.garland-rope {
-  stroke: rgba(255, 255, 255, 0.45);
-  stroke-width: 2px;
-  stroke-linecap: round;
-}
-
-.garland-flag polygon {
-  stroke: #111827;
-  stroke-width: 2px;
-  stroke-linejoin: round;
-}
-
-/* Balanceo sutil de cada banderín */
-.garland-flag {
-  transform-box: fill-box;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
   transform-origin: top center;
-  animation: flag-breeze 2.5s ease-in-out infinite alternate;
 }
 
-.g-flag-1 { animation-delay: 0.1s; animation-duration: 2.3s; }
-.g-flag-2 { animation-delay: 0.4s; animation-duration: 2.8s; }
-.g-flag-3 { animation-delay: 0.2s; animation-duration: 2.5s; }
-.g-flag-4 { animation-delay: 0.5s; animation-duration: 3.0s; }
-
-@keyframes garland-sway-left {
-  0% { transform: rotate(0deg) translateY(0); }
-  50% { transform: rotate(2.5deg) translateY(-2px); }
-  100% { transform: rotate(-2deg) translateY(1px); }
+.bunting-corner--left {
+  left: -4px;
+  animation: bunting-sway 3.4s ease-in-out infinite alternate;
 }
 
-@keyframes garland-sway-right {
-  0% { transform: scaleX(-1) rotate(0deg) translateY(0); }
-  50% { transform: scaleX(-1) rotate(-2.5deg) translateY(-2px); }
-  100% { transform: scaleX(-1) rotate(2deg) translateY(1px); }
+.bunting-corner--right {
+  right: -4px;
+  transform: scaleX(-1);
+  animation: bunting-sway-r 3.8s ease-in-out infinite alternate;
 }
 
-@keyframes flag-breeze {
-  0% { transform: rotate(-4deg); }
-  50% { transform: rotate(5deg); }
-  100% { transform: rotate(-3deg); }
+@keyframes bunting-sway {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(2.5deg); }
 }
 
-/* Partículas de banderines flotando en el fondo con brisa festiva */
-.bunting-floating-particles {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+@keyframes bunting-sway-r {
+  0%   { transform: scaleX(-1) rotate(0deg); }
+  100% { transform: scaleX(-1) rotate(-2.5deg); }
 }
 
+/* Partículas de banderines flotando suavemente */
 .pennant {
   position: absolute;
-  width: 20px;
-  height: 26px;
+  width: 18px;
+  height: 24px;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  opacity: 0.2;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  opacity: 0.18;
   animation: pennant-float 8s ease-in-out infinite;
 }
 
@@ -189,23 +149,23 @@ img {
 .p-cyan   { background-color: var(--cyan); }
 .p-orange { background-color: var(--orange); }
 
-.pennant.p1 { top: 16%; left: 6%;  animation-duration: 6.8s; animation-delay: 0s;   transform: rotate(14deg); }
-.pennant.p2 { top: 40%; left: 14%; animation-duration: 8.4s; animation-delay: 1.2s; transform: rotate(-22deg); width: 16px; height: 21px; }
-.pennant.p3 { top: 68%; left: 8%;  animation-duration: 7.6s; animation-delay: 2.4s; transform: rotate(18deg); }
-.pennant.p4 { top: 82%; left: 20%; animation-duration: 9.1s; animation-delay: 0.8s; transform: rotate(-10deg); width: 17px; height: 22px; }
-.pennant.p5 { top: 20%; right: 7%; animation-duration: 7.2s; animation-delay: 1.5s; transform: rotate(-16deg); }
-.pennant.p6 { top: 44%; right: 15%;animation-duration: 8.8s; animation-delay: 2.8s; transform: rotate(20deg); width: 15px; height: 20px; }
-.pennant.p7 { top: 70%; right: 8%; animation-duration: 7.9s; animation-delay: 0.5s; transform: rotate(-14deg); }
-.pennant.p8 { top: 86%; right: 22%;animation-duration: 9.4s; animation-delay: 3.2s; transform: rotate(12deg); width: 18px; height: 23px; }
+.pennant.p1 { top: 18%; left: 5%;  animation-duration: 7s;   animation-delay: 0s;   }
+.pennant.p2 { top: 42%; left: 12%; animation-duration: 8.5s; animation-delay: 1.2s; width: 14px; height: 19px; }
+.pennant.p3 { top: 66%; left: 7%;  animation-duration: 7.5s; animation-delay: 2.4s; }
+.pennant.p4 { top: 80%; left: 18%; animation-duration: 9s;   animation-delay: 0.8s; width: 15px; height: 20px; }
+.pennant.p5 { top: 20%; right: 6%; animation-duration: 7.2s; animation-delay: 1.5s; }
+.pennant.p6 { top: 45%; right: 13%;animation-duration: 8.8s; animation-delay: 2.8s; width: 14px; height: 18px; }
+.pennant.p7 { top: 68%; right: 6%; animation-duration: 8s;   animation-delay: 0.5s; }
+.pennant.p8 { top: 84%; right: 20%;animation-duration: 9.2s; animation-delay: 3.2s; width: 16px; height: 21px; }
 
 @keyframes pennant-float {
   0%, 100% {
-    transform: translateY(0) rotate(10deg) scale(1);
-    opacity: 0.15;
+    transform: translateY(0) rotate(12deg);
+    opacity: 0.12;
   }
   50% {
-    transform: translateY(-16px) rotate(-8deg) scale(1.08);
-    opacity: 0.3;
+    transform: translateY(-14px) rotate(-10deg);
+    opacity: 0.28;
   }
 }
 
@@ -1302,8 +1262,8 @@ img {
    RESPONSIVE (ESCRITORIO / TABLET)
    -------------------------------------------------------------------------- */
 @media (min-width: 640px) {
-  .corner-garland {
-    width: 145px;
+  .bunting-corner {
+    width: 130px;
   }
   .hero {
     padding: 54px 32px 40px;
