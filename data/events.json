@@ -1,0 +1,446 @@
+{
+  "year": 2027,
+  "title": "Fiestas de Abraveses de Tera 2027",
+  "subtitle": "Simpatía y buen humor",
+  "dates": "Del 23 al 29 de agosto de 2027",
+  "startDate": "2027-08-23T00:00:00",
+  "endDate": "2027-08-29T23:59:59",
+  "town": "Abraveses de Tera",
+  "province": "Zamora",
+  "whatsappUrl": "https://chat.whatsapp.com/CXqb83XIlelApSAwDoLLlZ?s=cl&p=i&mlu=4&ilr=4",
+  "categories": {
+    "musica": { "label": "Música", "icon": "🎶" },
+    "gastronomia": { "label": "Gastronomía", "icon": "🍽️" },
+    "infantil": { "label": "Infantil", "icon": "🧸" },
+    "tradicion": { "label": "Tradición", "icon": "🚩" },
+    "deporte": { "label": "Deporte", "icon": "⚽" },
+    "juegos": { "label": "Juegos", "icon": "🎲" },
+    "solidario": { "label": "Solidario", "icon": "❤️" },
+    "ocio": { "label": "Ocio", "icon": "🍿" }
+  },
+  "locations": [
+    {
+      "id": "plaza-mayor",
+      "name": "Plaza Mayor",
+      "description": "Punto de encuentro central: verbenas, conciertos, bingos y comidas populares.",
+      "lat": 41.9922,
+      "lng": -5.8942
+    },
+    {
+      "id": "fronton",
+      "name": "Frontón municipal",
+      "description": "Instalaciones para juegos infantiles, hinchables de agua y torneos.",
+      "lat": 41.9918,
+      "lng": -5.8935
+    },
+    {
+      "id": "bodegas",
+      "name": "Bodegas de Abraveses",
+      "description": "Pintoresca zona tradicional donde se realiza la ruta con la charanga.",
+      "lat": 41.9935,
+      "lng": -5.8960
+    },
+    {
+      "id": "iglesia",
+      "name": "Iglesia de Santiago Apóstol",
+      "description": "Templo parroquial para la bendición de bollas y actos religiosos solemnes.",
+      "lat": 41.9925,
+      "lng": -5.8945
+    },
+    {
+      "id": "santuario",
+      "name": "Santuario de la Virgen del Campo",
+      "description": "Entorno histórico donde tiene lugar la tradicional Romería de Pendones.",
+      "lat": 41.9940,
+      "lng": -5.8980
+    },
+    {
+      "id": "la-era",
+      "name": "La Era",
+      "description": "Espacio abierto tradicional donde se organiza el popular concurso de la gallina.",
+      "lat": 41.9915,
+      "lng": -5.8930
+    }
+  ],
+  "days": [
+    {
+      "id": "23",
+      "date": "2027-08-23",
+      "short": "Lun",
+      "label": "Lunes 23 de agosto",
+      "color": "orange",
+      "events": [
+        {
+          "eventId": "bailes-regionales",
+          "category": "musica",
+          "time": "20:00",
+          "title": "Bailes regionales",
+          "description": "A cargo de Doña Urraca.",
+          "location": "Plaza Mayor",
+          "icon": "💃",
+          "featured": false,
+          "detail": "Una tarde entrañable para disfrutar del folclore y los bailes tradicionales de nuestra tierra. El grupo Doña Urraca traerá a la Plaza Mayor su repertorio de danzas populares con vestimentas tradicionales. Ideal para todas las edades y para dar la bienvenida a los primeros días de fiesta."
+        }
+      ]
+    },
+    {
+      "id": "24",
+      "date": "2027-08-24",
+      "short": "Mar",
+      "label": "Martes 24 de agosto",
+      "color": "red",
+      "events": [
+        {
+          "eventId": "ruta-bodegas",
+          "category": "gastronomia",
+          "time": "19:00",
+          "title": "II Ruta por las bodegas",
+          "description": "Con la charanga MANÁITA.",
+          "note": "Inscripción previa",
+          "location": "Bodegas de Abraveses",
+          "icon": "🍷",
+          "photo": "images/ruta-bodegas.jpg",
+          "featured": true,
+          "link": {
+            "label": "MANÁITA en Instagram",
+            "url": "https://www.instagram.com/manaitaoficial/?hl=es"
+          },
+          "detail": "Recorrido lúdico y gastronómico por las bodegas de Abraveses de Tera con el ritmo incombustible de la charanga MANÁITA. Música, vino, picoteo y convivencia. Se requiere inscripción previa con la comisión de fiestas para una adecuada organización."
+        },
+        {
+          "eventId": "desfile-disfraces",
+          "category": "infantil",
+          "time": "22:30",
+          "title": "Desfile infantil de disfraces",
+          "description": "Recorrido alegre para los más pequeños.",
+          "location": "Plaza Mayor y Calles del pueblo",
+          "icon": "🎭",
+          "photo": "images/disfraz.jpg",
+          "featured": false,
+          "detail": "Los niños y niñas llenarán de fantasía y alegría las calles de Abraveses. Participa con tu mejor disfraz individual, en familia o con amigos en este alegre desfile que culmina en la Plaza Mayor."
+        },
+        {
+          "eventId": "campanadas",
+          "category": "tradicion",
+          "time": "00:00",
+          "title": "Campanadas inicio fiestas",
+          "description": "Chupinazo y bienvenida oficial.",
+          "location": "Plaza Mayor",
+          "icon": "🔔",
+          "featured": false,
+          "detail": "A las doce en punto de la medianoche, las campanas marcarán el comienzo oficial de las fiestas patronales de Abraveses de Tera 2027. ¡Brindis, alegría colectiva y comienzo de los días grandes!"
+        }
+      ]
+    },
+    {
+      "id": "25",
+      "date": "2027-08-25",
+      "short": "Mié",
+      "label": "Miércoles 25 de agosto",
+      "color": "blue",
+      "events": [
+        {
+          "eventId": "marcha-solidaria",
+          "category": "solidario",
+          "time": "18:30",
+          "title": "Marcha solidaria FUNDAME",
+          "description": "Caminata comunitaria en apoyo a FUNDAME.",
+          "location": "Salida desde la Plaza Mayor",
+          "icon": "🚶",
+          "photo": "images/marcha-solidaria.jpg",
+          "featured": true,
+          "link": {
+            "label": "Web oficial FUNDAME",
+            "url": "https://www.fundame.net/"
+          },
+          "detail": "Marcha solidaria no competitiva apta para todas las edades. Sumamos kilómetros y apoyo en beneficio de la Fundación FUNDAME (Atrofia Muscular Espinal). Punto de salida y recogida de dorsales/colaboración en la Plaza Mayor."
+        },
+        {
+          "eventId": "bingo-miercoles",
+          "category": "juegos",
+          "time": "20:00",
+          "title": "Bingo",
+          "description": "Cartones, emoción y premios.",
+          "location": "Plaza Mayor",
+          "icon": "🎱",
+          "featured": false,
+          "detail": "Tarde de risas y emoción con el bingo popular. Adquiere tus cartones unos minutos antes y disfruta compartiendo mesa con amigos y vecinos."
+        },
+        {
+          "eventId": "cine-aire-libre",
+          "category": "ocio",
+          "time": "21:30",
+          "title": "Cine al aire libre",
+          "description": "Película para toda la familia bajo las estrellas.",
+          "location": "Plaza Mayor",
+          "icon": "🎥",
+          "featured": false,
+          "detail": "Proyección al aire libre apta para todos los públicos. Trae una silla cómoda o mantita para refrescar y disfruta del cine de verano en la plaza."
+        },
+        {
+          "eventId": "campeonato-tute",
+          "category": "juegos",
+          "time": "23:30",
+          "title": "Campeonato de tute",
+          "description": "Tradicional torneo de cartas por parejas.",
+          "note": "Inscripción hasta las 23:00 h",
+          "location": "Plaza Mayor / Bar",
+          "icon": "🃏",
+          "featured": false,
+          "detail": "Torneo de tute por parejas para demostrar destreza en los naipes. Inscripción abierta hasta las 23:00 h en el bar/plaza de la comisión."
+        }
+      ]
+    },
+    {
+      "id": "26",
+      "date": "2027-08-26",
+      "short": "Jue",
+      "label": "Jueves 26 de agosto",
+      "color": "yellow",
+      "events": [
+        {
+          "eventId": "juegos-infantiles",
+          "category": "infantil",
+          "time": "17:00",
+          "title": "Juegos infantiles",
+          "description": "Talleres y actividades dinámicas.",
+          "location": "Frontón municipal",
+          "icon": "🪩",
+          "featured": false,
+          "detail": "Tarde dedicada exclusivamente a los más peques con juegos populares, carreras de sacos y animación infantil en las instalaciones del frontón."
+        },
+        {
+          "eventId": "grand-prix-bragao",
+          "category": "deporte",
+          "time": "19:00",
+          "title": "I Grand Prix Bragao",
+          "description": "Pruebas de habilidad y diversión por equipos.",
+          "note": "Mayores de 16 años",
+          "location": "Frontón municipal",
+          "icon": "🏁",
+          "featured": false,
+          "detail": "Competición de destreza, fuerza y buen humor inspirada en el Grand Prix. Exclusivo para mayores de 16 años agrupados en equipos locales. ¡Risas aseguradas!"
+        },
+        {
+          "eventId": "sardinada",
+          "category": "gastronomia",
+          "time": "21:30",
+          "title": "Sardinada",
+          "description": "Degustación popular de sardinas a la brasa.",
+          "location": "Plaza Mayor",
+          "icon": "🐟",
+          "featured": false,
+          "detail": "Gran sardinada popular para cenar al aire libre. La organización preparará raciones de sardinas asadas para compartir entre vecinos y visitantes."
+        },
+        {
+          "eventId": "orquesta-media-luna",
+          "category": "musica",
+          "time": "23:30",
+          "title": "Orquesta MEDIA LUNA",
+          "description": "Al descanso 'Carrera de la sangría' y al finalizar ELECTROGARITO.",
+          "note": "NOCHE DE DISFRACES: Tercera edad",
+          "location": "Plaza Mayor",
+          "icon": "🎸",
+          "featured": true,
+          "link": {
+            "label": "MEDIA LUNA en Instagram",
+            "url": "https://www.instagram.com/orquesta_medialuna/?hl=es"
+          },
+          "detail": "Gran verbena de noche con el espectáculo musical de la Orquesta MEDIA LUNA. En el intermedio tendrá lugar la emocionante Carrera de la sangría y al finalizar la orquesta continuará la fiesta con ELECTROGARITO. Además, ¡noche temática de disfraces dedicada a la tercera edad!"
+        }
+      ]
+    },
+    {
+      "id": "27",
+      "date": "2027-08-27",
+      "short": "Vie",
+      "label": "Viernes 27 de agosto",
+      "color": "green",
+      "events": [
+        {
+          "eventId": "bendicion-bollas",
+          "category": "tradicion",
+          "time": "18:30",
+          "title": "Bendición de bollas",
+          "description": "Acto religioso y tradicional.",
+          "location": "Iglesia de Santiago Apóstol",
+          "icon": "🥖",
+          "photo": "images/bendicion-bollas.jpg",
+          "featured": false,
+          "detail": "Tradicional bendición de las bollas en la Iglesia de Santiago Apóstol, una de las costumbres más representativas y arraigadas de nuestras fiestas."
+        },
+        {
+          "eventId": "cagada-gallina",
+          "category": "juegos",
+          "time": "21:00",
+          "title": "Cagada de la gallina",
+          "description": "Concurso popular y humorístico.",
+          "location": "La Era / Frontón",
+          "icon": "🐔",
+          "photo": "images/cagada-gallina.jpg",
+          "featured": false,
+          "detail": "Juego singular y lleno de risas donde una parcela cuadriculada y la suerte deciden el boleto ganador según el lugar elegido por la gallina. Consigue tu casilla."
+        },
+        {
+          "eventId": "electromoon",
+          "category": "musica",
+          "time": "01:00",
+          "title": "ELECTROMOON",
+          "description": "Sesión nocturna de música y DJ.",
+          "location": "Plaza Mayor",
+          "icon": "🌙",
+          "featured": true,
+          "link": {
+            "label": "ELECTROMOON en Instagram",
+            "url": "https://www.instagram.com/electromoonn9/?hl=es"
+          },
+          "detail": "Madrugada electrónica para quemar la pista al aire libre en la Plaza Mayor con los mejores ritmos de fiesta hasta que el cuerpo aguante."
+        }
+      ]
+    },
+    {
+      "id": "28",
+      "date": "2027-08-28",
+      "short": "Sáb",
+      "label": "Sábado 28 de agosto",
+      "color": "pink",
+      "events": [
+        {
+          "eventId": "misa-difuntos",
+          "category": "tradicion",
+          "time": "12:00",
+          "title": "Misa por los difuntos",
+          "description": "Eucaristía solemne en recuerdo de los antepasados.",
+          "location": "Iglesia de Santiago Apóstol",
+          "icon": "⛪",
+          "featured": false,
+          "detail": "Misa en memoria y homenaje a todos los difuntos del pueblo en la Iglesia parroquial de Santiago Apóstol."
+        },
+        {
+          "eventId": "paella-popular",
+          "category": "gastronomia",
+          "time": "15:00",
+          "title": "Paella popular",
+          "description": "Gran comida de hermandad para todo el pueblo.",
+          "location": "Frontón municipal / Plaza Mayor",
+          "icon": "🥘",
+          "featured": false,
+          "detail": "El gran almuerzo del sábado festivo. Raciones de paella recién cocinada para reunir a vecinos, peñas y visitantes en una jornada inolvidable de convivencia."
+        },
+        {
+          "eventId": "edu-el-mago",
+          "category": "infantil",
+          "time": "16:00",
+          "title": "Edu el mago",
+          "description": "Espectáculo de ilusionismo y comedia.",
+          "location": "Plaza Mayor",
+          "icon": "🪄",
+          "featured": false,
+          "detail": "Magia de cerca, humor y participación familiar con Edu el mago para animar la sobremesa con asombro para niños y adultos."
+        },
+        {
+          "eventId": "parque-acuatico",
+          "category": "infantil",
+          "time": "17:00",
+          "title": "Parque acuático",
+          "description": "Hinchables de agua y fiesta refrescante.",
+          "location": "Frontón municipal",
+          "icon": "💦",
+          "featured": false,
+          "detail": "Atracciones acuáticas, toboganes e hinchables para combatir el calor veraniego de la tarde de agosto. ¡Imprescindible bañador y toalla!"
+        },
+        {
+          "eventId": "bingo-sabado",
+          "category": "juegos",
+          "time": "19:00",
+          "title": "Bingo",
+          "description": "Segunda sesión de bingo de las fiestas.",
+          "location": "Plaza Mayor",
+          "icon": "🎱",
+          "featured": false,
+          "detail": "Segunda oportunidad para cantar línea o bingo con grandes premios de la comisión de fiestas."
+        },
+        {
+          "eventId": "beer-pong",
+          "category": "deporte",
+          "time": "19:30",
+          "title": "Torneo de Beer Pong",
+          "description": "Puntería, parejas y competición divertida.",
+          "location": "Plaza Mayor",
+          "icon": "🏓",
+          "featured": false,
+          "detail": "Torneo por parejas de lanzamiento y puntería en vasos. Ambiente festivo y premios simbólicos para los campeones."
+        },
+        {
+          "eventId": "syn3rgia",
+          "category": "musica",
+          "time": "01:00",
+          "title": "Grupo SYN3RGIA",
+          "description": "En el descanso y al finalizar: ELECTROGARITO con DJ DAMM VALLEY.",
+          "location": "Plaza Mayor",
+          "icon": "🎤",
+          "featured": true,
+          "link": {
+            "label": "SYN3RGIA en Instagram",
+            "url": "https://www.instagram.com/syn3rgiagrupo/?hl=es"
+          },
+          "detail": "La noche más potente de las fiestas: concierto del Grupo SYN3RGIA con repertorio de pop/rock y éxitos de verbena. En el descanso y tras la actuación, continuaremos con la sesión ELECTROGARITO a cargo de DJ DAMM VALLEY."
+        }
+      ]
+    },
+    {
+      "id": "29",
+      "date": "2027-08-29",
+      "short": "Dom",
+      "label": "Domingo 29 de agosto",
+      "color": "cyan",
+      "events": [
+        {
+          "eventId": "romeria-pendones",
+          "category": "tradicion",
+          "time": "13:00",
+          "title": "Romería de pendones",
+          "description": "Colorido desfile tradicional hasta el santuario.",
+          "location": "Santuario de la Virgen del Campo",
+          "icon": "🚩",
+          "photo": "images/romeria-pendones.jpg",
+          "featured": false,
+          "detail": "Imponente romería con los pendones tradicionales del valle, desfilando en procesión con solemnidad y alegría hasta el Santuario de la Virgen del Campo."
+        },
+        {
+          "eventId": "pulpero",
+          "category": "gastronomia",
+          "time": "14:00",
+          "title": "Pulpero",
+          "description": "Pulpo a la gallega y raciones de feria.",
+          "location": "Plaza Mayor",
+          "icon": "🐙",
+          "featured": false,
+          "detail": "Puesto tradicional de pulpeiro en la Plaza Mayor para degustar raciones de pulpo a feira, cachelos y vino de la zona en el mediodía del domingo."
+        },
+        {
+          "eventId": "parque-infantil",
+          "category": "infantil",
+          "time": "17:00",
+          "title": "Parque infantil",
+          "description": "Juegos y atracciones para despedir las fiestas.",
+          "location": "Frontón municipal",
+          "icon": "🎈",
+          "featured": false,
+          "detail": "Última tarde de diversión infantil con hinchables, música y juegos para los más pequeños del pueblo."
+        },
+        {
+          "eventId": "tardeo-markfeel",
+          "category": "musica",
+          "time": "19:00",
+          "title": "Tardeo con MARKFEEL",
+          "description": "Concierto fin de fiestas con MARKFEEL.",
+          "location": "Plaza Mayor",
+          "icon": "🎧",
+          "featured": false,
+          "detail": "Música en directo y ambiente distendido para despedir las fiestas patronales de Abraveses de Tera 2027 por todo lo alto hasta el año que viene. ...¡Y otras que también!"
+        }
+      ]
+    }
+  ]
+}
