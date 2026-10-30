@@ -101,101 +101,69 @@ img {
   z-index: 0;
 }
 
-/* Guirnaldas en las esquinas superiores (imagen fiel al cartel) */
-.hero-bunting-garland {
+/* Guirnaldas vectoriales en las esquinas superiores */
+.corner-garland {
   position: absolute;
   top: 0;
-  width: clamp(105px, 22vw, 150px);
+  width: clamp(100px, 20%, 155px);
   height: auto;
-  opacity: 0.95;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
   z-index: 2;
-  transform-origin: top center;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
 }
 
-.hero-bunting-garland.garland-left {
+.corner-garland.garland-left {
   left: 0;
-  animation: garland-sway-left 3.2s ease-in-out infinite alternate;
+  transform-origin: top left;
+  animation: garland-sway-left 3.5s ease-in-out infinite alternate;
 }
 
-.hero-bunting-garland.garland-right {
+.corner-garland.garland-right {
   right: 0;
+  transform-origin: top right;
   transform: scaleX(-1);
-  animation: garland-sway-right 3.6s ease-in-out infinite alternate;
+  animation: garland-sway-right 3.8s ease-in-out infinite alternate;
 }
+
+.garland-rope {
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 2px;
+  stroke-linecap: round;
+}
+
+.garland-flag polygon {
+  stroke: #111827;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+/* Balanceo sutil de cada banderín */
+.garland-flag {
+  transform-box: fill-box;
+  transform-origin: top center;
+  animation: flag-breeze 2.5s ease-in-out infinite alternate;
+}
+
+.g-flag-1 { animation-delay: 0.1s; animation-duration: 2.3s; }
+.g-flag-2 { animation-delay: 0.4s; animation-duration: 2.8s; }
+.g-flag-3 { animation-delay: 0.2s; animation-duration: 2.5s; }
+.g-flag-4 { animation-delay: 0.5s; animation-duration: 3.0s; }
 
 @keyframes garland-sway-left {
   0% { transform: rotate(0deg) translateY(0); }
-  50% { transform: rotate(3deg) translateY(-2px); }
+  50% { transform: rotate(2.5deg) translateY(-2px); }
   100% { transform: rotate(-2deg) translateY(1px); }
 }
 
 @keyframes garland-sway-right {
   0% { transform: scaleX(-1) rotate(0deg) translateY(0); }
-  50% { transform: scaleX(-1) rotate(-3deg) translateY(-2px); }
+  50% { transform: scaleX(-1) rotate(-2.5deg) translateY(-2px); }
   100% { transform: scaleX(-1) rotate(2deg) translateY(1px); }
 }
 
-/* Guirnalda continua superior que recorre todo el ancho */
-.bunting-top-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 65px;
-  z-index: 1;
-}
-
-.bunting-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.bunting-path {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.35);
-  stroke-width: 2px;
-  stroke-linecap: round;
-}
-
-.bunting-poly {
-  stroke: #111827;
-  stroke-width: 2.2px;
-  stroke-linejoin: round;
-}
-
-.flag-cyan   { fill: #00c2cb; }
-.flag-red    { fill: #ff3b30; }
-.flag-yellow { fill: #ffcc00; }
-.flag-blue   { fill: #0084ff; }
-
-/* Animación individual de balanceo de cada banderín */
-.bunting-flag-group {
-  transform-box: fill-box;
-  transform-origin: top center;
-  animation: pennant-sway 2.4s ease-in-out infinite alternate;
-}
-
-.bfg-1  { animation-delay: 0.1s; animation-duration: 2.2s; }
-.bfg-2  { animation-delay: 0.4s; animation-duration: 2.7s; }
-.bfg-3  { animation-delay: 0.2s; animation-duration: 2.5s; }
-.bfg-4  { animation-delay: 0.6s; animation-duration: 2.9s; }
-.bfg-5  { animation-delay: 0.3s; animation-duration: 2.4s; }
-.bfg-6  { animation-delay: 0.5s; animation-duration: 2.8s; }
-.bfg-7  { animation-delay: 0.2s; animation-duration: 2.3s; }
-.bfg-8  { animation-delay: 0.4s; animation-duration: 2.6s; }
-.bfg-9  { animation-delay: 0.1s; animation-duration: 2.4s; }
-.bfg-10 { animation-delay: 0.5s; animation-duration: 2.8s; }
-.bfg-11 { animation-delay: 0.3s; animation-duration: 3.0s; }
-.bfg-12 { animation-delay: 0.6s; animation-duration: 2.5s; }
-.bfg-13 { animation-delay: 0.2s; animation-duration: 2.7s; }
-.bfg-14 { animation-delay: 0.4s; animation-duration: 2.3s; }
-
-@keyframes pennant-sway {
-  0% { transform: rotate(-5deg) skewX(-2deg); }
-  50% { transform: rotate(6deg) skewX(2deg); }
-  100% { transform: rotate(-4deg) skewX(-1deg); }
+@keyframes flag-breeze {
+  0% { transform: rotate(-4deg); }
+  50% { transform: rotate(5deg); }
+  100% { transform: rotate(-3deg); }
 }
 
 /* Partículas de banderines flotando en el fondo con brisa festiva */
@@ -207,10 +175,10 @@ img {
 
 .pennant {
   position: absolute;
-  width: 22px;
-  height: 28px;
+  width: 20px;
+  height: 26px;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
-  opacity: 0.22;
+  opacity: 0.2;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   animation: pennant-float 8s ease-in-out infinite;
 }
@@ -221,23 +189,23 @@ img {
 .p-cyan   { background-color: var(--cyan); }
 .p-orange { background-color: var(--orange); }
 
-.pennant.p1 { top: 18%; left: 6%;  animation-duration: 6.8s; animation-delay: 0s;   transform: rotate(14deg); }
-.pennant.p2 { top: 42%; left: 14%; animation-duration: 8.4s; animation-delay: 1.2s; transform: rotate(-22deg); width: 17px; height: 22px; }
+.pennant.p1 { top: 16%; left: 6%;  animation-duration: 6.8s; animation-delay: 0s;   transform: rotate(14deg); }
+.pennant.p2 { top: 40%; left: 14%; animation-duration: 8.4s; animation-delay: 1.2s; transform: rotate(-22deg); width: 16px; height: 21px; }
 .pennant.p3 { top: 68%; left: 8%;  animation-duration: 7.6s; animation-delay: 2.4s; transform: rotate(18deg); }
-.pennant.p4 { top: 82%; left: 22%; animation-duration: 9.1s; animation-delay: 0.8s; transform: rotate(-10deg); width: 18px; height: 23px; }
-.pennant.p5 { top: 22%; right: 7%; animation-duration: 7.2s; animation-delay: 1.5s; transform: rotate(-16deg); }
-.pennant.p6 { top: 46%; right: 15%;animation-duration: 8.8s; animation-delay: 2.8s; transform: rotate(20deg); width: 16px; height: 21px; }
+.pennant.p4 { top: 82%; left: 20%; animation-duration: 9.1s; animation-delay: 0.8s; transform: rotate(-10deg); width: 17px; height: 22px; }
+.pennant.p5 { top: 20%; right: 7%; animation-duration: 7.2s; animation-delay: 1.5s; transform: rotate(-16deg); }
+.pennant.p6 { top: 44%; right: 15%;animation-duration: 8.8s; animation-delay: 2.8s; transform: rotate(20deg); width: 15px; height: 20px; }
 .pennant.p7 { top: 70%; right: 8%; animation-duration: 7.9s; animation-delay: 0.5s; transform: rotate(-14deg); }
-.pennant.p8 { top: 85%; right: 24%;animation-duration: 9.4s; animation-delay: 3.2s; transform: rotate(12deg); width: 19px; height: 24px; }
+.pennant.p8 { top: 86%; right: 22%;animation-duration: 9.4s; animation-delay: 3.2s; transform: rotate(12deg); width: 18px; height: 23px; }
 
 @keyframes pennant-float {
   0%, 100% {
     transform: translateY(0) rotate(10deg) scale(1);
-    opacity: 0.16;
+    opacity: 0.15;
   }
   50% {
     transform: translateY(-16px) rotate(-8deg) scale(1.08);
-    opacity: 0.32;
+    opacity: 0.3;
   }
 }
 
@@ -1334,6 +1302,9 @@ img {
    RESPONSIVE (ESCRITORIO / TABLET)
    -------------------------------------------------------------------------- */
 @media (min-width: 640px) {
+  .corner-garland {
+    width: 145px;
+  }
   .hero {
     padding: 54px 32px 40px;
   }

@@ -36,33 +36,36 @@
     <header class="hero" id="inicio">
       <!-- DECORACIONES Y FONDO ANIMADO DE BANDERINES DE FIESTAS -->
       <div class="hero-bunting-wrapper" aria-hidden="true">
-        <!-- Guirnaldas de banderines en esquinas con animación de balanceo -->
-        <img src="images/banderines.png" alt="" class="hero-bunting-garland garland-left" />
-        <img src="images/banderines.png" alt="" class="hero-bunting-garland garland-right" />
+        <!-- Guirnalda de banderines en la esquina izquierda -->
+        <svg class="corner-garland garland-left" viewBox="0 0 160 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="garland-rope" d="M -5,8 Q 75,38 160,28" />
+          <g class="garland-flag g-flag-1"><polygon points="0,9 26,15 4,44" fill="#00b4d8" /></g>
+          <g class="garland-flag g-flag-2"><polygon points="35,17 65,24 49,58" fill="#ff3838" /></g>
+          <g class="garland-flag g-flag-3"><polygon points="74,25 106,30 94,67" fill="#ffb703" /></g>
+          <g class="garland-flag g-flag-4"><polygon points="115,30 148,30 136,71" fill="#0077b6" /></g>
+        </svg>
 
-        <!-- Guirnalda continua central superior -->
-        <div class="bunting-top-line">
-          <svg class="bunting-svg" viewBox="0 0 800 85" preserveAspectRatio="none">
-            <path class="bunting-path" d="M -10,8 Q 200,62 400,12 Q 600,62 810,8" />
-            <g class="bunting-flag-group bfg-1"><polygon class="bunting-poly flag-cyan" points="16,10 46,16 29,50" /></g>
-            <g class="bunting-flag-group bfg-2"><polygon class="bunting-poly flag-red" points="66,20 98,28 79,62" /></g>
-            <g class="bunting-flag-group bfg-3"><polygon class="bunting-poly flag-yellow" points="120,33 154,41 135,76" /></g>
-            <g class="bunting-flag-group bfg-4"><polygon class="bunting-poly flag-blue" points="178,45 212,48 194,83" /></g>
-            <g class="bunting-flag-group bfg-5"><polygon class="bunting-poly flag-red" points="240,47 274,44 259,79" /></g>
-            <g class="bunting-flag-group bfg-6"><polygon class="bunting-poly flag-yellow" points="300,40 332,32 319,70" /></g>
-            <g class="bunting-flag-group bfg-7"><polygon class="bunting-poly flag-cyan" points="354,26 386,17 372,56" /></g>
-            <g class="bunting-flag-group bfg-8"><polygon class="bunting-poly flag-blue" points="414,17 446,26 428,56" /></g>
-            <g class="bunting-flag-group bfg-9"><polygon class="bunting-poly flag-red" points="468,32 500,40 481,70" /></g>
-            <g class="bunting-flag-group bfg-10"><polygon class="bunting-poly flag-yellow" points="526,44 560,47 541,81" /></g>
-            <g class="bunting-flag-group bfg-11"><polygon class="bunting-poly flag-cyan" points="587,48 622,45 606,83" /></g>
-            <g class="bunting-flag-group bfg-12"><polygon class="bunting-poly flag-red" points="646,41 680,33 665,76" /></g>
-            <g class="bunting-flag-group bfg-13"><polygon class="bunting-poly flag-yellow" points="702,28 734,20 721,62" /></g>
-            <g class="bunting-flag-group bfg-14"><polygon class="bunting-poly flag-blue" points="754,16 784,10 771,50" /></g>
-          </svg>
-        </div>
+        <!-- Guirnalda de banderines en la esquina derecha -->
+        <svg class="corner-garland garland-right" viewBox="0 0 160 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="garland-rope" d="M -5,8 Q 75,38 160,28" />
+          <g class="garland-flag g-flag-1"><polygon points="0,9 26,15 4,44" fill="#ff3838" /></g>
+          <g class="garland-flag g-flag-2"><polygon points="35,17 65,24 49,58" fill="#ffb703" /></g>
+          <g class="garland-flag g-flag-3"><polygon points="74,25 106,30 94,67" fill="#00b4d8" /></g>
+          <g class="garland-flag g-flag-4"><polygon points="115,30 148,30 136,71" fill="#0077b6" /></g>
+        </svg>
 
         <!-- Fondo animado con banderines flotantes que ondean suavemente -->
         <div class="bunting-floating-particles">
+          <span class="pennant p-yellow p1"></span>
+          <span class="pennant p-blue p2"></span>
+          <span class="pennant p-red p3"></span>
+          <span class="pennant p-cyan p4"></span>
+          <span class="pennant p-orange p5"></span>
+          <span class="pennant p-yellow p6"></span>
+          <span class="pennant p-red p7"></span>
+          <span class="pennant p-blue p8"></span>
+        </div>
+      </div>
           <span class="pennant p-yellow p1"></span>
           <span class="pennant p-blue p2"></span>
           <span class="pennant p-red p3"></span>
