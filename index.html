@@ -34,10 +34,44 @@
   <div class="app-layout">
     <!-- HERO / PORTADA -->
     <header class="hero" id="inicio">
-      <div class="hero-decorations" aria-hidden="true">
-        <span class="confetti c1"></span>
-        <span class="confetti c2"></span>
-        <span class="confetti c3"></span>
+      <!-- DECORACIONES Y FONDO ANIMADO DE BANDERINES DE FIESTAS -->
+      <div class="hero-bunting-wrapper" aria-hidden="true">
+        <!-- Guirnaldas de banderines en esquinas con animación de balanceo -->
+        <img src="images/banderines.png" alt="" class="hero-bunting-garland garland-left" />
+        <img src="images/banderines.png" alt="" class="hero-bunting-garland garland-right" />
+
+        <!-- Guirnalda continua central superior -->
+        <div class="bunting-top-line">
+          <svg class="bunting-svg" viewBox="0 0 800 85" preserveAspectRatio="none">
+            <path class="bunting-path" d="M -10,8 Q 200,62 400,12 Q 600,62 810,8" />
+            <g class="bunting-flag-group bfg-1"><polygon class="bunting-poly flag-cyan" points="16,10 46,16 29,50" /></g>
+            <g class="bunting-flag-group bfg-2"><polygon class="bunting-poly flag-red" points="66,20 98,28 79,62" /></g>
+            <g class="bunting-flag-group bfg-3"><polygon class="bunting-poly flag-yellow" points="120,33 154,41 135,76" /></g>
+            <g class="bunting-flag-group bfg-4"><polygon class="bunting-poly flag-blue" points="178,45 212,48 194,83" /></g>
+            <g class="bunting-flag-group bfg-5"><polygon class="bunting-poly flag-red" points="240,47 274,44 259,79" /></g>
+            <g class="bunting-flag-group bfg-6"><polygon class="bunting-poly flag-yellow" points="300,40 332,32 319,70" /></g>
+            <g class="bunting-flag-group bfg-7"><polygon class="bunting-poly flag-cyan" points="354,26 386,17 372,56" /></g>
+            <g class="bunting-flag-group bfg-8"><polygon class="bunting-poly flag-blue" points="414,17 446,26 428,56" /></g>
+            <g class="bunting-flag-group bfg-9"><polygon class="bunting-poly flag-red" points="468,32 500,40 481,70" /></g>
+            <g class="bunting-flag-group bfg-10"><polygon class="bunting-poly flag-yellow" points="526,44 560,47 541,81" /></g>
+            <g class="bunting-flag-group bfg-11"><polygon class="bunting-poly flag-cyan" points="587,48 622,45 606,83" /></g>
+            <g class="bunting-flag-group bfg-12"><polygon class="bunting-poly flag-red" points="646,41 680,33 665,76" /></g>
+            <g class="bunting-flag-group bfg-13"><polygon class="bunting-poly flag-yellow" points="702,28 734,20 721,62" /></g>
+            <g class="bunting-flag-group bfg-14"><polygon class="bunting-poly flag-blue" points="754,16 784,10 771,50" /></g>
+          </svg>
+        </div>
+
+        <!-- Fondo animado con banderines flotantes que ondean suavemente -->
+        <div class="bunting-floating-particles">
+          <span class="pennant p-yellow p1"></span>
+          <span class="pennant p-blue p2"></span>
+          <span class="pennant p-red p3"></span>
+          <span class="pennant p-cyan p4"></span>
+          <span class="pennant p-orange p5"></span>
+          <span class="pennant p-yellow p6"></span>
+          <span class="pennant p-red p7"></span>
+          <span class="pennant p-blue p8"></span>
+        </div>
       </div>
 
       <img class="hero-logo" src="images/abraveses.jpg" alt="Escudo de Abraveses de Tera" width="72" height="72" />
