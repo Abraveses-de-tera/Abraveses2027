@@ -193,7 +193,7 @@
     if (!locationsListEl || !appData.locations) return;
 
     locationsListEl.innerHTML = appData.locations.map((loc) => {
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name + ", Abraveses de Tera, Zamora")}`;
+      const mapsUrl = loc.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name + ", Abraveses de Tera, Zamora")}`;
       return `
         <li class="location-item">
           <div class="location-item-info">
@@ -322,8 +322,16 @@
     }
 
     // Mapa URL
-    const mapsQuery = encodeURIComponent(`${ev.location || "Plaza Mayor"}, Abraveses de Tera, Zamora`);
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+    let mapsUrl = ev.mapUrl;
+    if (!mapsUrl) {
+      const locationObj = appData.locations?.find((l) => l.name === ev.location);
+      if (locationObj && locationObj.mapUrl) {
+        mapsUrl = locationObj.mapUrl;
+      } else {
+        const mapsQuery = encodeURIComponent(`${ev.location || "Plaza del pueblo"}, Abraveses de Tera, Zamora`);
+        mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+      }
+    }
 
     // Google Calendar URL
     const [hours, minutes] = ev.time.split(":").map(Number);

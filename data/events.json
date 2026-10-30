@@ -20,46 +20,20 @@
   },
   "locations": [
     {
-      "id": "plaza-mayor",
-      "name": "Plaza Mayor",
-      "description": "Punto de encuentro central: verbenas, conciertos, bingos y comidas populares.",
-      "lat": 41.9922,
-      "lng": -5.8942
+      "id": "plaza-del-pueblo",
+      "name": "Plaza del pueblo",
+      "description": "Centro neurálgico: verbenas, conciertos, bingos, juegos y actividades populares.",
+      "lat": 41.9927,
+      "lng": -5.8948,
+      "mapUrl": "https://www.google.com/maps/place/Virgen+de+Las+Encinas/@41.9927161,-5.8947932,717a,75y,301.52h,90t/data=!3m10!1e1!3m8!1sIVTnJyeaNJGTX8rw-rFImA!2e0!6shttps:%2F%2Fstreetviewpixels-pa.clients6.google.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3DIVTnJyeaNJGTX8rw-rFImA%26yaw%3D301.5152411095357!7i16384!8i8192!9m2!1b1!2i28!4m14!1m7!3m6!1s0xd39b0a6f930fbbf:0xb133f5e00694902a!2sIglesia+de+Abraveses+de+Tera+(Santiago+Ap%C3%B3stol)!8m2!3d41.9935755!4d-5.8957112!16s%2Fg%2F11d_8x4skd!3m5!1s0xd39b14db4b31731:0x9878ba337d747db3!8m2!3d41.9861412!4d-5.8878187!16s%2Fg%2F11flc62jn0?entry=ttu&g_ep=EgoyMDI2MTAyNy4wIKXMDSoASAFQAw%3D%3D"
     },
     {
-      "id": "fronton",
-      "name": "Frontón municipal",
-      "description": "Instalaciones para juegos infantiles, hinchables de agua y torneos.",
-      "lat": 41.9918,
-      "lng": -5.8935
-    },
-    {
-      "id": "bodegas",
-      "name": "Bodegas de Abraveses",
-      "description": "Pintoresca zona tradicional donde se realiza la ruta con la charanga.",
-      "lat": 41.9935,
-      "lng": -5.8960
-    },
-    {
-      "id": "iglesia",
-      "name": "Iglesia de Santiago Apóstol",
-      "description": "Templo parroquial para la bendición de bollas y actos religiosos solemnes.",
-      "lat": 41.9925,
-      "lng": -5.8945
-    },
-    {
-      "id": "santuario",
-      "name": "Santuario de la Virgen del Campo",
-      "description": "Entorno histórico donde tiene lugar la tradicional Romería de Pendones.",
-      "lat": 41.9940,
-      "lng": -5.8980
-    },
-    {
-      "id": "la-era",
-      "name": "La Era",
-      "description": "Espacio abierto tradicional donde se organiza el popular concurso de la gallina.",
-      "lat": 41.9915,
-      "lng": -5.8930
+      "id": "virgen-de-las-encinas",
+      "name": "Virgen de las Encinas",
+      "description": "Lugar emblemático donde se celebran la bendición de boyas, la misa por los difuntos y la romería de pendones.",
+      "lat": 41.9861412,
+      "lng": -5.8878187,
+      "mapUrl": "https://www.google.com/maps/place/Virgen+de+Las+Encinas/@41.9923748,-5.8955133,16z/data=!4m14!1m7!3m6!1s0xd39b0a6f930fbbf:0xb133f5e00694902a!2sIglesia+de+Abraveses+de+Tera+(Santiago+Ap%C3%B3stol)!8m2!3d41.9935755!4d-5.8957112!16s%2Fg%2F11d_8x4skd!3m5!1s0xd39b14db4b31731:0x9878ba337d747db3!8m2!3d41.9861412!4d-5.8878187!16s%2Fg%2F11flc62jn0?entry=ttu&g_ep=EgoyMDI2MTAyNy4wIKXMDSoASAFQAw%3D%3D"
     }
   ],
   "days": [
@@ -76,10 +50,10 @@
           "time": "20:00",
           "title": "Bailes regionales",
           "description": "A cargo de Doña Urraca.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "💃",
           "featured": false,
-          "detail": "Una tarde entrañable para disfrutar del folclore y los bailes tradicionales de nuestra tierra. El grupo Doña Urraca traerá a la Plaza Mayor su repertorio de danzas populares con vestimentas tradicionales. Ideal para todas las edades y para dar la bienvenida a los primeros días de fiesta."
+          "detail": "Una tarde entrañable para disfrutar del folclore y los bailes tradicionales de nuestra tierra. El grupo Doña Urraca traerá su repertorio de danzas populares con vestimentas tradicionales. Ideal para todas las edades y para dar la bienvenida a los primeros días de fiesta."
         }
       ]
     },
@@ -97,7 +71,7 @@
           "title": "II Ruta por las bodegas",
           "description": "Con la charanga MANÁITA.",
           "note": "Inscripción previa",
-          "location": "Bodegas de Abraveses",
+          "location": "Plaza del pueblo",
           "icon": "🍷",
           "photo": "images/ruta-bodegas.jpg",
           "featured": true,
@@ -105,7 +79,7 @@
             "label": "MANÁITA en Instagram",
             "url": "https://www.instagram.com/manaitaoficial/?hl=es"
           },
-          "detail": "Recorrido lúdico y gastronómico por las bodegas de Abraveses de Tera con el ritmo incombustible de la charanga MANÁITA. Música, vino, picoteo y convivencia. Se requiere inscripción previa con la comisión de fiestas para una adecuada organización."
+          "detail": "Recorrido lúdico y festivo por las bodegas con el ritmo incombustible de la charanga MANÁITA. Música, vino, picoteo y convivencia. Salida y punto de encuentro desde la plaza del pueblo. Se requiere inscripción previa con la comisión de fiestas para una adecuada organización."
         },
         {
           "eventId": "desfile-disfraces",
@@ -113,11 +87,11 @@
           "time": "22:30",
           "title": "Desfile infantil de disfraces",
           "description": "Recorrido alegre para los más pequeños.",
-          "location": "Plaza Mayor y Calles del pueblo",
+          "location": "Plaza del pueblo",
           "icon": "🎭",
           "photo": "images/disfraz.jpg",
           "featured": false,
-          "detail": "Los niños y niñas llenarán de fantasía y alegría las calles de Abraveses. Participa con tu mejor disfraz individual, en familia o con amigos en este alegre desfile que culmina en la Plaza Mayor."
+          "detail": "Los niños y niñas llenarán de fantasía y alegría las calles de Abraveses. Participa con tu mejor disfraz individual, en familia o con amigos en este alegre desfile que tiene su punto neurálgico en la plaza del pueblo."
         },
         {
           "eventId": "campanadas",
@@ -125,10 +99,10 @@
           "time": "00:00",
           "title": "Campanadas inicio fiestas",
           "description": "Chupinazo y bienvenida oficial.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🔔",
           "featured": false,
-          "detail": "A las doce en punto de la medianoche, las campanas marcarán el comienzo oficial de las fiestas patronales de Abraveses de Tera 2027. ¡Brindis, alegría colectiva y comienzo de los días grandes!"
+          "detail": "A las doce en punto de la medianoche, las campanas marcarán el comienzo oficial de las fiestas patronales de Abraveses de Tera 2027. ¡Brindis, alegría colectiva y comienzo de los días grandes en la plaza del pueblo!"
         }
       ]
     },
@@ -145,7 +119,7 @@
           "time": "18:30",
           "title": "Marcha solidaria FUNDAME",
           "description": "Caminata comunitaria en apoyo a FUNDAME.",
-          "location": "Salida desde la Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🚶",
           "photo": "images/marcha-solidaria.jpg",
           "featured": true,
@@ -153,7 +127,7 @@
             "label": "Web oficial FUNDAME",
             "url": "https://www.fundame.net/"
           },
-          "detail": "Marcha solidaria no competitiva apta para todas las edades. Sumamos kilómetros y apoyo en beneficio de la Fundación FUNDAME (Atrofia Muscular Espinal). Punto de salida y recogida de dorsales/colaboración en la Plaza Mayor."
+          "detail": "Marcha solidaria no competitiva apta para todas las edades. Sumamos kilómetros y apoyo en beneficio de la Fundación FUNDAME (Atrofia Muscular Espinal). Salida y llegada en la plaza del pueblo."
         },
         {
           "eventId": "bingo-miercoles",
@@ -161,10 +135,10 @@
           "time": "20:00",
           "title": "Bingo",
           "description": "Cartones, emoción y premios.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🎱",
           "featured": false,
-          "detail": "Tarde de risas y emoción con el bingo popular. Adquiere tus cartones unos minutos antes y disfruta compartiendo mesa con amigos y vecinos."
+          "detail": "Tarde de risas y emoción con el bingo popular en la plaza del pueblo. Adquiere tus cartones unos minutos antes y disfruta compartiendo mesa con amigos y vecinos."
         },
         {
           "eventId": "cine-aire-libre",
@@ -172,10 +146,10 @@
           "time": "21:30",
           "title": "Cine al aire libre",
           "description": "Película para toda la familia bajo las estrellas.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🎥",
           "featured": false,
-          "detail": "Proyección al aire libre apta para todos los públicos. Trae una silla cómoda o mantita para refrescar y disfruta del cine de verano en la plaza."
+          "detail": "Proyección al aire libre apta para todos los públicos en la plaza del pueblo. Trae una silla cómoda o mantita para refrescar y disfruta del cine de verano."
         },
         {
           "eventId": "campeonato-tute",
@@ -184,10 +158,10 @@
           "title": "Campeonato de tute",
           "description": "Tradicional torneo de cartas por parejas.",
           "note": "Inscripción hasta las 23:00 h",
-          "location": "Plaza Mayor / Bar",
+          "location": "Plaza del pueblo",
           "icon": "🃏",
           "featured": false,
-          "detail": "Torneo de tute por parejas para demostrar destreza en los naipes. Inscripción abierta hasta las 23:00 h en el bar/plaza de la comisión."
+          "detail": "Torneo de tute por parejas para demostrar destreza en los naipes en la plaza del pueblo. Inscripción abierta hasta las 23:00 h."
         }
       ]
     },
@@ -204,10 +178,10 @@
           "time": "17:00",
           "title": "Juegos infantiles",
           "description": "Talleres y actividades dinámicas.",
-          "location": "Frontón municipal",
+          "location": "Plaza del pueblo",
           "icon": "🪩",
           "featured": false,
-          "detail": "Tarde dedicada exclusivamente a los más peques con juegos populares, carreras de sacos y animación infantil en las instalaciones del frontón."
+          "detail": "Tarde dedicada exclusivamente a los más peques con juegos populares, carreras de sacos y animación infantil en la plaza del pueblo."
         },
         {
           "eventId": "grand-prix-bragao",
@@ -216,10 +190,10 @@
           "title": "I Grand Prix Bragao",
           "description": "Pruebas de habilidad y diversión por equipos.",
           "note": "Mayores de 16 años",
-          "location": "Frontón municipal",
+          "location": "Plaza del pueblo",
           "icon": "🏁",
           "featured": false,
-          "detail": "Competición de destreza, fuerza y buen humor inspirada en el Grand Prix. Exclusivo para mayores de 16 años agrupados en equipos locales. ¡Risas aseguradas!"
+          "detail": "Competición de destreza, fuerza y buen humor inspirada en el Grand Prix en la plaza del pueblo. Exclusivo para mayores de 16 años agrupados en equipos locales. ¡Risas aseguradas!"
         },
         {
           "eventId": "sardinada",
@@ -227,10 +201,10 @@
           "time": "21:30",
           "title": "Sardinada",
           "description": "Degustación popular de sardinas a la brasa.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🐟",
           "featured": false,
-          "detail": "Gran sardinada popular para cenar al aire libre. La organización preparará raciones de sardinas asadas para compartir entre vecinos y visitantes."
+          "detail": "Gran sardinada popular para cenar al aire libre en la plaza del pueblo. La organización preparará raciones de sardinas asadas para compartir entre vecinos y visitantes."
         },
         {
           "eventId": "orquesta-media-luna",
@@ -239,14 +213,14 @@
           "title": "Orquesta MEDIA LUNA",
           "description": "Al descanso 'Carrera de la sangría' y al finalizar ELECTROGARITO.",
           "note": "NOCHE DE DISFRACES: Tercera edad",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🎸",
           "featured": true,
           "link": {
             "label": "MEDIA LUNA en Instagram",
             "url": "https://www.instagram.com/orquesta_medialuna/?hl=es"
           },
-          "detail": "Gran verbena de noche con el espectáculo musical de la Orquesta MEDIA LUNA. En el intermedio tendrá lugar la emocionante Carrera de la sangría y al finalizar la orquesta continuará la fiesta con ELECTROGARITO. Además, ¡noche temática de disfraces dedicada a la tercera edad!"
+          "detail": "Gran verbena de noche en la plaza del pueblo con el espectáculo musical de la Orquesta MEDIA LUNA. En el intermedio tendrá lugar la emocionante Carrera de la sangría y al finalizar la orquesta continuará la fiesta con ELECTROGARITO. Además, ¡noche temática de disfraces dedicada a la tercera edad!"
         }
       ]
     },
@@ -258,16 +232,16 @@
       "color": "green",
       "events": [
         {
-          "eventId": "bendicion-bollas",
+          "eventId": "bendicion-boyas",
           "category": "tradicion",
           "time": "18:30",
-          "title": "Bendición de bollas",
+          "title": "Bendición de boyas",
           "description": "Acto religioso y tradicional.",
-          "location": "Iglesia de Santiago Apóstol",
+          "location": "Virgen de las Encinas",
           "icon": "🥖",
-          "photo": "images/bendicion-bollas.jpg",
+          "photo": "images/bendicion-boyas.jpg",
           "featured": false,
-          "detail": "Tradicional bendición de las bollas en la Iglesia de Santiago Apóstol, una de las costumbres más representativas y arraigadas de nuestras fiestas."
+          "detail": "Tradicional bendición de boyas en la Virgen de las Encinas, una de las costumbres más representativas y arraigadas de nuestras fiestas."
         },
         {
           "eventId": "cagada-gallina",
@@ -275,11 +249,11 @@
           "time": "21:00",
           "title": "Cagada de la gallina",
           "description": "Concurso popular y humorístico.",
-          "location": "La Era / Frontón",
+          "location": "Plaza del pueblo",
           "icon": "🐔",
           "photo": "images/cagada-gallina.jpg",
           "featured": false,
-          "detail": "Juego singular y lleno de risas donde una parcela cuadriculada y la suerte deciden el boleto ganador según el lugar elegido por la gallina. Consigue tu casilla."
+          "detail": "Juego singular y lleno de risas donde una parcela cuadriculada y la suerte deciden el boleto ganador según el lugar elegido por la gallina. Consigue tu casilla en la plaza del pueblo."
         },
         {
           "eventId": "electromoon",
@@ -287,14 +261,14 @@
           "time": "01:00",
           "title": "ELECTROMOON",
           "description": "Sesión nocturna de música y DJ.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🌙",
           "featured": true,
           "link": {
             "label": "ELECTROMOON en Instagram",
             "url": "https://www.instagram.com/electromoonn9/?hl=es"
           },
-          "detail": "Madrugada electrónica para quemar la pista al aire libre en la Plaza Mayor con los mejores ritmos de fiesta hasta que el cuerpo aguante."
+          "detail": "Madrugada electrónica para quemar la pista al aire libre en la plaza del pueblo con los mejores ritmos de fiesta hasta que el cuerpo aguante."
         }
       ]
     },
@@ -311,10 +285,10 @@
           "time": "12:00",
           "title": "Misa por los difuntos",
           "description": "Eucaristía solemne en recuerdo de los antepasados.",
-          "location": "Iglesia de Santiago Apóstol",
+          "location": "Virgen de las Encinas",
           "icon": "⛪",
           "featured": false,
-          "detail": "Misa en memoria y homenaje a todos los difuntos del pueblo en la Iglesia parroquial de Santiago Apóstol."
+          "detail": "Misa en memoria y homenaje a todos los difuntos en la Virgen de las Encinas."
         },
         {
           "eventId": "paella-popular",
@@ -322,10 +296,10 @@
           "time": "15:00",
           "title": "Paella popular",
           "description": "Gran comida de hermandad para todo el pueblo.",
-          "location": "Frontón municipal / Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🥘",
           "featured": false,
-          "detail": "El gran almuerzo del sábado festivo. Raciones de paella recién cocinada para reunir a vecinos, peñas y visitantes en una jornada inolvidable de convivencia."
+          "detail": "El gran almuerzo del sábado festivo en la plaza del pueblo. Raciones de paella recién cocinada para reunir a vecinos, peñas y visitantes en una jornada inolvidable de convivencia."
         },
         {
           "eventId": "edu-el-mago",
@@ -333,10 +307,10 @@
           "time": "16:00",
           "title": "Edu el mago",
           "description": "Espectáculo de ilusionismo y comedia.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🪄",
           "featured": false,
-          "detail": "Magia de cerca, humor y participación familiar con Edu el mago para animar la sobremesa con asombro para niños y adultos."
+          "detail": "Magia de cerca, humor y participación familiar con Edu el mago para animar la sobremesa con asombro para niños y adultos en la plaza del pueblo."
         },
         {
           "eventId": "parque-acuatico",
@@ -344,10 +318,10 @@
           "time": "17:00",
           "title": "Parque acuático",
           "description": "Hinchables de agua y fiesta refrescante.",
-          "location": "Frontón municipal",
+          "location": "Plaza del pueblo",
           "icon": "💦",
           "featured": false,
-          "detail": "Atracciones acuáticas, toboganes e hinchables para combatir el calor veraniego de la tarde de agosto. ¡Imprescindible bañador y toalla!"
+          "detail": "Atracciones acuáticas, toboganes e hinchables para combatir el calor veraniego de la tarde de agosto en la plaza del pueblo. ¡Imprescindible bañador y toalla!"
         },
         {
           "eventId": "bingo-sabado",
@@ -355,10 +329,10 @@
           "time": "19:00",
           "title": "Bingo",
           "description": "Segunda sesión de bingo de las fiestas.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🎱",
           "featured": false,
-          "detail": "Segunda oportunidad para cantar línea o bingo con grandes premios de la comisión de fiestas."
+          "detail": "Segunda oportunidad para cantar línea o bingo con grandes premios de la comisión de fiestas en la plaza del pueblo."
         },
         {
           "eventId": "beer-pong",
@@ -366,10 +340,10 @@
           "time": "19:30",
           "title": "Torneo de Beer Pong",
           "description": "Puntería, parejas y competición divertida.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🏓",
           "featured": false,
-          "detail": "Torneo por parejas de lanzamiento y puntería en vasos. Ambiente festivo y premios simbólicos para los campeones."
+          "detail": "Torneo por parejas de lanzamiento y puntería en vasos en la plaza del pueblo. Ambiente festivo y premios simbólicos para los campeones."
         },
         {
           "eventId": "syn3rgia",
@@ -377,14 +351,14 @@
           "time": "01:00",
           "title": "Grupo SYN3RGIA",
           "description": "En el descanso y al finalizar: ELECTROGARITO con DJ DAMM VALLEY.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🎤",
           "featured": true,
           "link": {
             "label": "SYN3RGIA en Instagram",
             "url": "https://www.instagram.com/syn3rgiagrupo/?hl=es"
           },
-          "detail": "La noche más potente de las fiestas: concierto del Grupo SYN3RGIA con repertorio de pop/rock y éxitos de verbena. En el descanso y tras la actuación, continuaremos con la sesión ELECTROGARITO a cargo de DJ DAMM VALLEY."
+          "detail": "La noche más potente de las fiestas en la plaza del pueblo: concierto del Grupo SYN3RGIA con repertorio de pop/rock y éxitos de verbena. En el descanso y tras la actuación, continuaremos con la sesión ELECTROGARITO a cargo de DJ DAMM VALLEY."
         }
       ]
     },
@@ -400,12 +374,12 @@
           "category": "tradicion",
           "time": "13:00",
           "title": "Romería de pendones",
-          "description": "Colorido desfile tradicional hasta el santuario.",
-          "location": "Santuario de la Virgen del Campo",
+          "description": "Colorido desfile tradicional hasta la ermita.",
+          "location": "Virgen de las Encinas",
           "icon": "🚩",
           "photo": "images/romeria-pendones.jpg",
           "featured": false,
-          "detail": "Imponente romería con los pendones tradicionales del valle, desfilando en procesión con solemnidad y alegría hasta el Santuario de la Virgen del Campo."
+          "detail": "Imponente romería con los pendones tradicionales del valle, desfilando en procesión con solemnidad y alegría hasta la Virgen de las Encinas."
         },
         {
           "eventId": "pulpero",
@@ -413,10 +387,10 @@
           "time": "14:00",
           "title": "Pulpero",
           "description": "Pulpo a la gallega y raciones de feria.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🐙",
           "featured": false,
-          "detail": "Puesto tradicional de pulpeiro en la Plaza Mayor para degustar raciones de pulpo a feira, cachelos y vino de la zona en el mediodía del domingo."
+          "detail": "Puesto tradicional de pulpeiro en la plaza del pueblo para degustar raciones de pulpo a feira, cachelos y vino de la zona en el mediodía del domingo."
         },
         {
           "eventId": "parque-infantil",
@@ -424,10 +398,10 @@
           "time": "17:00",
           "title": "Parque infantil",
           "description": "Juegos y atracciones para despedir las fiestas.",
-          "location": "Frontón municipal",
+          "location": "Plaza del pueblo",
           "icon": "🎈",
           "featured": false,
-          "detail": "Última tarde de diversión infantil con hinchables, música y juegos para los más pequeños del pueblo."
+          "detail": "Última tarde de diversión infantil con hinchables, música y juegos para los más pequeños en la plaza del pueblo."
         },
         {
           "eventId": "tardeo-markfeel",
@@ -435,10 +409,10 @@
           "time": "19:00",
           "title": "Tardeo con MARKFEEL",
           "description": "Concierto fin de fiestas con MARKFEEL.",
-          "location": "Plaza Mayor",
+          "location": "Plaza del pueblo",
           "icon": "🎧",
           "featured": false,
-          "detail": "Música en directo y ambiente distendido para despedir las fiestas patronales de Abraveses de Tera 2027 por todo lo alto hasta el año que viene. ...¡Y otras que también!"
+          "detail": "Música en directo y ambiente distendido en la plaza del pueblo para despedir las fiestas patronales de Abraveses de Tera 2027 por todo lo alto hasta el año que viene. ...¡Y otras que también!"
         }
       ]
     }

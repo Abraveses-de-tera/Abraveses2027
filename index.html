@@ -34,12 +34,24 @@
   <div class="app-layout">
     <!-- HERO / PORTADA -->
     <header class="hero" id="inicio">
-      <!-- BANDERINES ANIMADOS DE FIESTAS -->
+      <!-- BANDERINES ANIMADOS DE FIESTAS (CSS/SVG puro, sin imágenes) -->
       <div class="hero-bunting" aria-hidden="true">
-        <!-- Guirnalda imagen esquina izquierda -->
-        <img src="images/banderines.png" alt="" class="bunting-corner bunting-corner--left" />
-        <!-- Guirnalda imagen esquina derecha (espejada) -->
-        <img src="images/banderines.png" alt="" class="bunting-corner bunting-corner--right" />
+        <!-- Guirnalda superior izquierda -->
+        <svg class="bunting-garland bunting-garland--left" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,6 Q50,4 100,30 Q150,56 200,50" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+          <g class="bf bf1"><polygon points="10,7 38,14 18,48" fill="#0096c7"/></g>
+          <g class="bf bf2"><polygon points="46,15 76,24 58,58" fill="#e63946"/></g>
+          <g class="bf bf3"><polygon points="84,26 114,36 96,70" fill="#ffb703"/></g>
+          <g class="bf bf4"><polygon points="122,38 152,48 136,82" fill="#0077b6"/></g>
+        </svg>
+        <!-- Guirnalda superior derecha (espejada) -->
+        <svg class="bunting-garland bunting-garland--right" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,50 Q50,56 100,30 Q150,4 200,6" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+          <g class="bf bf1"><polygon points="48,48 78,56 62,82" fill="#e63946"/></g>
+          <g class="bf bf2"><polygon points="86,36 116,26 104,70" fill="#ffb703"/></g>
+          <g class="bf bf3"><polygon points="124,24 154,15 142,58" fill="#0096c7"/></g>
+          <g class="bf bf4"><polygon points="162,14 190,7 182,48" fill="#0077b6"/></g>
+        </svg>
         <!-- Partículas flotantes decorativas -->
         <span class="pennant p-yellow p1"></span>
         <span class="pennant p-blue p2"></span>

@@ -40,7 +40,7 @@ Abraveses2027/
 ├── images/
 │   ├── abraveses.jpg       # Escudo representativo de Abraveses de Tera
 │   ├── cartel-oficial.jpg  # Cartel de fiestas completo optimizado
-│   ├── bendicion-bollas.jpg# Fotografía bendición de bollas
+│   ├── bendicion-boyas.jpg # Fotografía bendición de boyas
 │   ├── cagada-gallina.jpg  # Fotografía cagada de la gallina
 │   ├── disfraz.jpg         # Fotografía desfile infantil
 │   ├── hermita.jpg         # Fotografía Santuario / Romería
