@@ -530,7 +530,7 @@
                     👥 ${attendCounts[ev.eventId] || 0} ${(attendCounts[ev.eventId] || 0) === 1 ? "persona va" : "personas van"}
                   </span>
                 </div>
-                <p class="attend-notice">ℹ️ Recuento orientativo para la organización. La inscripción formal y el pago se realizarán en la comisión de fiestas.</p>
+                <p class="attend-notice">ℹ️ Recuento orientativo para la organización. La inscripción formal se realizará en la comisión de fiestas.</p>
               </div>
             </div>
           </div>
