@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  
+  <title>Fiestas de Abraveses de Tera 2027 · Programa Oficial</title>
+  <meta name="description" content="Programa oficial de fiestas de Abraveses de Tera 2027 (Zamora). Consulta actividades, horarios, ubicaciones y guarda tus planes favoritos." />
+  <meta name="author" content="Andoni Herrera" />
+  
+  <!-- Colores de tema para navegadores móviles -->
+  <meta name="theme-color" content="#111827" />
+  <meta name="msapplication-navbutton-color" content="#111827" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Abraveses 2027" />
+
+  <!-- Metadatos Open Graph / WhatsApp Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Programa Fiestas Abraveses de Tera 2027" />
+  <meta property="og:description" content="Del 23 al 29 de agosto de 2027. ¡Simpatía y buen humor! Consulta el programa por días, favoritos y ubicaciones." />
+  <meta property="og:image" content="images/abraveses.jpg" />
+  <meta property="og:locale" content="es_ES" />
+
+  <!-- Iconos y Manifest PWA -->
+  <link rel="icon" type="image/png" sizes="64x64" href="images/icons/favicon.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="images/icons/icon-192.png" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- HERO / PORTADA -->
+    <header class="hero" id="inicio">
+      <div class="hero-decorations" aria-hidden="true">
+        <span class="confetti c1"></span>
+        <span class="confetti c2"></span>
+        <span class="confetti c3"></span>
+      </div>
+
+      <img class="hero-logo" src="images/abraveses.jpg" alt="Escudo de Abraveses de Tera" width="72" height="72" />
+      <p class="hero-eyebrow">DEL 23 AL 29 DE AGOSTO DE 2027</p>
+      <h1 class="hero-title">ABRAVESES</h1>
+      <p class="hero-subtitle">Simpatía y buen humor</p>
+      <p class="hero-location">Abraveses de Tera · Zamora</p>
+
+      <!-- Cuenta atrás dinámica -->
+      <div class="countdown-badge" id="countdown" aria-live="polite">
+        <span class="countdown-loading">Cargando fechas de las fiestas...</span>
+      </div>
+
+      <!-- Accesos rápidos en la portada -->
+      <div class="hero-quick-actions">
+        <a href="#agenda" class="hero-btn hero-btn--primary">
+          <span aria-hidden="true">📅</span> Ver programa
+        </a>
+        <button type="button" class="hero-btn hero-btn--secondary" id="btnOpenPoster">
+          <span aria-hidden="true">🖼️</span> Ver cartel
+        </button>
+        <button type="button" class="hero-btn hero-btn--secondary" id="btnOpenMap">
+          <span aria-hidden="true">📍</span> Lugares
+        </button>
+      </div>
+    </header>
+
+    <!-- SECCIÓN PRINCIPAL: AGENDA -->
+    <main class="agenda" id="agenda" aria-labelledby="agenda-title">
+      <div class="agenda-header">
+        <div>
+          <span class="section-label">PROGRAMA OFICIAL</span>
+          <h2 id="agenda-title" class="section-heading">Fiestas 2027</h2>
+        </div>
+        <div class="agenda-actions">
+          <button class="action-pill action-pill--favorites" id="favoritesButton" type="button" aria-pressed="false">
+            <span class="heart-icon" aria-hidden="true">♡</span>
+            <span>Mis planes</span>
+            <span class="favorites-counter" id="favoritesCounter" hidden>0</span>
+          </button>
+          <button class="action-pill action-pill--today" id="todayButton" type="button">
+            Hoy
+          </button>
+        </div>
+      </div>
+
+      <!-- Buscador en tiempo real -->
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input
+          type="search"
+          id="searchInput"
+          class="search-input"
+          placeholder="Buscar actividad, artista o lugar…"
+          aria-label="Buscar una actividad del programa"
+          autocomplete="off"
+        />
+        <button type="button" id="searchClear" class="search-clear" aria-label="Limpiar búsqueda" hidden>✕</button>
+      </div>
+
+      <!-- Filtros por categoría -->
+      <nav class="category-filters" id="categoryFilters" aria-label="Filtrar por categoría">
+        <!-- Renderizado dinámicamente desde JS -->
+      </nav>
+
+      <!-- Selector de días / pestañas -->
+      <nav class="day-tabs" id="dayTabs" aria-label="Selecciona un día del programa">
+        <!-- Renderizado dinámicamente desde JS -->
+      </nav>
+
+      <!-- Indicador del día actual y ayuda -->
+      <div class="agenda-meta">
+        <h3 class="selected-day-label" id="selectedDayLabel" aria-live="polite">Todos los eventos</h3>
+        <p class="agenda-tip">Toca cualquier actividad para desplegar detalles, mapa y calendario.</p>
+      </div>
+
+      <!-- Lista de actividades -->
+      <section class="events-container" id="eventsContainer" aria-live="polite">
+        <!-- Renderizado dinámicamente desde JS -->
+      </section>
+
+      <!-- Mensaje cuando no hay resultados -->
+      <div class="no-results" id="noResults" hidden>
+        <span class="no-results-icon" aria-hidden="true">🔍</span>
+        <p class="no-results-title">No hay actividades con estos filtros</p>
+        <p class="no-results-desc">Prueba a buscar con otra palabra o selecciona "Todas las categorías".</p>
+        <button type="button" class="btn-reset-filters" id="resetFiltersButton">Restablecer filtros</button>
+      </div>
+
+      <!-- CTA GRUPO WHATSAPP -->
+      <section class="whatsapp-card" aria-labelledby="whatsapp-card-title">
+        <img class="whatsapp-watermark" src="images/abraveses.jpg" alt="" aria-hidden="true" />
+        <div class="whatsapp-icon" aria-hidden="true">💬</div>
+        <h3 id="whatsapp-card-title">Grupo de WhatsApp del pueblo</h3>
+        <p>Avisos oficiales, cambios de horario de última hora y toda la información de Abraveses de Tera en tu móvil.</p>
+        <a
+          class="whatsapp-link-btn"
+          id="whatsappBtn"
+          href="https://chat.whatsapp.com/CXqb83XIlelApSAwDoLLlZ?s=cl&p=i&mlu=4&ilr=4"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span aria-hidden="true">📲</span> Unirme al grupo
+        </a>
+      </section>
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p class="footer-title">Programa de fiestas 2027 · Abraveses de Tera (Zamora)</p>
+        <p class="footer-disclaimer">
+          ⚠️ <em>Aviso importante:</em> El programa de actividades puede sufrir alteraciones o ajustes de última hora
+          por causas meteorológicas o de la organización.
+        </p>
+        <p class="footer-credits">Creado por Andoni Herrera</p>
+        <div class="footer-links">
+          <a href="#inicio" class="back-to-top-link">↑ Volver arriba</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODAL: CARTEL OFICIAL -->
+  <div class="modal-backdrop" id="posterModal" hidden aria-hidden="true">
+    <div class="modal-dialog modal-dialog--poster" role="dialog" aria-modal="true" aria-labelledby="posterModalTitle">
+      <div class="modal-header">
+        <h3 id="posterModalTitle">Cartel Oficial de Fiestas</h3>
+        <button type="button" class="modal-close" data-close-modal aria-label="Cerrar ventana">✕</button>
+      </div>
+      <div class="modal-body modal-body--image">
+        <img src="images/cartel-oficial.jpg" alt="Cartel oficial del Programa de Fiestas de Abraveses de Tera" class="poster-full-image" loading="lazy" />
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: LUGARES DE LA FIESTA -->
+  <div class="modal-backdrop" id="mapModal" hidden aria-hidden="true">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
+      <div class="modal-header">
+        <h3 id="mapModalTitle">📍 Lugares de Abraveses</h3>
+        <button type="button" class="modal-close" data-close-modal aria-label="Cerrar ventana">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Puntos clave donde se celebran las actividades durante las fiestas:</p>
+        <ul class="locations-list" id="locationsList">
+          <!-- Renderizado dinámicamente desde JS -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICACIÓN -->
+  <div class="toast" id="appToast" role="status" aria-live="polite" hidden></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/countdown.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch((err) => {
+          console.warn("Service Worker no registrado:", err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
