@@ -228,6 +228,28 @@
   <!-- TOAST NOTIFICACIÓN -->
   <div class="toast" id="appToast" role="status" aria-live="polite" hidden></div>
 
+  <!-- FIREBASE (Recuento en tiempo real) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script>
+    if (typeof firebase !== "undefined") {
+      try {
+        firebase.initializeApp({
+          apiKey: "AIzaSyAfRHsZtUFClLt5FXKm4ydjsRQVjRM4M2I",
+          authDomain: "abraveses-de-tera.firebaseapp.com",
+          databaseURL: "https://abraveses-de-tera-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "abraveses-de-tera",
+          storageBucket: "abraveses-de-tera.firebasestorage.app",
+          messagingSenderId: "1010226528549",
+          appId: "1:1010226528549:web:0c74e3c440350f54671acc"
+        });
+      } catch (e) {
+        console.warn("Aviso al inicializar Firebase:", e);
+      }
+    }
+  </script>
+
   <!-- SCRIPTS -->
   <script src="data/events-data.js"></script>
   <script src="js/countdown.js"></script>

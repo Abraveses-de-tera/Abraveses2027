@@ -30,6 +30,58 @@
   let searchQuery = "";
   let showFavoritesOnly = false;
   let eventStatuses = new Map();
+  let attendCounts = {};
+  let authReady = false;
+  let authReadyPromise = null;
+
+  function hasFirebase() {
+    return typeof firebase !== "undefined" && firebase.apps && firebase.apps.length > 0;
+  }
+
+  function ensureAuth() {
+    if (!hasFirebase() || typeof firebase.auth !== "function") {
+      return Promise.reject(new Error("Firebase no disponible"));
+    }
+    if (authReady && firebase.auth().currentUser) {
+      return Promise.resolve(firebase.auth().currentUser);
+    }
+    if (authReadyPromise) return authReadyPromise;
+
+    authReadyPromise = new Promise((resolve, reject) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          authReady = true;
+          unsubscribe();
+          resolve(user);
+        }
+      });
+      firebase.auth().signInAnonymously().catch((err) => {
+        unsubscribe();
+        authReadyPromise = null;
+        reject(err);
+      });
+    });
+    return authReadyPromise;
+  }
+
+  function listenAttendanceCounts() {
+    if (!hasFirebase()) return;
+    try {
+      firebase.database().ref("attendance").on("value", (snapshot) => {
+        const data = snapshot.val() || {};
+        attendCounts = Object.fromEntries(
+          Object.entries(data).map(([eventId, users]) => [eventId, Object.keys(users || {}).length])
+        );
+        document.querySelectorAll("[data-attend-count]").forEach((element) => {
+          const eventId = element.dataset.attendCount;
+          const count = attendCounts[eventId] || 0;
+          element.textContent = `${count} ${count === 1 ? "persona va" : "personas van"}`;
+        });
+      });
+    } catch (e) {
+      console.warn("Aviso en listenAttendanceCounts:", e);
+    }
+  }
 
   // --- Elementos del DOM ---
   const dayTabsEl = document.getElementById("dayTabs");
@@ -88,12 +140,39 @@
     }
   }
 
-  function toggleAttendance(eventId) {
+  function toggleAttendance(eventId, button) {
     const attends = getAttendances();
-    attends[eventId] = !attends[eventId];
+    const alreadyGoing = attends[eventId] === true;
+
+    // Actualización local inmediata
+    attends[eventId] = !alreadyGoing;
     localStorage.setItem(STORAGE_ATTEND_KEY, JSON.stringify(attends));
-    showToast(attends[eventId] ? "¡Te has apuntado a esta actividad! ✓" : "Ya no estás apuntado");
-    renderEvents();
+    showToast(!alreadyGoing ? "¡Te has apuntado a esta actividad! ✓" : "Has retirado tu asistencia");
+
+    if (button) {
+      button.classList.toggle("is-attending", !alreadyGoing);
+      const iconSpan = button.querySelector("span[aria-hidden='true']");
+      if (iconSpan) iconSpan.textContent = !alreadyGoing ? "✓" : "🙋";
+      button.childNodes[button.childNodes.length - 1].textContent = !alreadyGoing ? " Ya voy a esta actividad" : " Confirmar asistencia";
+    } else {
+      renderEvents();
+    }
+
+    // Sincronización en la nube con Firebase (si está disponible)
+    if (hasFirebase()) {
+      ensureAuth()
+        .then((user) => {
+          const ref = firebase.database().ref(`attendance/${eventId}/${user.uid}`);
+          if (!alreadyGoing) {
+            return ref.set(true);
+          } else {
+            return ref.remove();
+          }
+        })
+        .catch((err) => {
+          console.warn("Aviso al sincronizar asistencia con Firebase:", err);
+        });
+    }
   }
 
   // --- Notificación Toast ---
@@ -177,6 +256,8 @@
 
     setupEventListeners();
     handleHashNavigation();
+    listenAttendanceCounts();
+    ensureAuth().catch(() => {});
 
     // Actualizar estado de "en directo" periódicamente
     setInterval(() => {
@@ -441,10 +522,15 @@
               </div>
 
               <div class="attendance-bar">
-                <button type="button" class="attend-btn ${isAttending ? "is-attending" : ""}" data-attend="${ev.eventId}">
-                  <span aria-hidden="true">${isAttending ? "✓" : "🙋"}</span> ${isAttending ? "Ya voy a esta actividad" : "Confirmar asistencia"}
-                </button>
-                <span class="attend-info">${isAttending ? "¡Te esperamos allí!" : "¿Te apuntas?"}</span>
+                <div class="attendance-row">
+                  <button type="button" class="attend-btn ${isAttending ? "is-attending" : ""}" data-attend="${ev.eventId}">
+                    <span aria-hidden="true">${isAttending ? "✓" : "🙋"}</span> ${isAttending ? "Ya voy a esta actividad" : "Confirmar asistencia"}
+                  </button>
+                  <span class="attend-count" data-attend-count="${ev.eventId}">
+                    👥 ${attendCounts[ev.eventId] || 0} ${(attendCounts[ev.eventId] || 0) === 1 ? "persona va" : "personas van"}
+                  </span>
+                </div>
+                <p class="attend-notice">ℹ️ Recuento orientativo para la organización. La inscripción formal y el pago se realizarán en la comisión de fiestas.</p>
               </div>
             </div>
           </div>
@@ -708,7 +794,7 @@
       const attendBtn = e.target.closest(".attend-btn");
       if (attendBtn) {
         e.stopPropagation();
-        toggleAttendance(attendBtn.dataset.attend);
+        toggleAttendance(attendBtn.dataset.attend, attendBtn);
         return;
       }
 

@@ -898,24 +898,44 @@ img {
 /* Asistencia */
 .attendance-bar {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   margin-top: 14px;
+  padding: 12px 14px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+}
+
+.attendance-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .attend-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 15px;
+  padding: 8px 16px;
   border-radius: var(--radius-full);
   border: 2px solid var(--green);
   background-color: #ffffff;
   color: var(--green);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 800;
   cursor: pointer;
   transition: all var(--transition);
+}
+
+.attend-btn:hover {
+  background-color: #dcfce7;
+}
+
+.attend-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .attend-btn.is-attending {
@@ -923,10 +943,20 @@ img {
   color: #ffffff;
 }
 
-.attend-info {
-  font-size: 0.8rem;
-  color: var(--muted);
-  font-weight: 700;
+.attend-count {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #166534;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.attend-notice {
+  margin: 0;
+  font-size: 0.74rem;
+  color: #15803d;
+  line-height: 1.35;
 }
 
 /* --------------------------------------------------------------------------
