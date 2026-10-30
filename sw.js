@@ -3,7 +3,7 @@
  * Estrategia de caché para funcionamiento 100% offline
  */
 
-const CACHE_NAME = "abraveses-2027-v1.4.0";
+const CACHE_NAME = "abraveses-2027-v1.5.0";
 
 const PRECACHE_ASSETS = [
   "./",
@@ -15,6 +15,9 @@ const PRECACHE_ASSETS = [
   "./data/events.json",
   "./data/events-data.js",
   "./images/abraveses.jpg",
+  "./images/hermita-logo.png",
+  "./images/logo-hermita-hero.png",
+  "./images/favicon.ico",
   "./images/cartel-oficial.jpg",
   "./images/bendicion-boyas.jpg",
   "./images/cagada-gallina.jpg",

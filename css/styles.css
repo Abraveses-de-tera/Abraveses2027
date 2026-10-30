@@ -193,13 +193,13 @@ img {
 .hero-logo {
   position: relative;
   z-index: 1;
-  width: 68px;
-  height: 68px;
+  width: 82px;
+  height: 82px;
   border-radius: 50%;
-  border: 3px solid #ffffff;
   margin: 0 auto 10px;
-  object-fit: cover;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  object-fit: contain;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  background-color: #ffffff;
 }
 
 .hero-eyebrow {
