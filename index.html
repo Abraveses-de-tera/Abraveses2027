@@ -122,12 +122,66 @@
         </button>
       </div>
 
-      <!-- Chupinazómetro interactivo -->
-      <div class="chupinazometro-wrap" id="chupinazometroWrap" role="button" tabindex="0" title="Cohetes tirados por los vecinos · ¡Toca para lanzar otro!">
-        <span class="chupinazometro-flame" aria-hidden="true">🔥</span>
-        <span class="chupinazometro-label">Chupinazómetro:</span>
-        <span class="chupinazometro-count" id="chupinazoCount">348</span>
-        <span class="chupinazometro-unit">cohetes lanzados</span>
+      <!-- Aplausómetro / Chupinazómetro interactivo -->
+      <div class="aplausometro-card" id="chupinazometroWrap" role="button" tabindex="0" title="Aplausómetro de Fiestas · ¡Pulsa para animar el ambiente!">
+        <div class="aplausometro-header">
+          <span class="aplausometro-title">🔥 Juergómetro de las Peñas</span>
+          <span class="aplausometro-hint">¡Toca para subirlo!</span>
+        </div>
+
+        <div class="aplausometro-dial-wrap">
+          <svg viewBox="0 0 200 115" class="aplausometro-svg" aria-hidden="true">
+            <defs>
+              <filter id="needleShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#000" flood-opacity="0.5"/>
+              </filter>
+            </defs>
+            <!-- Segmento 1: Verde oscuro (0% - 20%) -->
+            <path d="M 12,100 A 88,88 0 0,1 28.8,48.3 L 53.1,65.9 A 58,58 0 0,0 42,100 Z" fill="#16a34a" stroke="#0f172a" stroke-width="1.2" />
+            <!-- Segmento 2: Verde lima (20% - 40%) -->
+            <path d="M 28.8,48.3 A 88,88 0 0,1 72.8,16.3 L 82.1,44.8 A 58,58 0 0,0 53.1,65.9 Z" fill="#84cc16" stroke="#0f172a" stroke-width="1.2" />
+            <!-- Segmento 3: Amarillo (40% - 60%) con carita 😉 -->
+            <path d="M 72.8,16.3 A 88,88 0 0,1 127.2,16.3 L 117.9,44.8 A 58,58 0 0,0 82.1,44.8 Z" fill="#eab308" stroke="#0f172a" stroke-width="1.2" />
+            <!-- Segmento 4: Naranja (60% - 80%) con carita 🥳 -->
+            <path d="M 127.2,16.3 A 88,88 0 0,1 171.2,48.3 L 146.9,65.9 A 58,58 0 0,0 117.9,44.8 Z" fill="#ea580c" stroke="#0f172a" stroke-width="1.2" />
+            <!-- Segmento 5: Rojo Peligro (80% - 100%) con fuego 🔥 -->
+            <path d="M 171.2,48.3 A 88,88 0 0,1 188,100 L 158,100 A 58,58 0 0,0 146.9,65.9 Z" fill="#dc2626" stroke="#0f172a" stroke-width="1.2" />
+
+            <!-- Caritas en los arcos estilo aplausómetro -->
+            <text x="36" y="74" font-size="11" text-anchor="middle" fill="#ffffff" opacity="0.9">😴</text>
+            <text x="64" y="44" font-size="11" text-anchor="middle" fill="#ffffff" opacity="0.95">🙂</text>
+            <text x="100" y="32" font-size="12" text-anchor="middle" fill="#ffffff">😉</text>
+            <text x="136" y="44" font-size="11" text-anchor="middle" fill="#ffffff">🥳</text>
+            <text x="164" y="74" font-size="11" text-anchor="middle" fill="#ffffff">🔥</text>
+
+            <!-- Aguja con sombra -->
+            <g id="aplausometroNeedle" class="aplausometro-needle" filter="url(#needleShadow)">
+              <!-- Flecha de la aguja -->
+              <polygon points="98,96 98,34 91,34 100,10 109,34 102,34 102,96" fill="#0f172a" stroke="#cbd5e1" stroke-width="0.8" />
+            </g>
+
+            <!-- Base semicircular negra con estrellas -->
+            <path d="M 68,100 A 32,32 0 0,1 132,100 Z" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+            <!-- Estrellitas decorativas en la base -->
+            <polygon points="100,82 102.2,86.5 107,87.2 103.5,90.5 104.3,95.5 100,93 95.7,95.5 96.5,90.5 93,87.2 97.8,86.5" fill="#f59e0b" />
+            <circle cx="82" cy="94" r="2.2" fill="#475569" />
+            <circle cx="118" cy="94" r="2.2" fill="#475569" />
+          </svg>
+          <div class="aplausometro-steam-wrap" id="aplausometroSteam" hidden aria-hidden="true">
+            <span class="steam-puff">♨️</span>
+            <span class="steam-puff">💨</span>
+          </div>
+        </div>
+
+        <div class="aplausometro-footer">
+          <div class="aplausometro-badge" id="aplausometroBadge">
+            <span id="aplausometroBadgeDot">🟢</span> <span id="aplausometroBadgeText">Ambiente tranquilo</span>
+          </div>
+          <div class="aplausometro-total">
+            <span class="chupinazometro-flame" aria-hidden="true">🚀</span>
+            <strong id="chupinazoCount">348</strong> cohetes tirados
+          </div>
+        </div>
       </div>
     </header>
 

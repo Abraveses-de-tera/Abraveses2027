@@ -1315,9 +1315,10 @@
   let chupinazoCount = parseInt(localStorage.getItem("abraveses_chupinazos_count") || "348", 10);
   let consecutiveLaunches = 0;
   let isPendingMega = false;
-  let clickTimestamps = [];
   let isOverheated = false;
   let isRocketFlying = false;
+  let aplausometroExcitement = 20;
+  let lastLaunchTimestamp = Date.now();
 
   const CHUPINAZO_QUOTES = [
     "🚀 ¡BOOOOOM! ¡Vivan las fiestas de Abraveses de Tera! 🎉🥂",
@@ -1342,12 +1343,63 @@
     }
   }
 
-  // --- Actualizar Chupinazómetro ---
+  // --- Actualizar Aplausómetro / Chupinazómetro ---
+  function updateAplausometroUI() {
+    const needle = document.getElementById("aplausometroNeedle");
+    if (needle) {
+      const angle = -75 + (aplausometroExcitement / 100) * 150;
+      needle.style.setProperty("--needle-rot", `${angle.toFixed(1)}deg`);
+    }
+
+    const badgeDot = document.getElementById("aplausometroBadgeDot");
+    const badgeText = document.getElementById("aplausometroBadgeText");
+    let dot = "🟢";
+    let text = "Ambiente tranquilo";
+
+    if (aplausometroExcitement > 92) {
+      dot = "🔴";
+      text = "¡PELIGRO: ZONA MANOLO!";
+    } else if (aplausometroExcitement > 72) {
+      dot = "🟠";
+      text = "¡JUERGA TOTAL EN LAS PEÑAS!";
+    } else if (aplausometroExcitement > 48) {
+      dot = "🟡";
+      text = "¡Ambiente festivo en la plaza!";
+    } else if (aplausometroExcitement > 24) {
+      dot = "🟢";
+      text = "¡El pueblo se va animando!";
+    }
+
+    if (badgeDot) badgeDot.textContent = dot;
+    if (badgeText) badgeText.textContent = text;
+  }
+
   function initChupinazometro() {
     const countEl = document.getElementById("chupinazoCount");
     if (countEl) {
       countEl.textContent = chupinazoCount.toLocaleString("es-ES");
     }
+    updateAplausometroUI();
+
+    // Precargar voces de síntesis de voz en el navegador
+    if ("speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.getVoices();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+          window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+      } catch (_) {}
+    }
+
+    // Bucle de decaimiento natural del aplausómetro cuando no hay actividad reciente
+    setInterval(() => {
+      if (!isOverheated && Date.now() - lastLaunchTimestamp > 1800) {
+        if (aplausometroExcitement > 16) {
+          aplausometroExcitement = Math.max(14, aplausometroExcitement - 3.5);
+          updateAplausometroUI();
+        }
+      }
+    }, 700);
 
     if (hasFirebase()) {
       try {
@@ -1596,6 +1648,51 @@
     } catch (_) {}
   }
 
+  function playAlarmTone() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      [0, 0.16, 0.32].forEach((delay) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(880, now + delay);
+        osc.frequency.setValueAtTime(1200, now + delay + 0.07);
+        g.gain.setValueAtTime(0.28, now + delay);
+        g.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.14);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(now + delay);
+        osc.stop(now + delay + 0.14);
+      });
+    } catch (_) {}
+  }
+
+  function speakFrenaManolo() {
+    if (!("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const text = "¡Frena Manolo! ¡Que nos quemas la Ermita antes de empezar! ¡Déjalo enfriar!";
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "es-ES";
+      utterance.rate = 1.05;
+      utterance.pitch = 1.2;
+      utterance.volume = 1.0;
+
+      // Buscar voz en castellano / español
+      const voices = window.speechSynthesis.getVoices();
+      const spanishVoice = voices.find((v) => v.lang === "es-ES") || voices.find((v) => v.lang.startsWith("es"));
+      if (spanishVoice) {
+        utterance.voice = spanishVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn("SpeechSynthesis error:", e);
+    }
+  }
+
   // --- Animación visual del cohete despegando ---
   function spawnFlyingRocket(type = "normal") {
     const wrap = document.getElementById("chupinazoFlyerWrap");
@@ -1730,23 +1827,40 @@
   function triggerChupinazo(isAuto = false) {
     if (isOverheated) return;
 
-    // Control de clics seguidos como un loco ("¡Frena Manolo!")
     if (!isAuto) {
-      const now = Date.now();
-      clickTimestamps.push(now);
-      clickTimestamps = clickTimestamps.filter((t) => now - t < 2600);
+      lastLaunchTimestamp = Date.now();
+      // Incrementar aguja del aplausómetro (+25% por cohete)
+      aplausometroExcitement = Math.min(100, aplausometroExcitement + 25);
+      updateAplausometroUI();
 
-      if (clickTimestamps.length >= 5) {
+      // Si llega a la zona roja extrema (>= 94%): ¡Frena Manolo con voz de audio!
+      if (aplausometroExcitement >= 94) {
         isOverheated = true;
         const btn = document.getElementById("btnChupinazo");
+        const card = document.getElementById("chupinazometroWrap");
+        const needle = document.getElementById("aplausometroNeedle");
+        const steam = document.getElementById("aplausometroSteam");
+
         if (btn) btn.classList.add("is-overheated");
+        if (card) card.classList.add("is-overheated");
+        if (needle) needle.classList.add("vibrate");
+        if (steam) steam.hidden = false;
+
+        playAlarmTone();
         playOverheatSound();
+        speakFrenaManolo();
         showToast("🔥 ¡Frena Manolo, que nos quemas la Ermita antes de empezar! 😂 Déjalo enfriar...");
+
         setTimeout(() => {
           isOverheated = false;
           if (btn) btn.classList.remove("is-overheated");
-          showToast("✅ ¡Mecha fría! ¡A seguir tirando cohetes!");
-        }, 3000);
+          if (card) card.classList.remove("is-overheated");
+          if (needle) needle.classList.remove("vibrate");
+          if (steam) steam.hidden = true;
+          aplausometroExcitement = 60;
+          updateAplausometroUI();
+          showToast("✅ ¡Listo Manolo! Mecha fría. ¡A seguir tirando cohetes!");
+        }, 3600);
         return;
       }
     }

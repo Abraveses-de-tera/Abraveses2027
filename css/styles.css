@@ -2173,41 +2173,160 @@ body.theme-dark .leaflet-popup-tip {
    CHUPINAZO FESTIVO INTERACTIVO (COHETE, CHUPINAZÓMETRO Y FIESTA)
    ========================================================================== */
 
-/* Chupinazómetro en Hero */
-.chupinazometro-wrap {
-  display: inline-flex;
+/* ==========================================================================
+   APLAUSÓMETRO / JUERGÓMETRO FESTIVO INTERACTIVO
+   ========================================================================== */
+.aplausometro-card {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin: 14px auto 0;
-  padding: 6px 15px;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: var(--radius-full);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  margin: 16px auto 0;
+  padding: 10px 14px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #ffffff;
-  font-size: 0.8rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.28s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  width: min(100%, 250px);
+  position: relative;
 }
 
-.chupinazometro-wrap:hover {
-  background: rgba(255, 255, 255, 0.26);
-  transform: translateY(-1px);
+.aplausometro-card:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-.chupinazometro-wrap:active {
-  transform: scale(0.97);
+.aplausometro-card:active {
+  transform: scale(0.98);
+}
+
+.aplausometro-card.is-overheated {
+  animation: aplausometro-alarm-shake 0.22s infinite alternate !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.75) !important;
+}
+
+@keyframes aplausometro-alarm-shake {
+  from { transform: rotate(-1.5deg) scale(1.02); }
+  to { transform: rotate(1.5deg) scale(1.02); }
+}
+
+.aplausometro-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.aplausometro-title {
+  font-size: 0.75rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #fef08a;
+}
+
+.aplausometro-hint {
+  font-size: 0.65rem;
+  opacity: 0.85;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.aplausometro-dial-wrap {
+  position: relative;
+  width: 180px;
+  height: 105px;
+  margin: 2px auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.aplausometro-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.aplausometro-needle {
+  transform-origin: 100px 96px;
+  transform: rotate(var(--needle-rot, -75deg));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+}
+
+.aplausometro-needle.vibrate {
+  animation: needle-fever 0.08s infinite alternate;
+}
+
+@keyframes needle-fever {
+  from { transform: rotate(calc(var(--needle-rot, 75deg) - 2deg)); }
+  to { transform: rotate(calc(var(--needle-rot, 75deg) + 2deg)); }
+}
+
+.aplausometro-steam-wrap {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  display: flex;
+  gap: 3px;
+  font-size: 1.25rem;
+  animation: steam-rise 0.5s infinite alternate ease-in-out;
+}
+
+@keyframes steam-rise {
+  from { transform: translateY(0) scale(0.9); opacity: 0.7; }
+  to { transform: translateY(-8px) scale(1.2); opacity: 1; }
+}
+
+.aplausometro-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.aplausometro-badge {
+  font-size: 0.74rem;
+  font-weight: 850;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.25s ease;
+}
+
+.aplausometro-total {
+  font-size: 0.72rem;
+  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.aplausometro-total strong {
+  color: #fef08a;
+  font-weight: 900;
+  font-size: 0.82rem;
 }
 
 .chupinazometro-flame {
   display: inline-block;
   animation: flame-flicker 1.4s infinite ease-in-out;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 @keyframes flame-flicker {
@@ -2215,15 +2334,10 @@ body.theme-dark .leaflet-popup-tip {
   50% { transform: scale(1.22) rotate(5deg); }
 }
 
-.chupinazometro-label {
-  font-weight: 700;
-  opacity: 0.95;
-}
-
 .chupinazometro-count {
   font-weight: 900;
   color: #fef08a;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-variant-numeric: tabular-nums;
   display: inline-block;
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease;
@@ -2234,9 +2348,11 @@ body.theme-dark .leaflet-popup-tip {
   color: #f97316;
 }
 
-.chupinazometro-unit {
-  opacity: 0.88;
-  font-size: 0.76rem;
+/* Modo oscuro para aplausómetro */
+body.theme-dark .aplausometro-card {
+  background: rgba(19, 28, 46, 0.85);
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5);
 }
 
 /* Estado recalentado del botón ("¡Frena Manolo!") */
