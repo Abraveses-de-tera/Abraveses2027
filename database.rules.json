@@ -8,6 +8,10 @@
           ".validate": "!newData.exists() || (newData.isBoolean() && newData.val() === true)"
         }
       }
+    },
+    "alerts": {
+      ".read": true,
+      ".write": "auth != null"
     }
   }
 }

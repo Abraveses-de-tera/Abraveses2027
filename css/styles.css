@@ -2072,3 +2072,301 @@ body.theme-dark .location-item-badge {
   color: #94a3b8;
 }
 
+/* ==========================================================================
+   BANNER DE AVISO ACTIVO EN TIEMPO REAL (EMITIDO POR LA COMISIÓN)
+   ========================================================================== */
+.live-alert-banner {
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #fff1f2 0%, #fef2f2 100%);
+  border: 2px solid #f43f5e;
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.2);
+  animation: alert-slide-down 0.3s ease-out;
+}
+
+body.theme-dark .live-alert-banner {
+  background: linear-gradient(135deg, #2a0b12 0%, #1f080d 100%);
+  border-color: #e11d48;
+  box-shadow: 0 4px 20px rgba(225, 29, 72, 0.35);
+}
+
+@keyframes alert-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.live-alert-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.live-alert-pulse {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e11d48;
+  box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7);
+  animation: alert-pulse 1.6s infinite;
+}
+
+@keyframes alert-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(225, 29, 72, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+}
+
+.live-alert-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #e11d48;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+body.theme-dark .live-alert-label {
+  color: #fb7185;
+}
+
+.live-alert-time {
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.live-alert-title {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #9f1239;
+}
+
+body.theme-dark .live-alert-title {
+  color: #ffffff;
+}
+
+.live-alert-message {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #4c0519;
+}
+
+body.theme-dark .live-alert-message {
+  color: #fecdd3;
+}
+
+.live-alert-footer {
+  border-top: 1px solid rgba(244, 63, 94, 0.2);
+  padding-top: 8px;
+}
+
+.live-alert-author {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #be123c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+body.theme-dark .live-alert-author {
+  color: #fda4af;
+}
+
+/* ==========================================================================
+   ENLACE DE ACCESO AL PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+.footer-dot {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.admin-panel-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color var(--transition);
+}
+
+.admin-panel-link:hover {
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   MODAL DE ADMINISTRACIÓN Y EMISIÓN
+   ========================================================================== */
+.modal-dialog--admin {
+  max-width: 520px;
+}
+
+.admin-intro {
+  margin: 0 0 14px;
+  font-size: 0.86rem;
+  color: var(--ink-light);
+  line-height: 1.4;
+}
+
+.admin-pin-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.admin-pin-input {
+  flex-grow: 1;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: var(--paper-card);
+  color: var(--ink);
+}
+
+.admin-pin-hint {
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.admin-status-box {
+  background: var(--line-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.admin-status-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 750;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.admin-current-summary {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.admin-field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.admin-templates-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+  scrollbar-width: none;
+}
+
+.admin-templates-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-template-chip {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: var(--line-subtle);
+  border: 1px solid var(--line);
+  color: var(--ink-light);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.admin-template-chip:hover {
+  background: var(--line);
+  color: var(--ink);
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-form-group label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.admin-input, .admin-textarea, .admin-select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  font-size: 0.88rem;
+  background: var(--paper-card);
+  color: var(--ink);
+  font-family: inherit;
+}
+
+.admin-input:focus, .admin-textarea:focus, .admin-select:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.admin-actions-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+@media (min-width: 480px) {
+  .admin-actions-row {
+    flex-direction: row;
+  }
+}
+
+.admin-btn-delete {
+  padding: 10px 14px;
+  border-radius: var(--radius-full);
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.admin-btn-delete:hover {
+  background: #fecaca;
+}
+
+body.theme-dark .admin-btn-delete {
+  background: #450a0a;
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+

@@ -113,6 +113,20 @@
 
     <!-- SECCIÓN PRINCIPAL: AGENDA -->
     <main class="agenda" id="agenda" aria-labelledby="agenda-title">
+      <!-- BANNER DE AVISO ACTIVO EN TIEMPO REAL (EMITIDO POR LA COMISIÓN) -->
+      <section class="live-alert-banner" id="liveAlertBanner" hidden aria-live="assertive">
+        <div class="live-alert-badge-wrap">
+          <span class="live-alert-pulse" aria-hidden="true"></span>
+          <span class="live-alert-label" id="liveAlertLabel">⚠️ AVISO URGENTE</span>
+          <time class="live-alert-time" id="liveAlertTime"></time>
+        </div>
+        <h3 class="live-alert-title" id="liveAlertTitle"></h3>
+        <p class="live-alert-message" id="liveAlertMessage"></p>
+        <div class="live-alert-footer">
+          <span class="live-alert-author">Emisión oficial · Comisión de Fiestas de Abraveses de Tera</span>
+        </div>
+      </section>
+
       <!-- WIDGET DEL TIEMPO EN DIRECTO -->
       <div class="weather-widget" id="weatherWidget" aria-live="polite">
         <div class="weather-widget-icon" id="weatherIcon" aria-hidden="true">☀️</div>
@@ -236,6 +250,10 @@
         <p class="footer-credits">Creado por Andoni Herrera</p>
         <div class="footer-links">
           <a href="#inicio" class="back-to-top-link">↑ Volver arriba</a>
+          <span class="footer-dot" aria-hidden="true">·</span>
+          <button type="button" class="admin-panel-link" id="btnOpenAdmin">
+            <span>⚙️</span> Acceso Comisión (Avisos)
+          </button>
         </div>
       </div>
     </footer>
@@ -304,6 +322,100 @@
         <ul class="locations-list" id="locationsList">
           <!-- Renderizado dinámicamente desde JS -->
         </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PANEL DE ADMINISTRACIÓN / EMISIÓN DE AVISOS -->
+  <div class="modal-backdrop" id="adminModal" hidden aria-hidden="true">
+    <div class="modal-dialog modal-dialog--admin" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 id="adminModalTitle">📢 Panel de Emisión de Avisos</h3>
+          <p class="modal-subtitle">Acceso exclusivo para la Comisión de Fiestas</p>
+        </div>
+        <button type="button" class="modal-close" data-close-modal aria-label="Cerrar ventana">✕</button>
+      </div>
+
+      <!-- Pantalla de Login con PIN -->
+      <div class="modal-body" id="adminAuthSection">
+        <p class="admin-intro">Introduce el PIN de administrador para emitir alertas urgentes que llegarán a los móviles de los vecinos:</p>
+        <div class="admin-pin-group">
+          <input
+            type="password"
+            id="adminPinInput"
+            class="admin-pin-input"
+            maxlength="8"
+            placeholder="PIN (por defecto: 2027)"
+            autocomplete="off"
+            inputmode="numeric"
+          />
+          <button type="button" class="hero-btn hero-btn--primary" id="btnAdminLogin">
+            Acceder
+          </button>
+        </div>
+        <p class="admin-pin-hint">💡 PIN predeterminado: <strong>2027</strong></p>
+      </div>
+
+      <!-- Pantalla del Panel de Control (desbloqueada) -->
+      <div class="modal-body" id="adminDashboardSection" hidden>
+        <!-- Estado actual de alertas -->
+        <div class="admin-status-box" id="adminCurrentStatusBox">
+          <span class="admin-status-label">Estado actual en la nube:</span>
+          <div id="adminCurrentAlertSummary" class="admin-current-summary">Consultando alertas activas...</div>
+        </div>
+
+        <!-- Plantillas rápidas -->
+        <label class="admin-field-label">Plantillas rápidas:</label>
+        <div class="admin-templates-bar">
+          <button type="button" class="admin-template-chip" data-tpl="lluvia">☔ Traslado al frontón</button>
+          <button type="button" class="admin-template-chip" data-tpl="horario">⏰ Cambio de hora</button>
+          <button type="button" class="admin-template-chip" data-tpl="comida">🍽️ Paella / Comida</button>
+          <button type="button" class="admin-template-chip" data-tpl="general">📢 Aviso general</button>
+        </div>
+
+        <!-- Formulario de emisión -->
+        <form id="adminAlertForm" class="admin-form">
+          <div class="admin-form-group">
+            <label for="adminAlertTitle">Título del aviso:</label>
+            <input
+              type="text"
+              id="adminAlertTitle"
+              class="admin-input"
+              placeholder="Ej: ☔ Traslado al Frontón Cubierto"
+              required
+            />
+          </div>
+
+          <div class="admin-form-group">
+            <label for="adminAlertMessage">Mensaje para todo el pueblo:</label>
+            <textarea
+              id="adminAlertMessage"
+              class="admin-textarea"
+              rows="3"
+              placeholder="Ej: Por previsión de lluvia, la verbena de esta noche se celebrará en el frontón a las 00:30 h. ¡La fiesta sigue!"
+              required
+            ></textarea>
+          </div>
+
+          <div class="admin-form-group">
+            <label for="adminAlertType">Tipo de aviso:</label>
+            <select id="adminAlertType" class="admin-select">
+              <option value="urgente">🔴 Urgente (Lluvia o cancelación)</option>
+              <option value="horario">🟡 Cambio de horario</option>
+              <option value="info">🔵 Informativo / Convocatoria</option>
+            </select>
+          </div>
+
+          <div class="admin-actions-row">
+            <button type="submit" class="hero-btn hero-btn--primary" id="btnPublishAlert">
+              <span>📢</span> Publicar y Enviar Aviso
+            </button>
+            <button type="button" class="admin-btn-delete" id="btnClearAlert">
+              <span>🗑️</span> Retirar aviso activo
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

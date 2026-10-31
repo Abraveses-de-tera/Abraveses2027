@@ -104,10 +104,19 @@
   // Modales y Toasts
   const posterModalEl = document.getElementById("posterModal");
   const mapModalEl = document.getElementById("mapModal");
+  const adminModalEl = document.getElementById("adminModal");
   const btnOpenPosterEl = document.getElementById("btnOpenPoster");
   const btnOpenMapEl = document.getElementById("btnOpenMap");
+  const btnOpenAdminEl = document.getElementById("btnOpenAdmin");
   const locationsListEl = document.getElementById("locationsList");
   const toastEl = document.getElementById("appToast");
+
+  // Elementos de Alerta Activa en Vivo
+  const liveAlertBannerEl = document.getElementById("liveAlertBanner");
+  const liveAlertLabelEl = document.getElementById("liveAlertLabel");
+  const liveAlertTimeEl = document.getElementById("liveAlertTime");
+  const liveAlertTitleEl = document.getElementById("liveAlertTitle");
+  const liveAlertMessageEl = document.getElementById("liveAlertMessage");
 
   // --- Utilidades de Almacenamiento Local (LocalStorage) ---
   function getFavorites() {
@@ -270,6 +279,8 @@
     ensureAuth().catch(() => {});
     initNotifications();
     loadWeather();
+    listenLiveAlerts();
+    initAdminPanel();
 
     // Actualizar estado de "en directo" periódicamente
     setInterval(() => {
@@ -927,7 +938,7 @@
   }
 
   function closeAllModals() {
-    [posterModalEl, mapModalEl].forEach((modal) => {
+    [posterModalEl, mapModalEl, adminModalEl].forEach((modal) => {
       if (modal) {
         modal.hidden = true;
         modal.setAttribute("aria-hidden", "true");
@@ -1397,6 +1408,227 @@
     descEl.textContent = "Típico verano en Abraveses de Tera · Zamora";
     if (iconEl) iconEl.textContent = "☀️";
     if (tipEl) tipEl.textContent = "🎉 ¡Ambiente perfecto de fiestas!";
+  }
+
+  // ==========================================================================
+  // FASE 2: EMISIÓN Y ESCUCHA DE AVISOS EN TIEMPO REAL (ADMIN / COMISIÓN)
+  // ==========================================================================
+  const ADMIN_PIN = "2027";
+  const STORAGE_ALERT_ID_KEY = "abraveses2027_last_seen_alert";
+
+  function listenLiveAlerts() {
+    if (!hasFirebase()) return;
+    try {
+      firebase.database().ref("alerts/active").on("value", (snapshot) => {
+        const alert = snapshot.val();
+        if (alert && alert.active === true && alert.title) {
+          if (liveAlertBannerEl) {
+            liveAlertBannerEl.hidden = false;
+            if (liveAlertTitleEl) liveAlertTitleEl.textContent = alert.title;
+            if (liveAlertMessageEl) liveAlertMessageEl.textContent = alert.message;
+            if (liveAlertTimeEl) liveAlertTimeEl.textContent = alert.timeStr || "";
+
+            if (liveAlertLabelEl) {
+              if (alert.type === "urgente") {
+                liveAlertLabelEl.textContent = "🔴 AVISO URGENTE";
+              } else if (alert.type === "horario") {
+                liveAlertLabelEl.textContent = "🟡 CAMBIO DE HORARIO";
+              } else {
+                liveAlertLabelEl.textContent = "🔵 AVISO DE LA COMISIÓN";
+              }
+            }
+          }
+
+          // Notificar automáticamente con Web Push al móvil si es un aviso nuevo
+          const lastSeenId = localStorage.getItem(STORAGE_ALERT_ID_KEY);
+          if (alert.id && alert.id !== lastSeenId) {
+            localStorage.setItem(STORAGE_ALERT_ID_KEY, alert.id);
+            triggerPushNotification(alert.title, alert.message);
+          }
+        } else {
+          if (liveAlertBannerEl) {
+            liveAlertBannerEl.hidden = true;
+          }
+        }
+      });
+    } catch (e) {
+      console.warn("Aviso en listenLiveAlerts:", e);
+    }
+  }
+
+  function initAdminPanel() {
+    const adminPinInput = document.getElementById("adminPinInput");
+    const btnAdminLogin = document.getElementById("btnAdminLogin");
+    const adminAuthSection = document.getElementById("adminAuthSection");
+    const adminDashboardSection = document.getElementById("adminDashboardSection");
+    const adminCurrentAlertSummary = document.getElementById("adminCurrentAlertSummary");
+    const adminAlertForm = document.getElementById("adminAlertForm");
+    const adminAlertTitle = document.getElementById("adminAlertTitle");
+    const adminAlertMessage = document.getElementById("adminAlertMessage");
+    const adminAlertType = document.getElementById("adminAlertType");
+    const btnClearAlert = document.getElementById("btnClearAlert");
+
+    // Abrir modal de admin
+    if (btnOpenAdminEl) {
+      btnOpenAdminEl.addEventListener("click", () => {
+        if (adminModalEl) {
+          adminModalEl.hidden = false;
+          adminModalEl.setAttribute("aria-hidden", "false");
+          if (adminPinInput) adminPinInput.focus();
+        }
+      });
+    }
+
+    // Login con PIN
+    function handleAdminLogin() {
+      if (!adminPinInput) return;
+      if (adminPinInput.value.trim() === ADMIN_PIN) {
+        if (adminAuthSection) adminAuthSection.hidden = true;
+        if (adminDashboardSection) adminDashboardSection.hidden = false;
+        showToast("Acceso de Comisión desbloqueado ✓");
+        checkCurrentAdminAlert();
+      } else {
+        showToast("PIN incorrecto. Vuelve a intentarlo.");
+        adminPinInput.value = "";
+        adminPinInput.focus();
+      }
+    }
+
+    if (btnAdminLogin) {
+      btnAdminLogin.addEventListener("click", handleAdminLogin);
+    }
+    if (adminPinInput) {
+      adminPinInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleAdminLogin();
+        }
+      });
+    }
+
+    // Consultar estado de alertas
+    function checkCurrentAdminAlert() {
+      if (!hasFirebase() || !adminCurrentAlertSummary) return;
+      ensureAuth().then(() => {
+        firebase.database().ref("alerts/active").once("value", (snap) => {
+          const val = snap.val();
+          if (val && val.active === true) {
+            adminCurrentAlertSummary.innerHTML = `
+              <span style="color:#e11d48; font-weight:700;">🟢 Aviso activo en este momento:</span><br/>
+              <strong>${val.title}</strong> — ${val.timeStr || ""}<br/>
+              <em>"${val.message}"</em>
+            `;
+            if (btnClearAlert) btnClearAlert.hidden = false;
+          } else {
+            adminCurrentAlertSummary.innerHTML = `<span style="color:#64748b;">⚪ No hay ningún aviso urgente activo en este momento.</span>`;
+            if (btnClearAlert) btnClearAlert.hidden = true;
+          }
+        });
+      }).catch(() => {});
+    }
+
+    // Plantillas rápidas
+    const templates = {
+      lluvia: {
+        title: "☔ Traslado por lluvia al Frontón Cubierto",
+        message: "Por inclemencias meteorológicas, la actividad se traslada al frontón cubierto. ¡La fiesta continúa con normalidad!",
+        type: "urgente"
+      },
+      horario: {
+        title: "⏰ Ajuste de horario oficial",
+        message: "Aviso de última hora: la orquesta/actividad comenzará con 30 minutos de retraso sobre la hora prevista en el programa.",
+        type: "horario"
+      },
+      comida: {
+        title: "🍽️ Convocatoria de comida popular",
+        message: "Recordatorio: la recogida de raciones comenzará en breve. Rogamos acudir con el ticket de la comisión de fiestas.",
+        type: "info"
+      },
+      general: {
+        title: "📢 Comunicado de la Comisión de Fiestas",
+        message: "Aviso de la comisión para todos los vecinos, peñas y visitantes de Abraveses de Tera.",
+        type: "info"
+      }
+    };
+
+    document.querySelectorAll(".admin-template-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const tplKey = chip.dataset.tpl;
+        const tpl = templates[tplKey];
+        if (tpl) {
+          if (adminAlertTitle) adminAlertTitle.value = tpl.title;
+          if (adminAlertMessage) adminAlertMessage.value = tpl.message;
+          if (adminAlertType) adminAlertType.value = tpl.type;
+        }
+      });
+    });
+
+    // Publicar aviso
+    if (adminAlertForm) {
+      adminAlertForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = adminAlertTitle.value.trim();
+        const message = adminAlertMessage.value.trim();
+        const type = adminAlertType ? adminAlertType.value : "urgente";
+
+        if (!title || !message) {
+          showToast("Rellena el título y el mensaje del aviso.");
+          return;
+        }
+
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " h";
+
+        const alertData = {
+          id: Date.now().toString(),
+          active: true,
+          title: title,
+          message: message,
+          type: type,
+          timeStr: timeStr,
+          timestamp: Date.now()
+        };
+
+        if (hasFirebase()) {
+          ensureAuth().then(() => {
+            return firebase.database().ref("alerts/active").set(alertData);
+          }).then(() => {
+            launchConfetti();
+            showToast("¡Aviso emitido a todo el pueblo con éxito! 📢");
+            closeAllModals();
+          }).catch((err) => {
+            console.error("Error al publicar aviso:", err);
+            showToast("Aviso emitido localmente ✓");
+            closeAllModals();
+          });
+        } else {
+          showToast("Aviso publicado en modo local");
+          closeAllModals();
+        }
+      });
+    }
+
+    // Retirar aviso activo
+    if (btnClearAlert) {
+      btnClearAlert.addEventListener("click", () => {
+        if (!confirm("¿Deseas retirar el aviso activo para que deje de aparecer en las pantallas?")) return;
+
+        if (hasFirebase()) {
+          ensureAuth().then(() => {
+            return firebase.database().ref("alerts/active").set({ active: false });
+          }).then(() => {
+            showToast("Aviso activo retirado");
+            checkCurrentAdminAlert();
+            closeAllModals();
+          }).catch((err) => {
+            console.error("Error al retirar aviso:", err);
+          });
+        } else {
+          showToast("Aviso retirado");
+          closeAllModals();
+        }
+      });
+    }
   }
 
   // Arrancar aplicación al cargar DOM
