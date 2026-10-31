@@ -865,21 +865,51 @@ img {
   overflow: hidden;
 }
 
-.event-photo {
+.event-photo-wrapper {
   width: 100%;
+  background: #0f172a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  min-height: 140px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.event-photo {
+  max-width: 100%;
+  width: auto;
   height: auto;
-  max-height: 420px;
+  max-height: 380px;
   object-fit: contain;
   object-position: center;
-  background-color: #0b1120;
   display: block;
   margin: 0 auto;
   cursor: zoom-in;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.25s ease;
 }
 
 .event-photo:hover {
-  opacity: 0.94;
+  opacity: 0.95;
+  transform: scale(1.01);
+}
+
+.photo-zoom-hint {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #f1f5f9;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  opacity: 0.88;
+  letter-spacing: 0.02em;
 }
 
 .event-details-body {
@@ -2622,33 +2652,29 @@ body.theme-dark .aplausometro-card {
   100% { transform: translate(-50%, -50%) scale(45); opacity: 0; }
 }
 
-/* Screen Shake (Temblor de pantalla festivo) */
-@keyframes screen-shake {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  15% { transform: translate(-6px, 4px) rotate(-0.6deg); }
-  30% { transform: translate(6px, -4px) rotate(0.6deg); }
-  45% { transform: translate(-4px, 3px) rotate(-0.4deg); }
-  60% { transform: translate(4px, -2px) rotate(0.4deg); }
-  75% { transform: translate(-2px, 1px) rotate(-0.2deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+/* Temblor festivo en el Chupinazómetro (optimizado con aceleración por hardware) */
+.card-shake {
+  animation: card-shake-anim 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  will-change: transform;
 }
 
-@keyframes screen-shake-mega {
-  0% { transform: translate(0, 0) scale(1); }
-  15% { transform: translate(-10px, 7px) rotate(-1.5deg) scale(1.02); }
-  30% { transform: translate(10px, -7px) rotate(1.5deg) scale(1.02); }
-  45% { transform: translate(-7px, 5px) rotate(-1deg); }
-  60% { transform: translate(7px, -4px) rotate(1deg); }
-  75% { transform: translate(-4px, 2px) rotate(-0.5deg); }
-  100% { transform: translate(0, 0) scale(1); }
+.card-shake-mega {
+  animation: card-shake-mega-anim 0.52s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  will-change: transform;
 }
 
-.screen-shake {
-  animation: screen-shake 0.45s ease-out;
+@keyframes card-shake-anim {
+  10%, 90% { transform: translate3d(-3px, 0, 0) scale(1.02); }
+  20%, 80% { transform: translate3d(4px, 0, 0) scale(1.02); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0) scale(1.01); }
+  40%, 60% { transform: translate3d(4px, 0, 0) scale(1.01); }
 }
 
-.screen-shake-mega {
-  animation: screen-shake-mega 0.65s ease-out;
+@keyframes card-shake-mega-anim {
+  10%, 90% { transform: translate3d(-6px, -2px, 0) scale(1.04); }
+  20%, 80% { transform: translate3d(7px, 2px, 0) scale(1.04); }
+  30%, 50%, 70% { transform: translate3d(-7px, -1px, 0) scale(1.02); }
+  40%, 60% { transform: translate3d(7px, 1px, 0) scale(1.02); }
 }
 
 /* Dark mode para chupinazómetro */
