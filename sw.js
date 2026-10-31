@@ -3,7 +3,7 @@
  * Estrategia de caché para funcionamiento 100% offline
  */
 
-const CACHE_NAME = "abraveses-2027-v2.9.0";
+const CACHE_NAME = "abraveses-2027-v3.0.0";
 
 const PRECACHE_ASSETS = [
   "./",
@@ -26,6 +26,24 @@ const PRECACHE_ASSETS = [
   "./images/marcha-solidaria.jpg",
   "./images/romeria-pendones.jpg",
   "./images/ruta-bodegas.jpg",
+  "./images/bailes-regionales.jpg",
+  "./images/campanadas.jpg",
+  "./images/bingo.jpg",
+  "./images/cine-aire-libre.jpg",
+  "./images/campeonato-tute.jpg",
+  "./images/juegos-infantiles.jpg",
+  "./images/grand-prix-bragao.jpg",
+  "./images/sardinada.jpg",
+  "./images/orquesta-media-luna.jpg",
+  "./images/electromoon.jpg",
+  "./images/paella-popular.jpg",
+  "./images/edu-el-mago.jpg",
+  "./images/parque-acuatico.jpg",
+  "./images/beer-pong.jpg",
+  "./images/syn3rgia.jpg",
+  "./images/pulpero.jpg",
+  "./images/parque-infantil.jpg",
+  "./images/tardeo-markfeel.jpg",
   "./images/icons/favicon.png",
   "./images/icons/icon-192.png",
   "./images/icons/icon-512.png"
