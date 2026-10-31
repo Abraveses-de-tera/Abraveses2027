@@ -1160,6 +1160,8 @@
     const btnText = document.getElementById("btnPushText");
     const btnTest = document.getElementById("btnPushTest");
 
+    if (!btnToggle && !badge) return;
+
     if (!("Notification" in window)) {
       if (badge) badge.textContent = "No soportado";
       if (btnText) btnText.textContent = "Avisos no disponibles";
