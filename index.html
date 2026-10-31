@@ -339,24 +339,23 @@
         <button type="button" class="modal-close" data-close-modal aria-label="Cerrar ventana">✕</button>
       </div>
 
-      <!-- Pantalla de Login con PIN -->
+      <!-- Pantalla de Login con Contraseña -->
       <div class="modal-body" id="adminAuthSection">
-        <p class="admin-intro">Introduce el PIN de administrador para emitir alertas urgentes que llegarán a los móviles de los vecinos:</p>
+        <p class="admin-intro">Introduce la contraseña de la comisión para emitir avisos urgentes a los vecinos:</p>
         <div class="admin-pin-group">
           <input
             type="password"
             id="adminPinInput"
             class="admin-pin-input"
-            maxlength="8"
-            placeholder="PIN (por defecto: 2027)"
-            autocomplete="off"
-            inputmode="numeric"
+            maxlength="30"
+            placeholder="Contraseña de la comisión"
+            autocomplete="current-password"
+            autocapitalize="none"
           />
           <button type="button" class="hero-btn hero-btn--primary" id="btnAdminLogin">
             Acceder
           </button>
         </div>
-        <p class="admin-pin-hint">💡 PIN predeterminado: <strong>2027</strong></p>
       </div>
 
       <!-- Pantalla del Panel de Control (desbloqueada) -->

@@ -1463,7 +1463,7 @@
   // ==========================================================================
   // FASE 2: EMISIÓN Y ESCUCHA DE AVISOS EN TIEMPO REAL (ADMIN / COMISIÓN)
   // ==========================================================================
-  const ADMIN_PIN = "2027";
+  const ADMIN_PASSWORD = "bolincheto";
   const STORAGE_ALERT_ID_KEY = "abraveses2027_last_seen_alert";
 
   function listenLiveAlerts() {
@@ -1529,16 +1529,17 @@
       });
     }
 
-    // Login con PIN
+    // Login con Contraseña
     function handleAdminLogin() {
       if (!adminPinInput) return;
-      if (adminPinInput.value.trim() === ADMIN_PIN) {
+      const entered = adminPinInput.value.trim().toLowerCase();
+      if (entered === ADMIN_PASSWORD) {
         if (adminAuthSection) adminAuthSection.hidden = true;
         if (adminDashboardSection) adminDashboardSection.hidden = false;
         showToast("Acceso de Comisión desbloqueado ✓");
         checkCurrentAdminAlert();
       } else {
-        showToast("PIN incorrecto. Vuelve a intentarlo.");
+        showToast("Contraseña incorrecta. Vuelve a intentarlo.");
         adminPinInput.value = "";
         adminPinInput.focus();
       }
