@@ -41,13 +41,13 @@ window.__ABRAVESES_EVENTS__ = {
     },
     {
       "id": "bodegas",
-      "name": "Las Bodegas tradicionales",
+      "name": "El camino de las bodegas",
       "icon": "🍷",
       "tag": "Tradición y vino",
-      "description": "Típicas bodegas subterráneas excavadas en la ladera del pueblo. Punto culminante de la II Ruta por las bodegas con la charanga.",
-      "lat": 41.9942,
-      "lng": -5.8935,
-      "mapUrl": "https://www.google.com/maps/search/?api=1&query=41.9942,-5.8935"
+      "description": "Típicas bodegas subterráneas excavadas en la ladera del pueblo. Punto neurálgico y recorrido de la II Ruta por las bodegas con la charanga.",
+      "lat": 41.986885,
+      "lng": -5.893891,
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=41.986885,-5.893891"
     },
     {
       "id": "fronton",
@@ -106,7 +106,7 @@ window.__ABRAVESES_EVENTS__ = {
           "title": "II Ruta por las bodegas",
           "description": "Con la charanga MANÁITA.",
           "note": "Inscripción previa",
-          "location": "Plaza del pueblo",
+          "location": "El camino de las bodegas",
           "icon": "🍷",
           "photo": "images/ruta-bodegas.jpg",
           "featured": true,
@@ -114,7 +114,7 @@ window.__ABRAVESES_EVENTS__ = {
             "label": "MANÁITA en Instagram",
             "url": "https://www.instagram.com/manaitaoficial/?hl=es"
           },
-          "detail": "Recorrido lúdico y festivo por las bodegas con el ritmo incombustible de la charanga MANÁITA. Música, vino, picoteo y convivencia. Salida y punto de encuentro desde la plaza del pueblo. Se requiere inscripción previa con la comisión de fiestas para una adecuada organización."
+          "detail": "Recorrido lúdico y festivo por las bodegas con el ritmo incombustible de la charanga MANÁITA. Música, vino, picoteo y convivencia en el camino de las bodegas. Se requiere inscripción previa con la comisión de fiestas para una adecuada organización."
         },
         {
           "eventId": "desfile-disfraces",

@@ -157,7 +157,7 @@ Para publicar la web de forma gratuita y con HTTPS en GitHub:
    * Chinchetas interactivas para:
      * ⛪ **Santuario Virgen de las Encinas**
      * 🏛️ **Plaza del pueblo**
-     * 🍷 **Las Bodegas tradicionales**
+     * 🍷 **El camino de las bodegas**
      * 🎾 **El Frontón municipal**
      * 🌾 **La Era / Campo de la fiesta**
    * Popups personalizados con detalles, botón de navegación GPS y acceso directo desde cada actividad de la agenda.
