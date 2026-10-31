@@ -490,6 +490,13 @@
           <img class="event-photo" src="${ev.photo}" alt="${ev.title}" loading="lazy" />
           <span class="photo-zoom-hint" aria-hidden="true">🔎 Toca para ampliar</span>
         </div>`;
+    } else if (ev.icon) {
+      photoHtml = `
+        <div class="event-photo-wrapper event-photo-wrapper--icon">
+          <div class="event-icon-banner">
+            <span class="event-giant-icon" aria-hidden="true">${ev.icon}</span>
+          </div>
+        </div>`;
     }
 
     // Ubicación y URLs para mapa y calendario
@@ -530,7 +537,7 @@
         <div class="event-summary" role="button" tabindex="0" aria-expanded="false" aria-controls="details-${cardId}">
           <time class="event-time-col">${ev.time}</time>
           <div class="event-info-col">
-            <h4 class="event-title">${ev.title}</h4>
+            <h4 class="event-title">${ev.icon ? `<span class="event-title-icon" aria-hidden="true">${ev.icon}</span> ` : ""}${ev.title}</h4>
             ${ev.description ? `<p class="event-desc-short">${ev.description}</p>` : ""}
             <div class="event-badges-row">
               ${statusBadgeHtml}
@@ -538,14 +545,20 @@
               ${locationTagHtml}
               ${noteTagHtml}
             </div>
+            <div class="event-expand-cue">
+              <span class="expand-cue-text expand-cue-text--closed">Haz clic para desplegar</span>
+              <span class="expand-cue-text expand-cue-text--open">Toca para cerrar</span>
+              <span class="expand-cue-arrow" aria-hidden="true">▼</span>
+            </div>
           </div>
-          <button type="button" class="event-quick-btn share-btn" data-share="${ev.eventId}" data-share-title="${ev.title}" aria-label="Compartir ${ev.title}">
-            <span aria-hidden="true">📤</span>
-          </button>
-          <button type="button" class="event-quick-btn favorite-toggle ${isFav ? "is-favorite" : ""}" data-favorite="${ev.eventId}" aria-label="${isFav ? "Quitar de mis planes" : "Guardar en mis planes"}" aria-pressed="${isFav}">
-            <span aria-hidden="true">${isFav ? "❤️" : "♡"}</span>
-          </button>
-          <span class="event-chevron" aria-hidden="true">﹢</span>
+          <div class="event-quick-actions">
+            <button type="button" class="event-quick-btn share-btn" data-share="${ev.eventId}" data-share-title="${ev.title}" aria-label="Compartir ${ev.title}">
+              <span aria-hidden="true">📤</span>
+            </button>
+            <button type="button" class="event-quick-btn favorite-toggle ${isFav ? "is-favorite" : ""}" data-favorite="${ev.eventId}" aria-label="${isFav ? "Quitar de mis planes" : "Guardar en mis planes"}" aria-pressed="${isFav}">
+              <span aria-hidden="true">${isFav ? "❤️" : "♡"}</span>
+            </button>
+          </div>
         </div>
 
         <div class="event-details" id="details-${cardId}">
@@ -1392,7 +1405,7 @@
 
     if (aplausometroExcitement > 92) {
       dot = "🔴";
-      text = "¡PELIGRO: ZONA MANOLO!";
+      text = "¡PELIGRO: ZONA PENITENTE!";
     } else if (aplausometroExcitement > 72) {
       dot = "🟠";
       text = "¡FIESTA TOTAL EN EL PUEBLO!";
@@ -1691,13 +1704,13 @@
     } catch (_) {}
   }
 
-  function speakFrenaManolo() {
+  function speakFrenaPenitente() {
     if (!("speechSynthesis" in window)) return;
     try {
       window.speechSynthesis.cancel();
       setTimeout(() => {
         try {
-          const text = "¡Frena Manolo! ¡Que nos quemas la Ermita antes de empezar! ¡Déjalo enfriar!";
+          const text = "¡Frena Penitente! ¡Que nos quemas la Ermita antes de empezar! ¡Déjalo enfriar!";
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = "es-ES";
           utterance.rate = 1.1;
@@ -1886,7 +1899,7 @@
       aplausometroExcitement = Math.min(100, aplausometroExcitement + 22);
       updateAplausometroUI();
 
-      // Si llega a la zona roja extrema (>= 94%): ¡Frena Manolo con voz cómica!
+      // Si llega a la zona roja extrema (>= 94%): ¡Frena Penitente con voz cómica!
       if (aplausometroExcitement >= 94) {
         isOverheated = true;
         const btn = document.getElementById("btnChupinazo");
@@ -1901,8 +1914,8 @@
 
         playAlarmTone();
         playOverheatSound();
-        speakFrenaManolo();
-        showToast("🔥 ¡Frena Manolo, que nos quemas la Ermita antes de empezar! 😂 Déjalo enfriar...");
+        speakFrenaPenitente();
+        showToast("🔥 ¡Frena Penitente, que nos quemas la Ermita antes de empezar! 😂 Déjalo enfriar...");
 
         // Cooldown ágil de 1.3s para que el usuario no sienta la app colgada
         setTimeout(() => {
@@ -1913,7 +1926,7 @@
           if (steam) steam.hidden = true;
           aplausometroExcitement = 55;
           updateAplausometroUI();
-          showToast("✅ ¡Listo Manolo! Mecha fría. ¡A seguir tirando cohetes!");
+          showToast("✅ ¡Listo Penitente! Mecha fría. ¡A seguir tirando cohetes!");
         }, 1300);
         return;
       }

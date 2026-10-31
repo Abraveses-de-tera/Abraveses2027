@@ -707,7 +707,7 @@ img {
 /* Cabecera / Resumen de la tarjeta */
 .event-summary {
   display: grid;
-  grid-template-columns: 68px 1fr auto auto;
+  grid-template-columns: 68px 1fr auto;
   align-items: center;
   cursor: pointer;
   background: transparent;
@@ -814,6 +814,13 @@ img {
 }
 
 /* Botones rápidos en la tarjeta */
+.event-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 8px;
+}
+
 .event-quick-btn {
   background: transparent;
   border: none;
@@ -833,16 +840,82 @@ img {
   color: var(--red);
 }
 
-.event-chevron {
-  padding: 10px 14px 10px 6px;
-  font-size: 1.2rem;
-  font-weight: 900;
-  color: var(--accent, var(--ink));
-  transition: transform var(--transition);
+/* Indicador explícito de despliegue ("Haz clic para desplegar") */
+.event-expand-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: var(--blue);
+  font-size: 0.74rem;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+  transition: all var(--transition);
+  user-select: none;
 }
 
-.event-card.is-open .event-chevron {
-  transform: rotate(45deg);
+.event-expand-cue .expand-cue-text--open {
+  display: none;
+}
+
+.event-expand-cue .expand-cue-text--closed {
+  display: inline;
+}
+
+.expand-cue-arrow {
+  font-size: 0.65rem;
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.event-card.is-open .event-expand-cue {
+  background: rgba(2, 132, 199, 0.1);
+  border-color: rgba(2, 132, 199, 0.25);
+  color: #0284c7;
+}
+
+.event-card.is-open .event-expand-cue .expand-cue-text--closed {
+  display: none;
+}
+
+.event-card.is-open .event-expand-cue .expand-cue-text--open {
+  display: inline;
+}
+
+.event-card.is-open .expand-cue-arrow {
+  transform: rotate(180deg);
+}
+
+body.theme-dark .event-expand-cue {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.22);
+  color: #38bdf8;
+}
+
+body.theme-dark .event-card.is-open .event-expand-cue {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #7dd3fc;
+}
+
+/* Banner de icono para eventos sin foto (como Cine al aire libre) */
+.event-photo-wrapper--icon {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  padding: 24px 0;
+  min-height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.event-giant-icon {
+  font-size: 3.8rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
 }
 
 /* --------------------------------------------------------------------------
@@ -1780,9 +1853,6 @@ body.theme-dark .event-full-detail {
   color: #f1f5f9 !important;
 }
 
-body.theme-dark .event-chevron {
-  color: #38bdf8 !important;
-}
 
 body.theme-dark .event-quick-btn {
   color: #94a3b8 !important;

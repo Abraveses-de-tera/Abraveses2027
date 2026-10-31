@@ -181,8 +181,7 @@ window.__ABRAVESES_EVENTS__ = {
           "title": "Cine al aire libre",
           "description": "Película para toda la familia bajo las estrellas.",
           "location": "Plaza del pueblo",
-          "icon": "🎥",
-          "photo": "images/cine-aire-libre.jpg",
+          "icon": "📽️",
           "featured": false,
           "detail": "Proyección al aire libre apta para todos los públicos en la plaza del pueblo. Trae una silla cómoda o mantita para refrescar y disfruta del cine de verano."
         },
