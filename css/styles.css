@@ -2180,37 +2180,45 @@ body.theme-dark .leaflet-popup-tip {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 16px auto 0;
-  padding: 10px 14px 12px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1.5px solid rgba(255, 255, 255, 0.28);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  justify-content: center;
+  margin: 18px auto 0;
+  padding: 14px 18px 14px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1.5px solid rgba(251, 191, 36, 0.45);
+  border-radius: 24px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   color: #ffffff;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   cursor: pointer;
-  transition: all 0.28s ease;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  width: min(100%, 250px);
+  width: min(100%, 310px);
   position: relative;
+  text-align: center;
 }
 
 .aplausometro-card:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(251, 191, 36, 0.8);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(245, 158, 11, 0.35);
 }
 
 .aplausometro-card:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+}
+
+.aplausometro-card:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 3px;
 }
 
 .aplausometro-card.is-overheated {
   animation: aplausometro-alarm-shake 0.22s infinite alternate !important;
   border-color: #ef4444 !important;
-  box-shadow: 0 0 25px rgba(239, 68, 68, 0.75) !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.85) !important;
 }
 
 @keyframes aplausometro-alarm-shake {
@@ -2220,34 +2228,60 @@ body.theme-dark .leaflet-popup-tip {
 
 .aplausometro-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
+  gap: 3px;
   margin-bottom: 2px;
+  text-align: center;
+}
+
+.aplausometro-title-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.aplausometro-fire-icon {
+  font-size: 1.1rem;
+  display: inline-block;
+  animation: flame-flicker 1.4s infinite ease-in-out;
 }
 
 .aplausometro-title {
-  font-size: 0.75rem;
-  font-weight: 850;
+  font-size: 0.88rem;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: #fef08a;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  margin: 0;
 }
 
 .aplausometro-hint {
-  font-size: 0.65rem;
-  opacity: 0.85;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #93c5fd;
+  opacity: 0.95;
+  letter-spacing: 0.02em;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.aplausometro-card:hover .aplausometro-hint {
+  color: #fef08a;
 }
 
 .aplausometro-dial-wrap {
   position: relative;
-  width: 180px;
-  height: 105px;
-  margin: 2px auto 0;
+  width: 210px;
+  height: 120px;
+  margin: 4px auto 0;
   display: flex;
   justify-content: center;
+  align-items: flex-end;
 }
 
 .aplausometro-svg {
@@ -2260,7 +2294,7 @@ body.theme-dark .leaflet-popup-tip {
   transform-origin: 100px 96px;
   transform: rotate(var(--needle-rot, -75deg));
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .aplausometro-needle.vibrate {
@@ -2268,59 +2302,66 @@ body.theme-dark .leaflet-popup-tip {
 }
 
 @keyframes needle-fever {
-  from { transform: rotate(calc(var(--needle-rot, 75deg) - 2deg)); }
-  to { transform: rotate(calc(var(--needle-rot, 75deg) + 2deg)); }
+  from { transform: rotate(calc(var(--needle-rot, 75deg) - 2.5deg)); }
+  to { transform: rotate(calc(var(--needle-rot, 75deg) + 2.5deg)); }
 }
 
 .aplausometro-steam-wrap {
   position: absolute;
-  top: 6px;
-  right: 12px;
+  top: -8px;
+  right: 18px;
   display: flex;
   gap: 3px;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   animation: steam-rise 0.5s infinite alternate ease-in-out;
+  pointer-events: none;
 }
 
 @keyframes steam-rise {
-  from { transform: translateY(0) scale(0.9); opacity: 0.7; }
-  to { transform: translateY(-8px) scale(1.2); opacity: 1; }
+  from { transform: translateY(0) scale(0.9); opacity: 0.75; }
+  to { transform: translateY(-10px) scale(1.25); opacity: 1; }
 }
 
 .aplausometro-footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  margin-top: 4px;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
   width: 100%;
 }
 
 .aplausometro-badge {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 850;
-  padding: 2px 10px;
+  padding: 3px 12px;
   border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  gap: 6px;
   transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .aplausometro-total {
-  font-size: 0.72rem;
-  opacity: 0.9;
+  font-size: 0.75rem;
+  opacity: 0.95;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 5px;
+  color: #e2e8f0;
 }
 
 .aplausometro-total strong {
   color: #fef08a;
   font-weight: 900;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .chupinazometro-flame {
@@ -2350,9 +2391,9 @@ body.theme-dark .leaflet-popup-tip {
 
 /* Modo oscuro para aplausómetro */
 body.theme-dark .aplausometro-card {
-  background: rgba(19, 28, 46, 0.85);
-  border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5);
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(251, 191, 36, 0.45);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
 /* Estado recalentado del botón ("¡Frena Manolo!") */

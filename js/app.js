@@ -958,7 +958,7 @@
       themeToggleBtn.addEventListener("click", cycleTheme);
     }
 
-    // Botón de Chupinazo, chupinazómetro y logo interactivo de la ermita
+    // Chupinazómetro interactivo y logo oficial de la ermita
     const btnChupinazo = document.getElementById("btnChupinazo");
     if (btnChupinazo) {
       btnChupinazo.addEventListener("click", () => triggerChupinazo(false));
@@ -966,6 +966,12 @@
     const chupinazometroWrap = document.getElementById("chupinazometroWrap");
     if (chupinazometroWrap) {
       chupinazometroWrap.addEventListener("click", () => triggerChupinazo(false));
+      chupinazometroWrap.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          triggerChupinazo(false);
+        }
+      });
     }
     const heroLogoEl = document.querySelector(".hero-logo");
     if (heroLogoEl) {
