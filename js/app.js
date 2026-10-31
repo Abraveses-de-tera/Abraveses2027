@@ -193,16 +193,22 @@
     }
   }
 
-  // --- Notificación Toast ---
+  // --- Notificación Toast (con duración ampliada para leer cómodamente en móvil) ---
   let toastTimer = null;
-  function showToast(message) {
+  function showToast(message, customDuration = null) {
     if (!toastEl) return;
     toastEl.textContent = message;
     toastEl.hidden = false;
     clearTimeout(toastTimer);
+
+    // Duración adaptativa: mínimo 4800ms para mensajes cortos, hasta 7500ms para frases largas
+    const duration = customDuration !== null
+      ? customDuration
+      : Math.max(4800, Math.min(7500, (message || "").length * 75));
+
     toastTimer = setTimeout(() => {
       toastEl.hidden = true;
-    }, 2400);
+    }, duration);
   }
 
   // --- Carga Inicial de Datos ---
@@ -1704,12 +1710,12 @@
       window.speechSynthesis.cancel();
       setTimeout(() => {
         try {
-          const text = "¡Frena Penitente! ¡Que nos quemas la Ermita antes de empezar! ¡Déjalo enfriar!";
+          const text = "¡Frena, Penitente! ... ¡Que nos quemas la Ermita antes de empezar! ... ¡Déjalo enfriar un poco!";
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = "es-ES";
-          utterance.rate = 1.1;
-          utterance.pitch = 1.15;
-          utterance.volume = 0.9;
+          utterance.rate = 0.92;
+          utterance.pitch = 1.05;
+          utterance.volume = 1.0;
 
           const voices = window.speechSynthesis.getVoices();
           const spanishVoice = voices.find((v) => v.lang === "es-ES") || voices.find((v) => v.lang.startsWith("es"));
@@ -1717,7 +1723,7 @@
 
           window.speechSynthesis.speak(utterance);
         } catch (_) {}
-      }, 20);
+      }, 50);
     } catch (_) {}
   }
 
@@ -1832,6 +1838,7 @@
   }
 
   let lastChupinazoClick = 0;
+  let lastQuoteTime = 0;
 
   function triggerChupinazo(isAuto = false) {
     if (isOverheated) return;
@@ -1863,9 +1870,9 @@
         playAlarmTone();
         playOverheatSound();
         speakFrenaPenitente();
-        showToast("🔥 ¡Frena Penitente, que nos quemas la Ermita antes de empezar! 😂 Déjalo enfriar...");
+        showToast("🔥 ¡Frena Penitente, que nos quemas la Ermita antes de empezar! 😂 Déjalo enfriar...", 5500);
 
-        // Cooldown ágil de 1.3s para que el usuario no sienta la app colgada
+        // Cooldown de 5.5s para que la voz hable con calma y el mensaje se lea entero sin prisa
         setTimeout(() => {
           isOverheated = false;
           if (btn) btn.classList.remove("is-overheated");
@@ -1874,8 +1881,8 @@
           if (steam) steam.hidden = true;
           aplausometroExcitement = 55;
           updateAplausometroUI();
-          showToast("✅ ¡Listo Penitente! Mecha fría. ¡A seguir tirando cohetes!");
-        }, 1300);
+          showToast("✅ ¡Listo Penitente! Mecha fría. ¡A seguir tirando cohetes!", 4200);
+        }, 5500);
         return;
       }
     }
@@ -1893,7 +1900,7 @@
       }
 
       setTimeout(() => {
-        showToast("¡Vaya por Dios, este cohete era de hacendado! 🤦‍♂️💨 Dale otra vez con ganas a la mecha...");
+        showToast("¡Vaya por Dios, este cohete era de hacendado! 🤦‍♂️💨 Dale otra vez con ganas a la mecha...", 5200);
       }, 700);
       return;
     }
@@ -1924,10 +1931,16 @@
         launchConfetti(isMega);
 
         if (isMega) {
-          showToast("🚀 ¡AHORA SÍ! ¡MENUDO TRALLAZO! 🎆🥂 ¡VIVA ABRAVESES DE TERA!");
+          showToast("🚀 ¡AHORA SÍ! ¡MENUDO TRALLAZO! 🎆🥂 ¡VIVA ABRAVESES DE TERA!", 5500);
+          lastQuoteTime = Date.now();
         } else {
-          const quote = CHUPINAZO_QUOTES[Math.floor(Math.random() * CHUPINAZO_QUOTES.length)];
-          showToast(quote);
+          const currentTime = Date.now();
+          // Si hace menos de 4s que mostramos una frase, dejamos que el usuario termine de leerla cómodamente
+          if (currentTime - lastQuoteTime > 4000 || toastEl.hidden) {
+            const quote = CHUPINAZO_QUOTES[Math.floor(Math.random() * CHUPINAZO_QUOTES.length)];
+            showToast(quote, 5000);
+            lastQuoteTime = currentTime;
+          }
         }
       } catch (err) {
         console.warn("Chupinazo animation callback error:", err);
