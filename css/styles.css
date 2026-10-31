@@ -1554,7 +1554,7 @@ body.theme-dark .toast {
 }
 
 /* ==========================================================================
-   FASE 2: MODO NOCHE / TEMA OSCURO (AUTOMÃTICO Y MANUAL)
+   FASE 2: MODO NOCHE / TEMA OSCURO (AUTOMÁTICO Y MANUAL)
    ========================================================================== */
 :root[data-theme="dark"],
 body.theme-dark {
@@ -1618,7 +1618,7 @@ body.theme-dark .search-clear {
   color: #94a3b8 !important;
 }
 
-/* PestaÃ±as de DÃ­as */
+/* Pestañas de Días */
 body.theme-dark .day-tab {
   background: #131c2e !important;
   border-color: #223047 !important;
@@ -1648,7 +1648,7 @@ body.theme-dark .day-tab.is-active .tab-day-number {
   color: #ffffff !important;
 }
 
-/* Filtros de CategorÃ­a */
+/* Filtros de Categoría */
 body.theme-dark .cat-pill {
   background-color: #131c2e !important;
   border-color: #223047 !important;
@@ -1666,7 +1666,7 @@ body.theme-dark .cat-pill.is-active {
   color: #ffffff !important;
 }
 
-/* Botones de acciÃ³n */
+/* Botones de acción */
 body.theme-dark .action-pill {
   background-color: #131c2e !important;
   border-color: #223047 !important;
@@ -1750,7 +1750,7 @@ body.theme-dark .event-tag--next {
   border-color: #0284c7 !important;
 }
 
-/* Botones dentro del acordeÃ³n de evento */
+/* Botones dentro del acordeón de evento */
 body.theme-dark .location-map-btn {
   background-color: #172554 !important;
   border-color: #1d4ed8 !important;
