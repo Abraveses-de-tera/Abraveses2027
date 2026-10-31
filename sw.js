@@ -3,7 +3,7 @@
  * Estrategia de caché para funcionamiento 100% offline
  */
 
-const CACHE_NAME = "abraveses-2027-v1.6.0";
+const CACHE_NAME = "abraveses-2027-v2.0.0";
 
 const PRECACHE_ASSETS = [
   "./",
@@ -124,6 +124,58 @@ self.addEventListener("fetch", (event) => {
           }
           return new Response("", { status: 408 });
         });
+    })
+  );
+});
+
+// ==========================================================================
+// NOTIFICACIONES PUSH Y RECORDATORIOS WEB
+// ==========================================================================
+self.addEventListener("push", (event) => {
+  let data = {
+    title: "Fiestas Abraveses 2027",
+    body: "Aviso urgente de las fiestas.",
+    url: "./"
+  };
+
+  if (event.data) {
+    try {
+      data = Object.assign(data, event.data.json());
+    } catch (_) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: "./images/icons/icon-192.png",
+    badge: "./images/icons/icon-192.png",
+    vibrate: [200, 100, 200],
+    data: {
+      url: data.url || "./"
+    },
+    actions: [
+      { action: "explore", title: "Ver programa" }
+    ]
+  };
+
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl = event.notification.data?.url || "./";
+
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
+      for (const client of windowClients) {
+        if (client.url.includes(self.registration.scope) && "focus" in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
     })
   );
 });

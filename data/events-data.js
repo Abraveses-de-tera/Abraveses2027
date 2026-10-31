@@ -22,18 +22,52 @@ window.ABRAVESES_DATA = {
     {
       "id": "plaza-del-pueblo",
       "name": "Plaza del pueblo",
-      "description": "Centro neurálgico: verbenas, conciertos, bingos, juegos y actividades populares.",
+      "icon": "🏛️",
+      "tag": "Centro neurálgico",
+      "description": "Corazón de las fiestas: verbenas nocturnas, orquestas, chupinazo, desfiles y bingos populares.",
       "lat": 41.9927,
       "lng": -5.8948,
-      "mapUrl": "https://www.google.com/maps/place/Virgen+de+Las+Encinas/@41.9927161,-5.8947932,717a,75y,301.52h,90t/data=!3m10!1e1!3m8!1sIVTnJyeaNJGTX8rw-rFImA!2e0!6shttps:%2F%2Fstreetviewpixels-pa.clients6.google.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3DIVTnJyeaNJGTX8rw-rFImA%26yaw%3D301.5152411095357!7i16384!8i8192!9m2!1b1!2i28!4m14!1m7!3m6!1s0xd39b0a6f930fbbf:0xb133f5e00694902a!2sIglesia+de+Abraveses+de+Tera+(Santiago+Ap%C3%B3stol)!8m2!3d41.9935755!4d-5.8957112!16s%2Fg%2F11d_8x4skd!3m5!1s0xd39b14db4b31731:0x9878ba337d747db3!8m2!3d41.9861412!4d-5.8878187!16s%2Fg%2F11flc62jn0?entry=ttu&g_ep=EgoyMDI2MTAyNy4wIKXMDSoASAFQAw%3D%3D"
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=41.9927,-5.8948"
     },
     {
       "id": "virgen-de-las-encinas",
-      "name": "Virgen de las Encinas",
-      "description": "Lugar emblemático donde se celebran la bendición de boyas, la misa por los difuntos y la romería de pendones.",
+      "name": "Santuario Virgen de las Encinas",
+      "icon": "⛪",
+      "tag": "Santuario histórico",
+      "description": "Lugar emblemático donde se celebran la bendición de boyas, la romería de pendones y la santa misa.",
       "lat": 41.9861412,
       "lng": -5.8878187,
-      "mapUrl": "https://www.google.com/maps/place/Virgen+de+Las+Encinas/@41.9923748,-5.8955133,16z/data=!4m14!1m7!3m6!1s0xd39b0a6f930fbbf:0xb133f5e00694902a!2sIglesia+de+Abraveses+de+Tera+(Santiago+Ap%C3%B3stol)!8m2!3d41.9935755!4d-5.8957112!16s%2Fg%2F11d_8x4skd!3m5!1s0xd39b14db4b31731:0x9878ba337d747db3!8m2!3d41.9861412!4d-5.8878187!16s%2Fg%2F11flc62jn0?entry=ttu&g_ep=EgoyMDI2MTAyNy4wIKXMDSoASAFQAw%3D%3D"
+      "mapUrl": "https://www.google.com/maps/place/Virgen+de+Las+Encinas/@41.9861412,-5.8878187,17z"
+    },
+    {
+      "id": "bodegas",
+      "name": "Las Bodegas tradicionales",
+      "icon": "🍷",
+      "tag": "Tradición y vino",
+      "description": "Típicas bodegas subterráneas excavadas en la ladera del pueblo. Punto culminante de la II Ruta por las bodegas con la charanga.",
+      "lat": 41.9942,
+      "lng": -5.8935,
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=41.9942,-5.8935"
+    },
+    {
+      "id": "fronton",
+      "name": "El Frontón municipal",
+      "icon": "🎾",
+      "tag": "Deporte y juegos",
+      "description": "Pistas deportivas donde se disputan los torneos de pelota a mano, frontenis y actividades juveniles.",
+      "lat": 41.9931,
+      "lng": -5.8953,
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=41.9931,-5.8953"
+    },
+    {
+      "id": "la-era",
+      "name": "La Era / Campo de la fiesta",
+      "icon": "🌾",
+      "tag": "Espacio al aire libre",
+      "description": "Espacio abierto tradicional donde se celebra la popular cagada de la gallina, paella y juegos de feria.",
+      "lat": 41.9918,
+      "lng": -5.8962,
+      "mapUrl": "https://www.google.com/maps/search/?api=1&query=41.9918,-5.8962"
     }
   ],
   "days": [

@@ -11,6 +11,7 @@
   // --- Constantes y Claves de Almacenamiento ---
   const STORAGE_FAVS_KEY = "abraveses2027_favorites";
   const STORAGE_ATTEND_KEY = "abraveses2027_attendances";
+  const STORAGE_THEME_KEY = "abraveses2027_theme";
   const ESTIMATED_DURATION_MINUTES = 120; // 2 horas de duración estimada por evento
 
   // --- Estado de la Aplicación ---
@@ -33,6 +34,9 @@
   let attendCounts = {};
   let authReady = false;
   let authReadyPromise = null;
+  let currentThemeMode = "auto";
+  let leafletMap = null;
+  let mapMarkers = {};
 
   function hasFirebase() {
     return typeof firebase !== "undefined" && firebase.apps && firebase.apps.length > 0;
@@ -147,7 +151,12 @@
     // Actualización local inmediata
     attends[eventId] = !alreadyGoing;
     localStorage.setItem(STORAGE_ATTEND_KEY, JSON.stringify(attends));
-    showToast(!alreadyGoing ? "¡Te has apuntado a esta actividad! ✓" : "Has retirado tu asistencia");
+    if (!alreadyGoing) {
+      launchConfetti();
+      showToast("¡Te has apuntado a esta actividad! ✓");
+    } else {
+      showToast("Has retirado tu asistencia");
+    }
 
     if (button) {
       button.classList.toggle("is-attending", !alreadyGoing);
@@ -248,6 +257,7 @@
       whatsappBtnEl.href = appData.whatsappUrl;
     }
 
+    initTheme();
     renderDayTabs();
     renderCategoryFilters();
     renderLocationsModal();
@@ -258,6 +268,8 @@
     handleHashNavigation();
     listenAttendanceCounts();
     ensureAuth().catch(() => {});
+    initNotifications();
+    loadWeather();
 
     // Actualizar estado de "en directo" periódicamente
     setInterval(() => {
@@ -311,16 +323,26 @@
     if (!locationsListEl || !appData.locations) return;
 
     locationsListEl.innerHTML = appData.locations.map((loc) => {
-      const mapsUrl = loc.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name + ", Abraveses de Tera, Zamora")}`;
+      const mapsQuery = encodeURIComponent(`${loc.name}, Abraveses de Tera, Zamora`);
+      const mapsUrl = loc.mapUrl || `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
       return `
         <li class="location-item">
           <div class="location-item-info">
-            <h4>${loc.name}</h4>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:1.3rem;">${loc.icon || "📍"}</span>
+              <h4>${loc.name}</h4>
+            </div>
+            <span class="location-item-badge">${loc.tag || "Punto de fiesta"}</span>
             <p>${loc.description}</p>
           </div>
-          <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="location-nav-btn">
-            <span>📍 Ir</span>
-          </a>
+          <div style="display:flex; flex-direction:column; gap:6px; align-self:center;">
+            <button type="button" class="location-nav-btn btn-focus-loc-map" data-loc-id="${loc.id}" title="Centrar en el mapa interactivo">
+              <span>🗺️ Ver</span>
+            </button>
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="location-nav-btn" style="background:#0284c7; color:#ffffff;" title="Navegación GPS">
+              <span>↗️ GPS</span>
+            </a>
+          </div>
         </li>
       `;
     }).join("");
@@ -502,8 +524,11 @@
               <p class="event-full-detail">${ev.detail || ev.description || "Sin descripción adicional disponible."}</p>
               
               <div class="location-action-bar">
-                <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="location-map-btn">
-                  <span aria-hidden="true">📍</span> Ver ${ev.location || "ubicación"} en Google Maps ↗
+                <button type="button" class="location-map-btn btn-open-interactive-map" data-location-name="${ev.location || "Plaza del pueblo"}">
+                  <span aria-hidden="true">🗺️</span> Ver en mapa de Abraveses
+                </button>
+                <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="location-map-btn" style="background:#0284c7; color:#ffffff;">
+                  <span aria-hidden="true">📍</span> Google Maps ↗
                 </a>
               </div>
 
@@ -798,7 +823,17 @@
         return;
       }
 
-      // 5. Expandir/contraer tarjeta de evento
+      // 5. Botón abrir mapa interactivo
+      const openMapBtn = e.target.closest(".btn-open-interactive-map");
+      if (openMapBtn) {
+        e.stopPropagation();
+        const locName = openMapBtn.dataset.locationName;
+        const matched = (appData.locations || []).find((l) => l.name === locName || (l.name && locName && (locName.includes(l.name) || l.name.includes(locName))));
+        openMapModal(matched ? matched.id : "all");
+        return;
+      }
+
+      // 6. Expandir/contraer tarjeta de evento
       const summary = e.target.closest(".event-summary");
       if (summary) {
         const card = summary.closest(".event-card");
@@ -827,9 +862,46 @@
     });
 
     btnOpenMapEl.addEventListener("click", () => {
-      mapModalEl.hidden = false;
-      mapModalEl.setAttribute("aria-hidden", "false");
+      openMapModal("all");
     });
+
+    // Selector de tema (Día / Noche / Auto)
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener("click", cycleTheme);
+    }
+
+    // Botón de Chupinazo
+    const btnChupinazo = document.getElementById("btnChupinazo");
+    if (btnChupinazo) {
+      btnChupinazo.addEventListener("click", triggerChupinazo);
+    }
+
+    // Pestañas rápidas del mapa interactivo
+    const mapPillsBar = document.getElementById("mapPillsBar");
+    if (mapPillsBar) {
+      mapPillsBar.addEventListener("click", (e) => {
+        const pill = e.target.closest(".map-pill");
+        if (!pill) return;
+        const locId = pill.dataset.locId;
+        initOrUpdateLeafletMap(locId);
+      });
+    }
+
+    // Centrar desde la lista de lugares del modal
+    if (locationsListEl) {
+      locationsListEl.addEventListener("click", (e) => {
+        const btn = e.target.closest(".btn-focus-loc-map");
+        if (btn) {
+          const locId = btn.dataset.locId;
+          initOrUpdateLeafletMap(locId);
+          const mapFrame = document.querySelector(".map-frame");
+          if (mapFrame) {
+            mapFrame.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }
+      });
+    }
 
     document.querySelectorAll("[data-close-modal]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -861,6 +933,470 @@
         modal.setAttribute("aria-hidden", "true");
       }
     });
+  }
+
+  // ==========================================================================
+  // FASE 2: MODO NOCHE / TEMA OSCURO (AUTOMÁTICO Y MANUAL)
+  // ==========================================================================
+  function isNightTime() {
+    const hour = new Date().getHours();
+    return hour >= 21 || hour < 8; // De 21:00 a 08:00
+  }
+
+  function shouldBeDark() {
+    if (currentThemeMode === "dark") return true;
+    if (currentThemeMode === "light") return false;
+    const systemPrefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return isNightTime() || systemPrefersDark;
+  }
+
+  function applyTheme(mode, notify = false) {
+    currentThemeMode = mode;
+    localStorage.setItem(STORAGE_THEME_KEY, mode);
+
+    const isDark = shouldBeDark();
+    document.body.classList.toggle("theme-dark", isDark);
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", isDark ? "#090e17" : "#111827");
+    }
+
+    const iconEl = document.getElementById("themeToggleIcon");
+    const textEl = document.getElementById("themeToggleText");
+    if (iconEl && textEl) {
+      if (mode === "dark") {
+        iconEl.textContent = "🌙";
+        textEl.textContent = "Noche";
+      } else if (mode === "light") {
+        iconEl.textContent = "☀️";
+        textEl.textContent = "Día";
+      } else {
+        iconEl.textContent = "🌓";
+        textEl.textContent = isDark ? "Auto (Noche)" : "Auto (Día)";
+      }
+    }
+
+    if (notify) {
+      if (mode === "dark") {
+        showToast("Modo Noche activado (ideal para las verbenas) 🌙");
+      } else if (mode === "light") {
+        showToast("Modo Día activado ☀️");
+      } else {
+        showToast("Modo Automático activado (se activa al anochecer) 🌓");
+      }
+    }
+  }
+
+  function cycleTheme() {
+    if (currentThemeMode === "auto") {
+      applyTheme("dark", true);
+    } else if (currentThemeMode === "dark") {
+      applyTheme("light", true);
+    } else {
+      applyTheme("auto", true);
+    }
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem(STORAGE_THEME_KEY) || "auto";
+    applyTheme(saved, false);
+
+    if (window.matchMedia) {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+        if (currentThemeMode === "auto") {
+          applyTheme("auto", false);
+        }
+      });
+    }
+
+    setInterval(() => {
+      if (currentThemeMode === "auto") {
+        applyTheme("auto", false);
+      }
+    }, 60 * 60 * 1000);
+  }
+
+  // ==========================================================================
+  // FASE 2: MAPA INTERACTIVO DE ABRAVESES (LEAFLET + OPENSTREETMAP)
+  // ==========================================================================
+  function openMapModal(focusId = "all") {
+    if (!mapModalEl) return;
+    mapModalEl.hidden = false;
+    mapModalEl.setAttribute("aria-hidden", "false");
+    initOrUpdateLeafletMap(focusId);
+  }
+
+  function updateMapPills(activeId) {
+    document.querySelectorAll(".map-pill").forEach((pill) => {
+      pill.classList.toggle("is-active", pill.dataset.locId === activeId);
+    });
+  }
+
+  function initOrUpdateLeafletMap(focusId = "all") {
+    if (typeof L === "undefined") {
+      console.warn("Leaflet no está disponible");
+      return;
+    }
+    const mapEl = document.getElementById("abravesesMap");
+    if (!mapEl) return;
+
+    if (!leafletMap) {
+      // Centro inicial en el valle de Abraveses de Tera
+      leafletMap = L.map("abravesesMap", {
+        zoomControl: true,
+        scrollWheelZoom: true
+      }).setView([41.9908, -5.8920], 15);
+
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+      }).addTo(leafletMap);
+
+      const locations = appData.locations || [];
+      locations.forEach((loc) => {
+        if (!loc.lat || !loc.lng) return;
+
+        const customIcon = L.divIcon({
+          className: "leaflet-custom-marker-wrapper",
+          html: `<div class="leaflet-custom-marker leaflet-custom-marker--${loc.id}">
+                  <span>${loc.icon || "📍"}</span>
+                 </div>`,
+          iconSize: [38, 38],
+          iconAnchor: [19, 19],
+          popupAnchor: [0, -20]
+        });
+
+        const mapsQuery = encodeURIComponent(`${loc.name}, Abraveses de Tera, Zamora`);
+        const mapsLink = loc.mapUrl || `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
+        const popupContent = `
+          <div class="map-popup-header">
+            <span class="map-popup-icon">${loc.icon || "📍"}</span>
+            <div>
+              <h4 class="map-popup-title">${loc.name}</h4>
+              <span class="map-popup-tag">${loc.tag || "Punto de fiesta"}</span>
+            </div>
+          </div>
+          <p class="map-popup-desc">${loc.description}</p>
+          <a href="${mapsLink}" target="_blank" rel="noopener noreferrer" class="map-popup-btn">
+            <span>🗺️ Cómo llegar</span>
+          </a>
+        `;
+
+        const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(leafletMap);
+        marker.bindPopup(popupContent);
+        mapMarkers[loc.id] = marker;
+      });
+    }
+
+    setTimeout(() => {
+      if (leafletMap) {
+        leafletMap.invalidateSize();
+        if (focusId && focusId !== "all" && mapMarkers[focusId]) {
+          const loc = (appData.locations || []).find((l) => l.id === focusId);
+          if (loc) {
+            leafletMap.flyTo([loc.lat, loc.lng], 16, { animate: true, duration: 0.8 });
+            mapMarkers[focusId].openPopup();
+          }
+          updateMapPills(focusId);
+        } else {
+          const markerList = Object.values(mapMarkers);
+          if (markerList.length > 0) {
+            const group = L.featureGroup(markerList);
+            leafletMap.fitBounds(group.getBounds().pad(0.14));
+          }
+          updateMapPills("all");
+        }
+      }
+    }, 250);
+  }
+
+  // ==========================================================================
+  // FASE 2: NOTIFICACIONES PUSH WEB Y ALERTAS
+  // ==========================================================================
+  function initNotifications() {
+    const badge = document.getElementById("pushBadgeStatus");
+    const btnToggle = document.getElementById("btnPushToggle");
+    const btnText = document.getElementById("btnPushText");
+    const btnTest = document.getElementById("btnPushTest");
+
+    if (!("Notification" in window)) {
+      if (badge) badge.textContent = "No soportado";
+      if (btnText) btnText.textContent = "Avisos no disponibles";
+      if (btnToggle) btnToggle.disabled = true;
+      return;
+    }
+
+    function updateState() {
+      const perm = Notification.permission;
+      if (perm === "granted") {
+        if (badge) badge.textContent = "Activado ✓";
+        if (btnText) btnText.textContent = "Avisos activados ✓";
+        if (btnToggle) btnToggle.classList.add("is-granted");
+        if (btnTest) btnTest.hidden = false;
+      } else if (perm === "denied") {
+        if (badge) badge.textContent = "Bloqueado";
+        if (btnText) btnText.textContent = "Avisos bloqueados";
+        if (btnToggle) btnToggle.classList.remove("is-granted");
+        if (btnTest) btnTest.hidden = true;
+      } else {
+        if (badge) badge.textContent = "Web Push";
+        if (btnText) btnText.textContent = "Activar notificaciones";
+        if (btnToggle) btnToggle.classList.remove("is-granted");
+        if (btnTest) btnTest.hidden = true;
+      }
+    }
+
+    updateState();
+
+    if (btnToggle) {
+      btnToggle.addEventListener("click", () => {
+        if (Notification.permission === "granted") {
+          showToast("¡Los avisos ya están activos en tu móvil! 🔔");
+          triggerPushNotification(
+            "🔔 Fiestas Abraveses 2027",
+            "Notificaciones activas. Te avisaremos puntualmente de novedades y meteorología."
+          );
+        } else if (Notification.permission === "denied") {
+          showToast("Has bloqueado los avisos. Habilítalos en el candado del navegador.");
+        } else {
+          Notification.requestPermission().then((perm) => {
+            updateState();
+            if (perm === "granted") {
+              showToast("¡Avisos de fiestas activados! 🔔");
+              triggerPushNotification(
+                "🎉 ¡Bienvenido a las Fiestas de Abraveses 2027!",
+                "Avisos activados. Te avisaremos al instante si llueve o hay cambios de horario."
+              );
+            }
+          });
+        }
+      });
+    }
+
+    if (btnTest) {
+      btnTest.addEventListener("click", () => {
+        triggerPushNotification(
+          "☔ Aviso de la Comisión de Fiestas",
+          "Por previsión de lluvia ligera, el torneo se disputará en el frontón cubierto. ¡Nos vemos allí!"
+        );
+        showToast("Aviso urgente de prueba enviado 📲");
+      });
+    }
+  }
+
+  function triggerPushNotification(title, body) {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+
+    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.showNotification(title, {
+          body: body,
+          icon: "images/icons/icon-192.png",
+          badge: "images/icons/icon-192.png",
+          vibrate: [200, 100, 200],
+          tag: "abraveses-alert-" + Date.now()
+        });
+      });
+    } else {
+      try {
+        new Notification(title, {
+          body: body,
+          icon: "images/icons/icon-192.png"
+        });
+      } catch (_) {}
+    }
+  }
+
+  // ==========================================================================
+  // EXTRAS: CHUPINAZO FESTIVO (SONIDO SINTETIZADO + CONFETI)
+  // ==========================================================================
+  function playChupinazoSound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+
+      // 1. Silbido ascendente del cohete (250Hz -> 1800Hz)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(250, now);
+      osc.frequency.exponentialRampToValueAtTime(1800, now + 0.6);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.25, now + 0.3);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.6);
+
+      // 2. Explosión del cohete (BOOM!)
+      setTimeout(() => {
+        const boomBuffer = ctx.createBuffer(1, ctx.sampleRate * 1.2, ctx.sampleRate);
+        const data = boomBuffer.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.22));
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = boomBuffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(450, ctx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.8);
+
+        const boomGain = ctx.createGain();
+        boomGain.gain.setValueAtTime(0.65, ctx.currentTime);
+        boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.0);
+
+        noise.connect(filter);
+        filter.connect(boomGain);
+        boomGain.connect(ctx.destination);
+
+        noise.start();
+      }, 620);
+    } catch (e) {
+      console.warn("AudioContext no disponible:", e);
+    }
+  }
+
+  function launchConfetti() {
+    const canvas = document.getElementById("confettiCanvas");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const width = (canvas.width = window.innerWidth);
+    const height = (canvas.height = window.innerHeight);
+
+    const colors = ["#ff3b30", "#ff8a00", "#ffcc00", "#0284c7", "#10b981", "#8b5cf6", "#ec4899"];
+    const count = 120;
+    const particles = [];
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: width / 2 + (Math.random() - 0.5) * 80,
+        y: height * 0.45,
+        vx: (Math.random() - 0.5) * 16,
+        vy: -Math.random() * 14 - 6,
+        size: Math.random() * 8 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 12,
+        opacity: 1
+      });
+    }
+
+    let frame = 0;
+    function render() {
+      ctx.clearRect(0, 0, width, height);
+      let alive = false;
+
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35; // Gravedad
+        p.vx *= 0.98; // Resistencia
+        p.rotation += p.rotationSpeed;
+        p.opacity -= 0.007;
+
+        if (p.opacity > 0 && p.y < height + 40) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = Math.max(0, p.opacity);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        }
+      });
+
+      if (alive && frame < 200) {
+        frame++;
+        requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, width, height);
+      }
+    }
+
+    requestAnimationFrame(render);
+  }
+
+  function triggerChupinazo() {
+    playChupinazoSound();
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100, 50, 300]);
+    }
+    launchConfetti();
+    showToast("🚀 ¡BOOOOOM! ¡Vivan las fiestas de Abraveses de Tera! 🎉🥂");
+  }
+
+  // ==========================================================================
+  // EXTRAS: EL TIEMPO EN DIRECTO (OPEN-METEO ABRAVESES DE TERA)
+  // ==========================================================================
+  async function loadWeather() {
+    const tempEl = document.getElementById("weatherTemp");
+    const descEl = document.getElementById("weatherDesc");
+    const iconEl = document.getElementById("weatherIcon");
+    const tipEl = document.getElementById("weatherTip");
+
+    if (!tempEl || !descEl) return;
+
+    try {
+      const url = "https://api.open-meteo.com/v1/forecast?latitude=41.9927&longitude=-5.8948&current_weather=true&timezone=Europe%2FMadrid";
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.current_weather) {
+          const cw = data.current_weather;
+          const temp = Math.round(cw.temperature);
+          const code = cw.weathercode;
+          const isDay = cw.is_day === 1;
+
+          let desc = "Cielo despejado";
+          let icon = isDay ? "☀️" : "🌙";
+          let tip = "🎉 ¡Ideal para disfrutar en la calle!";
+
+          if (code === 0) {
+            desc = isDay ? "Cielo despejado y soleado" : "Noche despejada y estrellada";
+            icon = isDay ? "☀️" : "✨";
+          } else if (code <= 3) {
+            desc = "Intervalos nubosos y brisa agradable";
+            icon = isDay ? "⛅" : "☁️";
+          } else if (code >= 51 && code <= 67) {
+            desc = "Probabilidad de llovizna";
+            icon = "🌧️";
+            tip = "☔ Si llueve, nos vemos en el frontón";
+          } else if (code >= 95) {
+            desc = "Tormenta de verano";
+            icon = "⛈️";
+            tip = "⚠️ Actividades a cubierto";
+          }
+
+          tempEl.textContent = `${temp}°C`;
+          descEl.textContent = `${desc} · Viento: ${Math.round(cw.windspeed)} km/h`;
+          if (iconEl) iconEl.textContent = icon;
+          if (tipEl) tipEl.textContent = tip;
+          return;
+        }
+      }
+    } catch (_) {
+      // Fallback estival si no hay conexión
+    }
+
+    tempEl.textContent = "27°C";
+    descEl.textContent = "Típico verano en Abraveses de Tera · Zamora";
+    if (iconEl) iconEl.textContent = "☀️";
+    if (tipEl) tipEl.textContent = "🎉 ¡Ambiente perfecto de fiestas!";
   }
 
   // Arrancar aplicación al cargar DOM

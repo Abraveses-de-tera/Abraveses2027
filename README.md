@@ -119,12 +119,52 @@ Para publicar la web de forma gratuita y con HTTPS en GitHub:
 
 ---
 
-## 🔮 Funcionalidades recomendadas para una segunda fase
+## 🚀 Funcionalidades de la Fase 2 (¡Implementadas!)
 
-1. **Notificaciones Push Web:** Avisos automáticos en el móvil cuando haya un cambio de hora o aviso meteorológico emitido por la comisión.
-2. **Contador de asistencia con Firebase Realtime Database:** Integración segura y anónima para conocer cuántos vecinos prevén asistir a la paella, sardinada o ruta de bodegas.
-3. **Modo Claro / Modo Noche automático:** Selector de tema para mayor comodidad visual durante las verbenas nocturnas.
-4. **Mapa interactivo con Leaflet/OpenStreetMap:** Visualización gráfica con pines interactivos dentro de Abraveses de Tera directamente en la web.
+1. 🔔 **Notificaciones Push Web:**
+   * Los vecinos pueden suscribirse a los avisos oficiales de las fiestas directamente desde el navegador.
+   * Alertas urgentes en pantalla para cancelaciones o reubicaciones por lluvia (ej: traslado al frontón) o cambios de horario en las orquestas.
+   * Manejador nativo en `sw.js` con vibración háptica e icono oficial de la ermita.
+   * Botón de prueba instantánea incluido para verificar la recepción de avisos.
+
+2. 👥 **Contador de asistencia con Firebase Realtime Database:**
+   * Autenticación anónima transparente (`signInAnonymously()`) que genera un identificador único seguro por usuario sin pedir contraseñas ni emails.
+   * Recuento colaborativo en tiempo real de asistentes para actividades multitudinarias (paella popular, sardinada tradicional, ruta por las bodegas, chocolatada).
+   * Reglas de base de datos seguras (`database.rules.json`) que impiden la manipulación o sobrescritura malintencionada:
+     ```json
+     {
+       "rules": {
+         "attendance": {
+           ".read": true,
+           "$eventId": {
+             "$uid": {
+               ".write": "auth != null && auth.uid === $uid",
+               ".validate": "!newData.exists() || (newData.isBoolean() && newData.val() === true)"
+             }
+           }
+         }
+       }
+     }
+     ```
+
+3. 🌙 **Modo Noche / Oscuro automático:**
+   * Detección automática al anochecer (entre las 21:00 y las 08:00) o según la preferencia del sistema (`prefers-color-scheme: dark`).
+   * Botón de alternancia en la cabecera (🌓 Auto / 🌙 Noche / ☀️ Día) con persistencia en `localStorage`.
+   * Diseñado con tonos oscuros de alto contraste para evitar deslumbramientos durante los conciertos y verbenas de madrugada, reduciendo además el consumo de batería en pantallas OLED móviles.
+
+4. 🗺️ **Mapa interactivo embebido (Leaflet.js + OpenStreetMap):**
+   * Mapa interactivo integrado en el modal de lugares con chinchetas sobre Abraveses de Tera.
+   * Chinchetas interactivas para:
+     * ⛪ **Santuario Virgen de las Encinas**
+     * 🏛️ **Plaza del pueblo**
+     * 🍷 **Las Bodegas tradicionales**
+     * 🎾 **El Frontón municipal**
+     * 🌾 **La Era / Campo de la fiesta**
+   * Popups personalizados con detalles, botón de navegación GPS y acceso directo desde cada actividad de la agenda.
+
+5. 🎉 **Extras festivos:**
+   * 🚀 **Chupinazo interactivo:** Botón para lanzar el cohete festivo con sonido sintetizado (Web Audio API sin descargas pesadas), vibración háptica y lluvia de confeti multicolor.
+   * ☀️ **El tiempo en directo en Abraveses de Tera:** Previsión meteorológica en tiempo real mediante la API gratuita Open-Meteo, con consejos adaptados al programa de fiestas.
 
 ---
 

@@ -28,6 +28,9 @@
   <link rel="apple-touch-icon" sizes="192x192" href="images/icons/icon-192.png" />
   <link rel="manifest" href="manifest.json" />
 
+  <!-- Leaflet CSS (Mapa interactivo OpenStreetMap) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
   <!-- Estilos -->
   <link rel="stylesheet" href="css/styles.css" />
 
@@ -71,6 +74,15 @@
         <span class="pennant p-blue p8"></span>
       </div>
 
+      <!-- Barra superior con selector de tema -->
+      <div class="hero-topbar">
+        <span class="hero-edition-pill">Edición 2027</span>
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Cambiar tema día/noche" title="Cambiar tema (Auto / Noche / Día)">
+          <span class="theme-toggle-icon" id="themeToggleIcon" aria-hidden="true">🌓</span>
+          <span class="theme-toggle-text" id="themeToggleText">Auto</span>
+        </button>
+      </div>
+
       <img class="hero-logo" src="images/logo-hermita-hero.png" alt="Logo de la Ermita de Abraveses de Tera" width="84" height="84" />
       <p class="hero-eyebrow">DEL 23 AL 29 DE AGOSTO DE 2027</p>
       <h1 class="hero-title">ABRAVESES</h1>
@@ -88,16 +100,53 @@
           <span aria-hidden="true">📅</span> Ver programa
         </a>
         <button type="button" class="hero-btn hero-btn--secondary" id="btnOpenPoster">
-          <span aria-hidden="true">🖼️</span> Ver cartel
+          <span aria-hidden="true">🖼️</span> Cartel
         </button>
         <button type="button" class="hero-btn hero-btn--secondary" id="btnOpenMap">
-          <span aria-hidden="true">📍</span> Lugares
+          <span aria-hidden="true">📍</span> Mapa
+        </button>
+        <button type="button" class="hero-btn hero-btn--chupinazo" id="btnChupinazo" title="Lanzar cohete de fiestas con sonido y confeti">
+          <span aria-hidden="true">🚀</span> Chupinazo
         </button>
       </div>
     </header>
 
     <!-- SECCIÓN PRINCIPAL: AGENDA -->
     <main class="agenda" id="agenda" aria-labelledby="agenda-title">
+      <!-- WIDGET DEL TIEMPO EN DIRECTO -->
+      <div class="weather-widget" id="weatherWidget" aria-live="polite">
+        <div class="weather-widget-icon" id="weatherIcon" aria-hidden="true">☀️</div>
+        <div class="weather-widget-info">
+          <div class="weather-widget-temp-row">
+            <span class="weather-widget-temp" id="weatherTemp">Cargando tiempo...</span>
+            <span class="weather-widget-town">Abraveses de Tera</span>
+          </div>
+          <span class="weather-widget-desc" id="weatherDesc">Previsión meteorológica en tiempo real</span>
+        </div>
+        <span class="weather-widget-tip" id="weatherTip">🎉 ¡Tiempo de fiesta!</span>
+      </div>
+
+      <!-- BANNER DE AVISOS URGENTES Y WEB PUSH -->
+      <section class="push-notice-banner" id="pushBanner" aria-live="polite">
+        <div class="push-notice-icon" aria-hidden="true">🔔</div>
+        <div class="push-notice-body">
+          <div class="push-notice-title-wrap">
+            <h3 class="push-notice-title">Avisos urgentes y lluvia</h3>
+            <span class="push-badge" id="pushBadgeStatus">Web Push</span>
+          </div>
+          <p class="push-notice-desc">Activa las alertas para enterarte de cambios de hora, reubicaciones al frontón o avisos de la comisión.</p>
+          <div class="push-notice-actions">
+            <button type="button" class="btn-push-action" id="btnPushToggle">
+              <span class="btn-push-icon" aria-hidden="true">🔔</span>
+              <span class="btn-push-text" id="btnPushText">Activar notificaciones</span>
+            </button>
+            <button type="button" class="btn-push-test" id="btnPushTest" hidden title="Enviar un aviso de prueba">
+              <span>⚡</span> Probar aviso
+            </button>
+          </div>
+        </div>
+      </section>
+
       <div class="agenda-header">
         <div>
           <span class="section-label">PROGRAMA OFICIAL</span>
@@ -210,21 +259,57 @@
     </div>
   </div>
 
-  <!-- MODAL: LUGARES DE LA FIESTA -->
+  <!-- MODAL: LUGARES DE LA FIESTA Y MAPA INTERACTIVO -->
   <div class="modal-backdrop" id="mapModal" hidden aria-hidden="true">
-    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
+    <div class="modal-dialog modal-dialog--map" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
       <div class="modal-header">
-        <h3 id="mapModalTitle">📍 Lugares de Abraveses</h3>
+        <div class="modal-title-group">
+          <h3 id="mapModalTitle">📍 Mapa interactivo de Abraveses</h3>
+          <p class="modal-subtitle">Santuario, Bodegas, Plaza, Frontón y La Era</p>
+        </div>
         <button type="button" class="modal-close" data-close-modal aria-label="Cerrar ventana">✕</button>
       </div>
-      <div class="modal-body">
-        <p class="modal-desc">Puntos clave donde se celebran las actividades durante las fiestas:</p>
+      <div class="modal-body modal-body--map">
+        <!-- Selector rápido de ubicaciones en el mapa -->
+        <div class="map-pills-bar" id="mapPillsBar" role="tablist" aria-label="Centrar en el mapa">
+          <button type="button" class="map-pill is-active" data-loc-id="all">
+            <span>📍 Todos</span>
+          </button>
+          <button type="button" class="map-pill" data-loc-id="virgen-de-las-encinas">
+            <span>⛪ Santuario</span>
+          </button>
+          <button type="button" class="map-pill" data-loc-id="plaza-del-pueblo">
+            <span>🏛️ Plaza</span>
+          </button>
+          <button type="button" class="map-pill" data-loc-id="bodegas">
+            <span>🍷 Bodegas</span>
+          </button>
+          <button type="button" class="map-pill" data-loc-id="fronton">
+            <span>🎾 Frontón</span>
+          </button>
+          <button type="button" class="map-pill" data-loc-id="la-era">
+            <span>🌾 La Era</span>
+          </button>
+        </div>
+
+        <!-- Contenedor del Mapa Leaflet -->
+        <div class="map-frame">
+          <div id="abravesesMap" class="abraveses-leaflet-map" role="region" aria-label="Mapa interactivo OpenStreetMap de Abraveses de Tera"></div>
+        </div>
+
+        <!-- Lista explicativa de lugares clave -->
+        <div class="map-locations-header">
+          <h4>Puntos de encuentro y celebración</h4>
+        </div>
         <ul class="locations-list" id="locationsList">
           <!-- Renderizado dinámicamente desde JS -->
         </ul>
       </div>
     </div>
   </div>
+
+  <!-- LIENZO DE CONFETI PARA CELEBRACIONES -->
+  <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
 
   <!-- TOAST NOTIFICACIÓN -->
   <div class="toast" id="appToast" role="status" aria-live="polite" hidden></div>
@@ -252,6 +337,8 @@
   </script>
 
   <!-- SCRIPTS -->
+  <!-- Leaflet JS (OpenStreetMap para el mapa interactivo) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="data/events-data.js"></script>
   <script src="js/countdown.js"></script>
   <script src="js/app.js"></script>
