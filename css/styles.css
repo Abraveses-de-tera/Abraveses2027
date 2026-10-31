@@ -379,6 +379,9 @@ img {
 .agenda {
   padding: 24px 18px 40px;
   flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
 .agenda-header {
@@ -518,12 +521,12 @@ img {
    -------------------------------------------------------------------------- */
 .category-filters {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  margin: 14px -18px 0;
-  padding: 4px 18px 8px;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 2px;
+  padding: 0;
+  width: 100%;
+  min-width: 0;
 }
 
 .category-filters::-webkit-scrollbar {
@@ -535,26 +538,31 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 7px 13px;
+  padding: 6px 11px;
   border-radius: var(--radius-full);
-  border: 2px solid var(--line);
+  border: 1.5px solid var(--line);
   background-color: var(--paper-card);
   color: var(--ink);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 750;
   cursor: pointer;
   transition: all var(--transition);
   white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cat-pill:hover {
   border-color: var(--ink-light);
+  transform: translateY(-1px);
 }
 
 .cat-pill.is-active {
   background-color: var(--ink);
   border-color: var(--ink);
   color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 /* --------------------------------------------------------------------------
@@ -568,6 +576,16 @@ img {
   padding: 4px 18px 12px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  cursor: grab;
+  min-width: 0;
+  max-width: 100vw;
+}
+
+.day-tabs:active {
+  cursor: grabbing;
 }
 
 .day-tabs::-webkit-scrollbar {
@@ -1531,7 +1549,11 @@ body.theme-dark .toast {
   .agenda {
     padding: 30px 32px 48px;
   }
-  .category-filters, .day-tabs {
+  .category-filters {
+    margin: 14px 0 4px;
+    padding: 0;
+  }
+  .day-tabs {
     margin-left: -32px;
     margin-right: -32px;
     padding-left: 32px;
@@ -1664,6 +1686,7 @@ body.theme-dark .cat-pill.is-active {
   background-color: #0284c7 !important;
   border-color: #38bdf8 !important;
   color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4) !important;
 }
 
 /* Botones de acción */

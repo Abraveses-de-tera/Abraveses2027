@@ -323,14 +323,14 @@
   // --- Renderizado de Filtros de Categoría ---
   function renderCategoryFilters() {
     let chipsHtml = `
-      <button class="cat-pill is-active" type="button" data-category="all">
+      <button class="cat-pill ${selectedCategory === "all" ? "is-active" : ""}" type="button" data-category="all">
         <span>✨ Todas</span>
       </button>
     `;
 
     Object.entries(appData.categories).forEach(([key, cat]) => {
       chipsHtml += `
-        <button class="cat-pill" type="button" data-category="${key}">
+        <button class="cat-pill ${selectedCategory === key ? "is-active" : ""}" type="button" data-category="${key}">
           <span>${cat.icon} ${cat.label}</span>
         </button>
       `;
@@ -732,8 +732,57 @@
   // --- Actualizar pestaña activa en la barra de días ---
   function updateActiveTabUI() {
     document.querySelectorAll(".day-tab").forEach((tab) => {
-      tab.classList.toggle("is-active", tab.dataset.dayId === selectedDayId);
+      const isActive = tab.dataset.dayId === selectedDayId;
+      tab.classList.toggle("is-active", isActive);
+      if (isActive && typeof tab.scrollIntoView === "function") {
+        try {
+          tab.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        } catch (_) {}
+      }
     });
+  }
+
+  // --- Habilitar deslizamiento por arrastre (touch y ratón) ---
+  function enableDragScroll(el) {
+    if (!el) return;
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasMoved = false;
+
+    el.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      isDown = true;
+      startX = e.pageX - el.offsetLeft;
+      scrollLeft = el.scrollLeft;
+      hasMoved = false;
+    });
+
+    const stopDrag = () => {
+      isDown = false;
+    };
+
+    el.addEventListener("pointerleave", stopDrag);
+    el.addEventListener("pointerup", stopDrag);
+    el.addEventListener("pointercancel", stopDrag);
+
+    el.addEventListener("pointermove", (e) => {
+      if (!isDown) return;
+      const x = e.pageX - el.offsetLeft;
+      const walk = x - startX;
+      if (Math.abs(walk) > 4) {
+        hasMoved = true;
+        el.scrollLeft = scrollLeft - walk;
+      }
+    });
+
+    el.addEventListener("click", (e) => {
+      if (hasMoved) {
+        e.preventDefault();
+        e.stopPropagation();
+        hasMoved = false;
+      }
+    }, true);
   }
 
   // --- Controladores de Eventos ---
@@ -741,6 +790,9 @@
   function setupEventListeners() {
     if (eventListenersAttached) return;
     eventListenersAttached = true;
+
+    // Habilitar arrastre suave en la barra de días
+    enableDragScroll(dayTabsEl);
 
     // Selección de día
     dayTabsEl.addEventListener("click", (e) => {
