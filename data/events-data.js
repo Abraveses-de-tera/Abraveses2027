@@ -13,10 +13,7 @@ window.__ABRAVESES_EVENTS__ = {
     "gastronomia": { "label": "Gastronomía", "icon": "🍽️" },
     "infantil": { "label": "Infantil", "icon": "🧸" },
     "tradicion": { "label": "Tradición", "icon": "🚩" },
-    "deporte": { "label": "Deporte", "icon": "⚽" },
-    "juegos": { "label": "Juegos", "icon": "🎲" },
-    "solidario": { "label": "Solidario", "icon": "❤️" },
-    "ocio": { "label": "Ocio", "icon": "🍿" }
+    "juegos": { "label": "Juegos y Ocio", "icon": "🎲" }
   },
   "locations": [
     {
@@ -151,7 +148,7 @@ window.__ABRAVESES_EVENTS__ = {
       "events": [
         {
           "eventId": "marcha-solidaria",
-          "category": "solidario",
+          "category": "tradicion",
           "time": "18:30",
           "title": "Marcha solidaria FUNDAME",
           "description": "Caminata comunitaria en apoyo a FUNDAME.",
@@ -179,7 +176,7 @@ window.__ABRAVESES_EVENTS__ = {
         },
         {
           "eventId": "cine-aire-libre",
-          "category": "ocio",
+          "category": "juegos",
           "time": "21:30",
           "title": "Cine al aire libre",
           "description": "Película para toda la familia bajo las estrellas.",
@@ -225,7 +222,7 @@ window.__ABRAVESES_EVENTS__ = {
         },
         {
           "eventId": "grand-prix-bragao",
-          "category": "deporte",
+          "category": "juegos",
           "time": "19:00",
           "title": "I Grand Prix Bragao",
           "description": "Pruebas de habilidad y diversión por equipos.",
@@ -385,7 +382,7 @@ window.__ABRAVESES_EVENTS__ = {
         },
         {
           "eventId": "beer-pong",
-          "category": "deporte",
+          "category": "juegos",
           "time": "19:30",
           "title": "Torneo de Beer Pong",
           "description": "Puntería, parejas y competición divertida.",
