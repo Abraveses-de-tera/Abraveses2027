@@ -261,9 +261,20 @@
   }
 
   // --- Inicialización de Interfaz ---
-  let hasAutoTriggeredChupinazo = false;
-
   function initApp() {
+    // 1. Evitar que el navegador restaure automáticamente un scroll anterior
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    // 2. Si la URL trae #agenda (enlace compartido en WhatsApp), limpiarlo para empezar desde arriba
+    if (window.location.hash === "#agenda") {
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+
+    // 3. Forzar inicio de la página siempre arriba del todo (coordenada 0, 0)
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
     if (appData.whatsappUrl && whatsappBtnEl) {
       whatsappBtnEl.href = appData.whatsappUrl;
     }
@@ -284,8 +295,6 @@
     listenLiveAlerts();
     initAdminPanel();
     initChupinazometro();
-
-
 
     // Actualizar estado de "en directo" periódicamente
     setInterval(() => {
@@ -704,7 +713,7 @@
   // --- Navegación por Hash (#evento-id) ---
   function handleHashNavigation() {
     const hash = window.location.hash.replace("#", "").trim();
-    if (!hash) return;
+    if (!hash || hash === "agenda") return;
 
     // Buscar si el evento pertenece a un día específico
     for (const day of appData.days) {
@@ -1463,60 +1472,47 @@
   // --- Sonidos Web Audio API (Charanga, Cohete, Dud y Vapor) ---
   function playCharangaFanfare(ctx) {
     if (!ctx) return;
-    const now = ctx.currentTime;
-    // Fanfarria verbenera española: Sol4 - Do5 - Mi5 - Sol5 ... Mi5 - Sol5!
-    const melody = [
-      { freq: 392.00, start: 0.00, dur: 0.12 },
-      { freq: 523.25, start: 0.13, dur: 0.12 },
-      { freq: 659.25, start: 0.26, dur: 0.14 },
-      { freq: 783.99, start: 0.41, dur: 0.32 },
-      { freq: 659.25, start: 0.78, dur: 0.12 },
-      { freq: 783.99, start: 0.91, dur: 0.45 }
-    ];
+    try {
+      const now = ctx.currentTime;
+      // Toque festivo ligero y alegre: Do - Mi - Sol - Do!
+      const notes = [
+        { freq: 523.25, start: 0.00, dur: 0.09 },
+        { freq: 659.25, start: 0.10, dur: 0.09 },
+        { freq: 783.99, start: 0.20, dur: 0.11 },
+        { freq: 1046.50, start: 0.32, dur: 0.24 }
+      ];
 
-    melody.forEach((note) => {
-      try {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const filter = ctx.createBiquadFilter();
-
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(note.freq, now + note.start);
-
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(2400, now + note.start);
-        filter.frequency.exponentialRampToValueAtTime(700, now + note.start + note.dur);
-
-        gain.gain.setValueAtTime(0.001, now + note.start);
-        gain.gain.linearRampToValueAtTime(0.24, now + note.start + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + note.start + note.dur);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start(now + note.start);
-        osc.stop(now + note.start + note.dur);
-      } catch (_) {}
-    });
+      notes.forEach((note) => {
+        try {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(note.freq, now + note.start);
+          gain.gain.setValueAtTime(0.001, now + note.start);
+          gain.gain.linearRampToValueAtTime(0.16, now + note.start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + note.start + note.dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + note.start);
+          osc.stop(now + note.start + note.dur);
+        } catch (_) {}
+      });
+    } catch (_) {}
   }
 
   let cachedBoomBuffer = null;
-  let cachedMegaBoomBuffer = null;
 
   function getBoomBuffer(ctx, isMega) {
-    if (isMega && cachedMegaBoomBuffer) return cachedMegaBoomBuffer;
-    if (!isMega && cachedBoomBuffer) return cachedBoomBuffer;
+    if (cachedBoomBuffer) return cachedBoomBuffer;
     try {
-      const bufferLen = Math.floor(ctx.sampleRate * (isMega ? 1.1 : 0.8));
+      // Buffer ultra ligero y rápido de 0.07s (~3000 muestras)
+      const bufferLen = Math.min(Math.floor(ctx.sampleRate * 0.07), 3500);
       const buf = ctx.createBuffer(1, bufferLen, ctx.sampleRate);
       const data = buf.getChannelData(0);
-      const decay = isMega ? 0.3 : 0.2;
       for (let i = 0; i < data.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * decay));
+        data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
       }
-      if (isMega) cachedMegaBoomBuffer = buf;
-      else cachedBoomBuffer = buf;
+      cachedBoomBuffer = buf;
       return buf;
     } catch (_) {
       return null;
@@ -1533,12 +1529,12 @@
 
       const filter = ctx.createBiquadFilter();
       filter.type = "lowpass";
-      filter.frequency.setValueAtTime(isMega ? 580 : 460, ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + (isMega ? 1.0 : 0.7));
+      filter.frequency.setValueAtTime(isMega ? 520 : 420, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + (isMega ? 0.6 : 0.45));
 
       const boomGain = ctx.createGain();
-      boomGain.gain.setValueAtTime(isMega ? 0.85 : 0.6, ctx.currentTime);
-      boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (isMega ? 1.1 : 0.8));
+      boomGain.gain.setValueAtTime(isMega ? 0.75 : 0.55, ctx.currentTime);
+      boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (isMega ? 0.7 : 0.5));
 
       noise.connect(filter);
       filter.connect(boomGain);
@@ -1697,23 +1693,25 @@
 
   function speakFrenaManolo() {
     if (!("speechSynthesis" in window)) return;
-    setTimeout(() => {
-      try {
-        if (window.speechSynthesis.speaking) return;
-        const text = "¡Frena Manolo! ¡Que nos quemas la Ermita antes de empezar! ¡Déjalo enfriar!";
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "es-ES";
-        utterance.rate = 1.1;
-        utterance.pitch = 1.15;
-        utterance.volume = 0.9;
+    try {
+      window.speechSynthesis.cancel();
+      setTimeout(() => {
+        try {
+          const text = "¡Frena Manolo! ¡Que nos quemas la Ermita antes de empezar! ¡Déjalo enfriar!";
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = "es-ES";
+          utterance.rate = 1.1;
+          utterance.pitch = 1.15;
+          utterance.volume = 0.9;
 
-        const voices = window.speechSynthesis.getVoices();
-        const spanishVoice = voices.find((v) => v.lang === "es-ES") || voices.find((v) => v.lang.startsWith("es"));
-        if (spanishVoice) utterance.voice = spanishVoice;
+          const voices = window.speechSynthesis.getVoices();
+          const spanishVoice = voices.find((v) => v.lang === "es-ES") || voices.find((v) => v.lang.startsWith("es"));
+          if (spanishVoice) utterance.voice = spanishVoice;
 
-        window.speechSynthesis.speak(utterance);
-      } catch (_) {}
-    }, 10);
+          window.speechSynthesis.speak(utterance);
+        } catch (_) {}
+      }, 20);
+    } catch (_) {}
   }
 
   // --- Animación visual del cohete despegando ---
@@ -1761,11 +1759,12 @@
     if (card) {
       const cls = isMega ? "card-shake-mega" : "card-shake";
       card.classList.remove("card-shake", "card-shake-mega");
-      void card.offsetWidth; // Reiniciar animación de temblor en el marcador
-      card.classList.add(cls);
-      setTimeout(() => {
-        card.classList.remove(cls);
-      }, isMega ? 520 : 380);
+      requestAnimationFrame(() => {
+        card.classList.add(cls);
+        setTimeout(() => {
+          card.classList.remove(cls);
+        }, isMega ? 460 : 340);
+      });
     }
 
     // Destello de explosión
@@ -1774,53 +1773,66 @@
     document.body.appendChild(flash);
     setTimeout(() => {
       if (flash.parentNode) flash.parentNode.removeChild(flash);
-    }, 350);
+    }, 280);
   }
 
   // --- Motor de confeti ultraligero y de alto rendimiento ---
   let confettiAnimId = null;
   let activeConfetti = [];
+  let confettiSafetyTimer = null;
 
   function launchConfetti(isMega = false) {
     const canvas = document.getElementById("confettiCanvas");
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    // Resolución interna optimizada para GPU móvil (sin buffers 4K pesados)
+    const targetW = Math.min(window.innerWidth || 360, 480);
+    const targetH = Math.min(window.innerHeight || 640, 720);
+
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
     }
 
     const width = canvas.width;
     const height = canvas.height;
-    const colors = ["#ff3b30", "#ff8a00", "#ffcc00", "#0284c7", "#10b981", "#8b5cf6", "#ec4899", "#f59e0b", "#38bdf8"];
-    const fiestaIcons = ["🍷", "🍻", "🎶", "🔔", "🚀", "✨", "🎉", "🧀"];
-    const addCount = isMega ? 60 : 35;
+    const colors = ["#ef4444", "#f59e0b", "#10b981", "#0284c7", "#8b5cf6", "#ec4899", "#facc15"];
+    const addCount = isMega ? 26 : 18;
 
-    // Límite de seguridad: máximo 80 partículas para evitar cualquier sobrecarga en móviles
-    if (activeConfetti.length > 70) {
-      activeConfetti.splice(0, activeConfetti.length - 40);
+    // Limitar máximo 30 partículas para que nunca sature la GPU del móvil
+    if (activeConfetti.length > 16) {
+      activeConfetti.splice(0, activeConfetti.length - 12);
     }
 
     for (let i = 0; i < addCount; i++) {
       const fromLeft = i % 2 === 0;
-      const isEmoji = i % 5 === 0;
       activeConfetti.push({
-        x: fromLeft ? width * 0.38 + (Math.random() - 0.5) * 60 : width * 0.62 + (Math.random() - 0.5) * 60,
-        y: height * 0.30,
-        vx: (Math.random() - 0.5) * (isMega ? 18 : 13),
-        vy: -Math.random() * (isMega ? 16 : 11) - 5,
-        size: isEmoji ? 18 : (Math.random() * 6 + 4),
+        x: fromLeft ? width * 0.42 + (Math.random() - 0.5) * 50 : width * 0.58 + (Math.random() - 0.5) * 50,
+        y: height * 0.28,
+        vx: (Math.random() - 0.5) * (isMega ? 12 : 9),
+        vy: -Math.random() * (isMega ? 10 : 8) - 4,
+        w: Math.random() * 8 + 5,
+        h: Math.random() * 5 + 4,
         color: colors[i % colors.length],
-        isEmoji: isEmoji,
-        emoji: fiestaIcons[i % fiestaIcons.length],
         rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 12,
+        rotationSpeed: (Math.random() - 0.5) * 10,
         opacity: 1
       });
     }
+
+    // Watchdog de seguridad: cancela rAF y limpia en 1.3s
+    clearTimeout(confettiSafetyTimer);
+    confettiSafetyTimer = setTimeout(() => {
+      if (confettiAnimId) {
+        cancelAnimationFrame(confettiAnimId);
+        confettiAnimId = null;
+      }
+      activeConfetti = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }, 1300);
 
     if (confettiAnimId) return;
 
@@ -1832,21 +1844,17 @@
       }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const cHeight = canvas.height;
-      ctx.font = '18px "Segoe UI Emoji", "Apple Color Emoji", sans-serif';
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
 
       for (let i = activeConfetti.length - 1; i >= 0; i--) {
         const p = activeConfetti[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.32;
+        p.vy += 0.28;
         p.vx *= 0.98;
         p.rotation += p.rotationSpeed;
-        p.opacity -= 0.013;
+        p.opacity -= 0.018;
 
-        if (p.opacity <= 0 || p.y > cHeight + 20) {
+        if (p.opacity <= 0 || p.y > height + 15) {
           activeConfetti.splice(i, 1);
           continue;
         }
@@ -1855,13 +1863,8 @@
         ctx.translate(p.x, p.y);
         ctx.rotate((p.rotation * Math.PI) / 180);
         ctx.globalAlpha = Math.max(0, p.opacity);
-
-        if (p.isEmoji) {
-          ctx.fillText(p.emoji, 0, 0);
-        } else {
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
-        }
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
         ctx.restore();
       }
 
@@ -1933,7 +1936,7 @@
       spawnFlyingRocket("dud");
       playDudSound();
       if (navigator.vibrate) {
-        try { navigator.vibrate([60, 30, 60]); } catch (_) {}
+        try { navigator.vibrate(35); } catch (_) {}
       }
 
       setTimeout(() => {
@@ -1963,7 +1966,7 @@
         triggerScreenShake(isMega);
         if (navigator.vibrate) {
           try {
-            navigator.vibrate(isMega ? [120, 50, 120, 50, 350] : [80, 40, 80, 40, 220]);
+            navigator.vibrate(isMega ? 50 : 35);
           } catch (_) {}
         }
         launchConfetti(isMega);
@@ -2269,4 +2272,11 @@
   } else {
     loadData();
   }
+
+  // Garantizar que la página siempre empiece arriba del todo al terminar de cargar
+  window.addEventListener("load", () => {
+    if (!window.location.hash || window.location.hash === "#agenda") {
+      window.scrollTo(0, 0);
+    }
+  });
 })();
