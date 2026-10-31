@@ -261,6 +261,8 @@
   }
 
   // --- Inicialización de Interfaz ---
+  let hasAutoTriggeredChupinazo = false;
+
   function initApp() {
     if (appData.whatsappUrl && whatsappBtnEl) {
       whatsappBtnEl.href = appData.whatsappUrl;
@@ -281,6 +283,14 @@
     loadWeather();
     listenLiveAlerts();
     initAdminPanel();
+
+    // Chupinazo festivo automático al abrir la aplicación
+    if (!hasAutoTriggeredChupinazo) {
+      hasAutoTriggeredChupinazo = true;
+      setTimeout(() => {
+        triggerChupinazo();
+      }, 700);
+    }
 
     // Actualizar estado de "en directo" periódicamente
     setInterval(() => {
@@ -1237,57 +1247,83 @@
   // ==========================================================================
   // EXTRAS: CHUPINAZO FESTIVO (SONIDO SINTETIZADO + CONFETI)
   // ==========================================================================
+  let soundPlayedOnce = false;
+
   function playChupinazoSound() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
-      const now = ctx.currentTime;
 
-      // 1. Silbido ascendente del cohete (250Hz -> 1800Hz)
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      const runOscillators = () => {
+        soundPlayedOnce = true;
+        const now = ctx.currentTime;
 
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(250, now);
-      osc.frequency.exponentialRampToValueAtTime(1800, now + 0.6);
+        // 1. Silbido ascendente del cohete (250Hz -> 1800Hz)
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
 
-      gain.gain.setValueAtTime(0.01, now);
-      gain.gain.linearRampToValueAtTime(0.25, now + 0.3);
-      gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(250, now);
+        osc.frequency.exponentialRampToValueAtTime(1800, now + 0.6);
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.25, now + 0.3);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
 
-      osc.start(now);
-      osc.stop(now + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
 
-      // 2. Explosión del cohete (BOOM!)
-      setTimeout(() => {
-        const boomBuffer = ctx.createBuffer(1, ctx.sampleRate * 1.2, ctx.sampleRate);
-        const data = boomBuffer.getChannelData(0);
-        for (let i = 0; i < data.length; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.22));
-        }
+        osc.start(now);
+        osc.stop(now + 0.6);
 
-        const noise = ctx.createBufferSource();
-        noise.buffer = boomBuffer;
+        // 2. Explosión del cohete (BOOM!)
+        setTimeout(() => {
+          try {
+            const boomBuffer = ctx.createBuffer(1, ctx.sampleRate * 1.2, ctx.sampleRate);
+            const data = boomBuffer.getChannelData(0);
+            for (let i = 0; i < data.length; i++) {
+              data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.22));
+            }
 
-        const filter = ctx.createBiquadFilter();
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(450, ctx.currentTime);
-        filter.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.8);
+            const noise = ctx.createBufferSource();
+            noise.buffer = boomBuffer;
 
-        const boomGain = ctx.createGain();
-        boomGain.gain.setValueAtTime(0.65, ctx.currentTime);
-        boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.0);
+            const filter = ctx.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(450, ctx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.8);
 
-        noise.connect(filter);
-        filter.connect(boomGain);
-        boomGain.connect(ctx.destination);
+            const boomGain = ctx.createGain();
+            boomGain.gain.setValueAtTime(0.65, ctx.currentTime);
+            boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.0);
 
-        noise.start();
-      }, 620);
+            noise.connect(filter);
+            filter.connect(boomGain);
+            boomGain.connect(ctx.destination);
+
+            noise.start();
+          } catch (_) {}
+        }, 620);
+      };
+
+      if (ctx.state === "suspended") {
+        ctx.resume().then(() => {
+          runOscillators();
+        }).catch(() => {
+          // Autoplay policy móvil: desbloquear sonido en el primer toque de pantalla
+          const unlockAudio = () => {
+            if (!soundPlayedOnce) {
+              playChupinazoSound();
+            }
+          };
+          window.addEventListener("pointerdown", unlockAudio, { once: true });
+          window.addEventListener("touchstart", unlockAudio, { once: true });
+          window.addEventListener("click", unlockAudio, { once: true });
+        });
+      } else {
+        runOscillators();
+      }
     } catch (e) {
       console.warn("AudioContext no disponible:", e);
     }
@@ -1301,20 +1337,21 @@
     const width = (canvas.width = window.innerWidth);
     const height = (canvas.height = window.innerHeight);
 
-    const colors = ["#ff3b30", "#ff8a00", "#ffcc00", "#0284c7", "#10b981", "#8b5cf6", "#ec4899"];
-    const count = 120;
+    const colors = ["#ff3b30", "#ff8a00", "#ffcc00", "#0284c7", "#10b981", "#8b5cf6", "#ec4899", "#f59e0b", "#38bdf8"];
+    const count = 160;
     const particles = [];
 
     for (let i = 0; i < count; i++) {
+      const fromLeft = i % 2 === 0;
       particles.push({
-        x: width / 2 + (Math.random() - 0.5) * 80,
-        y: height * 0.45,
-        vx: (Math.random() - 0.5) * 16,
-        vy: -Math.random() * 14 - 6,
+        x: fromLeft ? width * 0.35 + (Math.random() - 0.5) * 80 : width * 0.65 + (Math.random() - 0.5) * 80,
+        y: height * 0.42,
+        vx: (Math.random() - 0.5) * 18,
+        vy: -Math.random() * 15 - 7,
         size: Math.random() * 8 + 4,
         color: colors[Math.floor(Math.random() * colors.length)],
         rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 12,
+        rotationSpeed: (Math.random() - 0.5) * 14,
         opacity: 1
       });
     }
