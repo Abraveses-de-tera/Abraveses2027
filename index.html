@@ -350,6 +350,24 @@
     </div>
   </div>
 
+  <!-- MODAL: VISOR DE FOTO DE EVENTO A TAMAÑO COMPLETO -->
+  <div class="modal-backdrop" id="imageLightboxModal" hidden aria-hidden="true">
+    <div class="modal-dialog modal-dialog--poster" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+      <div class="modal-header">
+        <h3 id="lightboxTitle">Foto del evento</h3>
+        <button type="button" class="modal-close" data-close-modal aria-label="Cerrar ventana">✕</button>
+      </div>
+      <div class="modal-body modal-body--image">
+        <img id="lightboxImg" src="" alt="Foto del evento" class="poster-full-image" loading="lazy" />
+        <div class="poster-footer-bar">
+          <a id="lightboxFullLink" href="#" target="_blank" rel="noopener noreferrer" class="poster-full-link">
+            <span>🔎</span> Abrir imagen original en nueva pestaña
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: LUGARES DE LA FIESTA Y MAPA INTERACTIVO -->
   <div class="modal-backdrop" id="mapModal" hidden aria-hidden="true">
     <div class="modal-dialog modal-dialog--map" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">

@@ -1010,6 +1010,26 @@
       });
     });
 
+    // Visor lightbox de imágenes de eventos a tamaño completo
+    document.addEventListener("click", (e) => {
+      const photo = e.target.closest(".event-photo");
+      if (!photo) return;
+      e.stopPropagation();
+      const lightboxModalEl = document.getElementById("imageLightboxModal");
+      const lightboxImg = document.getElementById("lightboxImg");
+      const lightboxTitle = document.getElementById("lightboxTitle");
+      const lightboxFullLink = document.getElementById("lightboxFullLink");
+
+      if (lightboxModalEl && lightboxImg) {
+        lightboxImg.src = photo.src;
+        lightboxImg.alt = photo.alt || "Foto de fiestas de Abraveses";
+        if (lightboxTitle) lightboxTitle.textContent = photo.alt || "Foto del evento";
+        if (lightboxFullLink) lightboxFullLink.href = photo.src;
+        lightboxModalEl.hidden = false;
+        lightboxModalEl.setAttribute("aria-hidden", "false");
+      }
+    });
+
     document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
       backdrop.addEventListener("click", (e) => {
         if (e.target === backdrop) {
@@ -1028,7 +1048,8 @@
   }
 
   function closeAllModals() {
-    [posterModalEl, mapModalEl, adminModalEl].forEach((modal) => {
+    const lightboxModalEl = document.getElementById("imageLightboxModal");
+    [posterModalEl, mapModalEl, adminModalEl, lightboxModalEl].forEach((modal) => {
       if (modal) {
         modal.hidden = true;
         modal.setAttribute("aria-hidden", "true");
