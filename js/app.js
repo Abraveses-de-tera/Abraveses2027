@@ -1363,7 +1363,6 @@
   let consecutiveLaunches = 0;
   let isPendingMega = false;
   let isOverheated = false;
-  let isRocketFlying = false;
   let aplausometroExcitement = 20;
   let lastLaunchTimestamp = Date.now();
 
@@ -1534,25 +1533,20 @@
 
   function playBoomSound(ctx, isMega = false) {
     try {
-      const boomBuffer = getBoomBuffer(ctx, isMega);
-      if (!boomBuffer) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(isMega ? 150 : 120, now);
+      osc.frequency.exponentialRampToValueAtTime(35, now + (isMega ? 0.32 : 0.22));
 
-      const noise = ctx.createBufferSource();
-      noise.buffer = boomBuffer;
+      gain.gain.setValueAtTime(0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + (isMega ? 0.32 : 0.22));
 
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(isMega ? 520 : 420, ctx.currentTime);
-      filter.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + (isMega ? 0.6 : 0.45));
-
-      const boomGain = ctx.createGain();
-      boomGain.gain.setValueAtTime(isMega ? 0.75 : 0.55, ctx.currentTime);
-      boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (isMega ? 0.7 : 0.5));
-
-      noise.connect(filter);
-      filter.connect(boomGain);
-      boomGain.connect(ctx.destination);
-      noise.start();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + (isMega ? 0.32 : 0.22));
     } catch (_) {}
   }
 
@@ -1789,112 +1783,66 @@
     }, 280);
   }
 
-  // --- Motor de confeti ultraligero y de alto rendimiento ---
-  let confettiAnimId = null;
-  let activeConfetti = [];
-  let confettiSafetyTimer = null;
+  // --- Motor de confeti DOM ultraligero (100% GPU, cero canvas, cero congelación en móvil) ---
+  let confettiClearTimer = null;
 
   function launchConfetti(isMega = false) {
-    const canvas = document.getElementById("confettiCanvas");
-    if (!canvas) return;
+    const container = document.getElementById("confettiContainer");
+    if (!container) return;
 
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
+    const colors = ["#ef4444", "#f59e0b", "#10b981", "#0284c7", "#8b5cf6", "#ec4899", "#facc15", "#38bdf8"];
+    const count = isMega ? 28 : 18;
 
-    // Resolución interna optimizada para GPU móvil (sin buffers 4K pesados)
-    const targetW = Math.min(window.innerWidth || 360, 480);
-    const targetH = Math.min(window.innerHeight || 640, 720);
-
-    if (canvas.width !== targetW || canvas.height !== targetH) {
-      canvas.width = targetW;
-      canvas.height = targetH;
+    // Si ya hay partículas de clics anteriores, podar las más antiguas para mantener DOM ligero
+    while (container.childNodes.length > 24) {
+      container.removeChild(container.firstChild);
     }
 
-    const width = canvas.width;
-    const height = canvas.height;
-    const colors = ["#ef4444", "#f59e0b", "#10b981", "#0284c7", "#8b5cf6", "#ec4899", "#facc15"];
-    const addCount = isMega ? 26 : 18;
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const piece = document.createElement("div");
+      piece.className = "confetti-piece";
+      const color = colors[i % colors.length];
+      const dx = (Math.random() - 0.5) * (isMega ? 340 : 260);
+      const dy = -Math.random() * (isMega ? 130 : 85) - 20;
+      const dur = (0.9 + Math.random() * 0.35).toFixed(2) + "s";
+      const rot = Math.round((Math.random() - 0.5) * 540) + "deg";
+      const w = Math.round(Math.random() * 5 + 6) + "px";
+      const h = Math.round(Math.random() * 6 + 8) + "px";
 
-    // Limitar máximo 30 partículas para que nunca sature la GPU del móvil
-    if (activeConfetti.length > 16) {
-      activeConfetti.splice(0, activeConfetti.length - 12);
+      piece.style.backgroundColor = color;
+      piece.style.width = w;
+      piece.style.height = h;
+      piece.style.setProperty("--dx", `${dx.toFixed(0)}px`);
+      piece.style.setProperty("--dy", `${dy.toFixed(0)}px`);
+      piece.style.setProperty("--dur", dur);
+      piece.style.setProperty("--rot", rot);
+
+      fragment.appendChild(piece);
     }
 
-    for (let i = 0; i < addCount; i++) {
-      const fromLeft = i % 2 === 0;
-      activeConfetti.push({
-        x: fromLeft ? width * 0.42 + (Math.random() - 0.5) * 50 : width * 0.58 + (Math.random() - 0.5) * 50,
-        y: height * 0.28,
-        vx: (Math.random() - 0.5) * (isMega ? 12 : 9),
-        vy: -Math.random() * (isMega ? 10 : 8) - 4,
-        w: Math.random() * 8 + 5,
-        h: Math.random() * 5 + 4,
-        color: colors[i % colors.length],
-        rotation: Math.random() * 360,
-        rotationSpeed: (Math.random() - 0.5) * 10,
-        opacity: 1
-      });
-    }
+    container.appendChild(fragment);
 
-    // Watchdog de seguridad: cancela rAF y limpia en 1.3s
-    clearTimeout(confettiSafetyTimer);
-    confettiSafetyTimer = setTimeout(() => {
-      if (confettiAnimId) {
-        cancelAnimationFrame(confettiAnimId);
-        confettiAnimId = null;
+    clearTimeout(confettiClearTimer);
+    confettiClearTimer = setTimeout(() => {
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
       }
-      activeConfetti = [];
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }, 1300);
-
-    if (confettiAnimId) return;
-
-    function renderConfetti() {
-      if (activeConfetti.length === 0) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        confettiAnimId = null;
-        return;
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = activeConfetti.length - 1; i >= 0; i--) {
-        const p = activeConfetti[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.28;
-        p.vx *= 0.98;
-        p.rotation += p.rotationSpeed;
-        p.opacity -= 0.018;
-
-        if (p.opacity <= 0 || p.y > height + 15) {
-          activeConfetti.splice(i, 1);
-          continue;
-        }
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.globalAlpha = Math.max(0, p.opacity);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-        ctx.restore();
-      }
-
-      confettiAnimId = requestAnimationFrame(renderConfetti);
-    }
-
-    confettiAnimId = requestAnimationFrame(renderConfetti);
+    }, 1400);
   }
 
-  let rocketWatchdog = null;
+  let lastChupinazoClick = 0;
 
   function triggerChupinazo(isAuto = false) {
-    // Si ya está recalentado o hay cohete en curso, ignorar clic para evitar saturar el navegador
-    if (isOverheated || (isRocketFlying && !isAuto)) return;
+    if (isOverheated) return;
+
+    // Debounce ágil de 140ms para permitir toques rápidos sin que se sienta colgado
+    const now = Date.now();
+    if (!isAuto && now - lastChupinazoClick < 140) return;
+    lastChupinazoClick = now;
 
     if (!isAuto) {
-      lastLaunchTimestamp = Date.now();
+      lastLaunchTimestamp = now;
       // Incrementar aguja del aplausómetro (+22% por cohete)
       aplausometroExcitement = Math.min(100, aplausometroExcitement + 22);
       updateAplausometroUI();
@@ -1932,14 +1880,6 @@
       }
     }
 
-    isRocketFlying = true;
-
-    // Watchdog de seguridad absoluta: garantiza que NUNCA se quede bloqueado
-    clearTimeout(rocketWatchdog);
-    rocketWatchdog = setTimeout(() => {
-      isRocketFlying = false;
-    }, 1100);
-
     // Comprobar si toca el Gag del "Cohete de Hacendado" (fallido)
     const isDud = !isAuto && !isPendingMega && consecutiveLaunches > 0 && consecutiveLaunches % 7 === 0;
 
@@ -1954,8 +1894,7 @@
 
       setTimeout(() => {
         showToast("¡Vaya por Dios, este cohete era de hacendado! 🤦‍♂️💨 Dale otra vez con ganas a la mecha...");
-        isRocketFlying = false;
-      }, 1100);
+      }, 700);
       return;
     }
 
@@ -1972,7 +1911,7 @@
     spawnFlyingRocket(isMega ? "mega" : "normal");
     playChupinazoSound(isMega);
 
-    const flightTime = isMega ? 460 : 660;
+    const flightTime = isMega ? 280 : 380;
 
     setTimeout(() => {
       try {
@@ -1992,8 +1931,6 @@
         }
       } catch (err) {
         console.warn("Chupinazo animation callback error:", err);
-      } finally {
-        isRocketFlying = false;
       }
     }, flightTime);
   }

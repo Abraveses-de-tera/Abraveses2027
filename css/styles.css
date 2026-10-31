@@ -2268,15 +2268,41 @@ body.theme-dark .leaflet-popup-tip {
   30%, 100% { transform: translateX(100%) rotate(25deg); }
 }
 
-/* Canvas para el confeti */
-.confetti-canvas {
+/* Contenedor de Confeti DOM ultraligero (100% acelerado por GPU, 0% bloqueo en móviles) */
+.confetti-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   pointer-events: none;
+  overflow: hidden;
   z-index: 99999;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 30vh;
+  left: 50%;
+  border-radius: 2px;
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: confetti-fall var(--dur, 1.1s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(-50%, 0, 0) rotate(0deg) scale(0.6);
+    opacity: 1;
+  }
+  25% {
+    transform: translate3d(calc(-50% + var(--dx, 0px) * 0.45), calc(var(--dy, 0px) * 0.4), 0) rotate(var(--rot, 180deg)) scale(1.15);
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate3d(calc(-50% + var(--dx, 0px)), calc(var(--dy, 0px) + 55vh), 0) rotate(calc(var(--rot, 180deg) * 2.5)) scale(0.85);
+    opacity: 0;
+  }
 }
 
 /* ==========================================================================
@@ -2590,7 +2616,7 @@ body.theme-dark .aplausometro-card {
 
 /* Animación: Vuelo normal con aceleración hardware fluida */
 .chupinazo-rocket--normal {
-  animation: rocket-flight 0.72s cubic-bezier(0.2, 0.6, 0.35, 1) forwards;
+  animation: rocket-flight 0.45s cubic-bezier(0.2, 0.6, 0.35, 1) forwards;
 }
 
 @keyframes rocket-flight {
@@ -2622,7 +2648,7 @@ body.theme-dark .aplausometro-card {
 
 /* Animación: Mega Trallazo (ultra rápido y ligero) */
 .chupinazo-rocket--mega {
-  animation: rocket-flight-mega 0.5s cubic-bezier(0.15, 0.7, 0.25, 1) forwards;
+  animation: rocket-flight-mega 0.35s cubic-bezier(0.15, 0.7, 0.25, 1) forwards;
 }
 
 @keyframes rocket-flight-mega {

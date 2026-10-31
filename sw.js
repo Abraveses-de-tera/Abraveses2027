@@ -3,7 +3,7 @@
  * Estrategia de caché para funcionamiento 100% offline
  */
 
-const CACHE_NAME = "abraveses-2027-v3.7.6";
+const CACHE_NAME = "abraveses-2027-v3.7.7";
 
 const PRECACHE_ASSETS = [
   "./",
@@ -86,8 +86,13 @@ self.addEventListener("fetch", (event) => {
   // Solo gestionar peticiones del mismo origen
   if (url.origin !== self.location.origin) return;
 
-  // Para events.json y events-data.js: Network-first con fallback a caché
-  if (url.pathname.endsWith("events.json") || url.pathname.endsWith("events-data.js")) {
+  // Para app.js, styles.css, events.json y events-data.js: Network-first con fallback a caché
+  if (
+    url.pathname.includes("app.js") ||
+    url.pathname.includes("styles.css") ||
+    url.pathname.endsWith("events.json") ||
+    url.pathname.endsWith("events-data.js")
+  ) {
     event.respondWith(
       fetch(request)
         .then((response) => {
