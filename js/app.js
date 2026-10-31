@@ -905,10 +905,14 @@
       themeToggleBtn.addEventListener("click", cycleTheme);
     }
 
-    // Botón de Chupinazo
+    // Botón de Chupinazo y logo interactivo de la ermita
     const btnChupinazo = document.getElementById("btnChupinazo");
     if (btnChupinazo) {
       btnChupinazo.addEventListener("click", triggerChupinazo);
+    }
+    const heroLogoEl = document.querySelector(".hero-logo");
+    if (heroLogoEl) {
+      heroLogoEl.addEventListener("click", triggerChupinazo);
     }
 
     // Pestañas rápidas del mapa interactivo

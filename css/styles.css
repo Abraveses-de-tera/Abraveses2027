@@ -51,10 +51,11 @@ body {
   margin: 0;
   padding: 0;
   color: var(--ink);
-  background: linear-gradient(180deg, #fef3c7 0%, #fffbeb 180px, var(--paper) 360px);
+  background-color: #f1f5f9;
   font-family: var(--font-family);
   line-height: 1.5;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 button, input {
@@ -69,10 +70,14 @@ img {
 
 /* Contenedor principal centrado estilo App */
 .app-layout {
+  position: relative;
+  z-index: 1;
   width: min(100%, 720px);
   margin: 0 auto;
-  background-color: var(--paper);
-  box-shadow: 0 0 35px rgba(17, 24, 39, 0.07);
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 0 45px rgba(17, 24, 39, 0.1);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -190,16 +195,65 @@ img {
   }
 }
 
+/* Contenedor e icono ampliado y festivo de la ermita */
+.hero-logo-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 124px;
+  height: 124px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .hero-logo {
   position: relative;
-  z-index: 1;
-  width: 82px;
-  height: 82px;
+  z-index: 2;
+  width: 124px;
+  height: 124px;
   border-radius: 50%;
-  margin: 0 auto 10px;
   object-fit: contain;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  padding: 6px;
   background-color: #ffffff;
+  border: 3.5px solid var(--yellow);
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.4), 0 0 25px rgba(245, 158, 11, 0.4);
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease;
+  cursor: pointer;
+}
+
+.hero-logo:hover,
+.hero-logo:active {
+  transform: scale(1.08) rotate(2deg);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5), 0 0 35px rgba(245, 158, 11, 0.7);
+}
+
+.hero-logo-halo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.5) 0%, rgba(245, 158, 11, 0.2) 60%, transparent 80%);
+  filter: blur(10px);
+  z-index: 1;
+  animation: halo-pulse 3.2s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes halo-pulse {
+  0% { transform: scale(0.92); opacity: 0.45; }
+  100% { transform: scale(1.15); opacity: 0.9; }
+}
+
+@media (min-width: 520px) {
+  .hero-logo-wrapper {
+    width: 138px;
+    height: 138px;
+    margin-bottom: 14px;
+  }
+  .hero-logo {
+    width: 138px;
+    height: 138px;
+  }
 }
 
 .hero-eyebrow {
@@ -2916,4 +2970,173 @@ body.theme-dark .admin-cancel-btn:active {
   background-color: #334155 !important;
   color: #ffffff !important;
   border-color: #38bdf8 !important;
+}
+/* ==========================================================================
+   FONDO DINAMICO FESTIVO (AMBIENT MESH & AURORA GRADIENT)
+   ========================================================================== */
+.dynamic-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: #f1f5f9;
+  transition: background-color 0.4s ease;
+}
+
+body.theme-dark .dynamic-bg {
+  background-color: #05080e !important;
+}
+
+/* Esferas de luz ambiental fluidas */
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(75px);
+  opacity: 0.38;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Orbe 1: Dorado festivo calido */
+.bg-orb--1 {
+  top: -10%;
+  left: -5%;
+  width: min(70vw, 500px);
+  height: min(70vw, 500px);
+  background: radial-gradient(circle, #f59e0b 0%, #fbbf24 60%, transparent 80%);
+  animation: float-orb-1 22s ease-in-out infinite alternate;
+}
+
+/* Orbe 2: Azul cielo y agua del rio Tera */
+.bg-orb--2 {
+  top: 30%;
+  right: -10%;
+  width: min(75vw, 550px);
+  height: min(75vw, 550px);
+  background: radial-gradient(circle, #0284c7 0%, #38bdf8 65%, transparent 80%);
+  animation: float-orb-2 26s ease-in-out infinite alternate;
+}
+
+/* Orbe 3: Rosa / Rubi de verbena nocturna */
+.bg-orb--3 {
+  bottom: 5%;
+  left: -10%;
+  width: min(80vw, 520px);
+  height: min(80vw, 520px);
+  background: radial-gradient(circle, #e11d48 0%, #fb7185 60%, transparent 80%);
+  animation: float-orb-3 24s ease-in-out infinite alternate;
+}
+
+/* Orbe 4: Verde ribera y alamedas del Tera */
+.bg-orb--4 {
+  bottom: 25%;
+  right: 15%;
+  width: min(65vw, 450px);
+  height: min(65vw, 450px);
+  background: radial-gradient(circle, #10b981 0%, #34d399 60%, transparent 80%);
+  animation: float-orb-4 28s ease-in-out infinite alternate;
+}
+
+@keyframes float-orb-1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(12vw, 15vh, 0) scale(1.15); }
+  100% { transform: translate3d(4vw, 25vh, 0) scale(0.95); }
+}
+
+@keyframes float-orb-2 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-14vw, 12vh, 0) scale(1.2); }
+  100% { transform: translate3d(-6vw, -10vh, 0) scale(0.9); }
+}
+
+@keyframes float-orb-3 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(16vw, -12vh, 0) scale(1.1); }
+  100% { transform: translate3d(8vw, -20vh, 0) scale(0.95); }
+}
+
+@keyframes float-orb-4 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-10vw, -15vh, 0) scale(1.18); }
+  100% { transform: translate3d(-15vw, 10vh, 0) scale(0.85); }
+}
+
+/* Variacion para Modo Noche */
+body.theme-dark .bg-orb {
+  filter: blur(85px);
+  opacity: 0.34;
+}
+
+body.theme-dark .bg-orb--1 {
+  background: radial-gradient(circle, #b45309 0%, #d97706 55%, transparent 75%) !important;
+}
+
+body.theme-dark .bg-orb--2 {
+  background: radial-gradient(circle, #0369a1 0%, #0284c7 60%, transparent 75%) !important;
+}
+
+body.theme-dark .bg-orb--3 {
+  background: radial-gradient(circle, #881337 0%, #be123c 60%, transparent 75%) !important;
+}
+
+body.theme-dark .bg-orb--4 {
+  background: radial-gradient(circle, #064e3b 0%, #047857 60%, transparent 75%) !important;
+}
+
+/* Capa de micro-particulas estivales */
+.bg-dust-layer {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 10% 20%, rgba(245, 158, 11, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 30% 70%, rgba(2, 132, 199, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 70% 30%, rgba(225, 29, 72, 0.45), transparent),
+    radial-gradient(2px 2px at 85% 85%, rgba(16, 185, 129, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 50% 50%, rgba(245, 158, 11, 0.35), transparent);
+  background-size: 100% 100%;
+  opacity: 0.6;
+  animation: dust-drift 30s linear infinite alternate;
+}
+
+body.theme-dark .bg-dust-layer {
+  opacity: 0.75;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 15% 25%, rgba(56, 189, 248, 0.6), transparent),
+    radial-gradient(2px 2px at 40% 75%, rgba(251, 191, 36, 0.65), transparent),
+    radial-gradient(1.5px 1.5px at 75% 35%, rgba(244, 63, 94, 0.6), transparent),
+    radial-gradient(2px 2px at 88% 80%, rgba(52, 211, 153, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 55% 45%, rgba(255, 255, 255, 0.7), transparent);
+}
+
+@keyframes dust-drift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-30px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-orb, .bg-dust-layer {
+    animation: none !important;
+  }
+}
+
+/* Modo noche para layout y logo */
+body.theme-dark .app-layout {
+  background-color: rgba(9, 14, 23, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.85) !important;
+}
+
+body.theme-dark .hero-logo {
+  background-color: #ffffff !important;
+  border-color: #fbbf24 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75), 0 0 30px rgba(251, 191, 36, 0.45) !important;
+}
+
+body.theme-dark .hero-logo-halo {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.6) 0%, rgba(56, 189, 248, 0.3) 65%, transparent 85%) !important;
 }

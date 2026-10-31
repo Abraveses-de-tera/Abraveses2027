@@ -42,6 +42,15 @@
   </script>
 </head>
 <body>
+  <!-- FONDO DINÁMICO FESTIVO (AURORA & AMBIENT MESH) -->
+  <div class="dynamic-bg" aria-hidden="true">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-orb bg-orb--3"></div>
+    <div class="bg-orb bg-orb--4"></div>
+    <div class="bg-dust-layer"></div>
+  </div>
+
   <div class="app-layout">
     <!-- HERO / PORTADA -->
     <header class="hero" id="inicio">
@@ -83,7 +92,10 @@
         </button>
       </div>
 
-      <img class="hero-logo" src="images/logo-hermita-hero.png" alt="Logo de la Ermita de Abraveses de Tera" width="84" height="84" />
+      <div class="hero-logo-wrapper">
+        <img class="hero-logo" src="images/hermita-logo.png" alt="Logo de la Ermita de Abraveses de Tera" width="130" height="130" loading="eager" />
+        <div class="hero-logo-halo" aria-hidden="true"></div>
+      </div>
       <p class="hero-eyebrow">DEL 23 AL 29 DE AGOSTO DE 2027</p>
       <h1 class="hero-title">ABRAVESES</h1>
       <p class="hero-subtitle">Simpatía y buen humor</p>
