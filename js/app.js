@@ -1323,7 +1323,7 @@
   const CHUPINAZO_QUOTES = [
     "🚀 ¡BOOOOOM! ¡Vivan las fiestas de Abraveses de Tera! 🎉🥂",
     "🚀 ¡A las bodegas todo el mundo! ¡Viva la Virgen de las Encinas! 🍷🧀",
-    "🚀 ¡Atención peñas! ¡Queda terminantemente prohibido dormir hasta el domingo! 🍻🔥",
+    "🚀 ¡Atención vecinos! ¡Queda terminantemente prohibido dormir hasta el domingo! 🍻🔥",
     "🚀 ¡Que empiece la jarana! ¡El que no baile en la Media Luna paga la ronda! 💃🕺",
     "🚀 ¡Peligro: Comisión de Fiestas suelta con ganas de juerga! 📢🎉",
     "🚀 ¡Vecinos y forasteros: que nadie se quede con el vaso vacío! 🥂🎊",
@@ -1361,7 +1361,7 @@
       text = "¡PELIGRO: ZONA MANOLO!";
     } else if (aplausometroExcitement > 72) {
       dot = "🟠";
-      text = "¡JUERGA TOTAL EN LAS PEÑAS!";
+      text = "¡FIESTA TOTAL EN EL PUEBLO!";
     } else if (aplausometroExcitement > 48) {
       dot = "🟡";
       text = "¡Ambiente festivo en la plaza!";
@@ -2115,7 +2115,7 @@
       },
       general: {
         title: "📢 Comunicado de la Comisión de Fiestas",
-        message: "Aviso de la comisión para todos los vecinos, peñas y visitantes de Abraveses de Tera.",
+        message: "Aviso de la comisión para todos los vecinos y visitantes de Abraveses de Tera.",
         type: "info"
       }
     };
