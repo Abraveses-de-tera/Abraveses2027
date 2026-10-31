@@ -283,12 +283,13 @@
     loadWeather();
     listenLiveAlerts();
     initAdminPanel();
+    initChupinazometro();
 
     // Chupinazo festivo automático al abrir la aplicación
     if (!hasAutoTriggeredChupinazo) {
       hasAutoTriggeredChupinazo = true;
       setTimeout(() => {
-        triggerChupinazo();
+        triggerChupinazo(true);
       }, 700);
     }
 
@@ -957,14 +958,18 @@
       themeToggleBtn.addEventListener("click", cycleTheme);
     }
 
-    // Botón de Chupinazo y logo interactivo de la ermita
+    // Botón de Chupinazo, chupinazómetro y logo interactivo de la ermita
     const btnChupinazo = document.getElementById("btnChupinazo");
     if (btnChupinazo) {
-      btnChupinazo.addEventListener("click", triggerChupinazo);
+      btnChupinazo.addEventListener("click", () => triggerChupinazo(false));
+    }
+    const chupinazometroWrap = document.getElementById("chupinazometroWrap");
+    if (chupinazometroWrap) {
+      chupinazometroWrap.addEventListener("click", () => triggerChupinazo(false));
     }
     const heroLogoEl = document.querySelector(".hero-logo");
     if (heroLogoEl) {
-      heroLogoEl.addEventListener("click", triggerChupinazo);
+      heroLogoEl.addEventListener("click", () => triggerChupinazo(false));
     }
 
     // Pestañas rápidas del mapa interactivo
@@ -1303,91 +1308,351 @@
   }
 
   // ==========================================================================
-  // EXTRAS: CHUPINAZO FESTIVO (SONIDO SINTETIZADO + CONFETI)
+  // EXTRAS: CHUPINAZO FESTIVO (COHETE ANIMADO, CHARANGA, GAGS Y CHUPINAZÓMETRO)
   // ==========================================================================
   let soundPlayedOnce = false;
+  let sharedAudioCtx = null;
+  let chupinazoCount = parseInt(localStorage.getItem("abraveses_chupinazos_count") || "348", 10);
+  let consecutiveLaunches = 0;
+  let isPendingMega = false;
+  let clickTimestamps = [];
+  let isOverheated = false;
+  let isRocketFlying = false;
 
-  function playChupinazoSound() {
+  const CHUPINAZO_QUOTES = [
+    "🚀 ¡BOOOOOM! ¡Vivan las fiestas de Abraveses de Tera! 🎉🥂",
+    "🚀 ¡A las bodegas todo el mundo! ¡Viva la Virgen de las Encinas! 🍷🧀",
+    "🚀 ¡Atención peñas! ¡Queda terminantemente prohibido dormir hasta el domingo! 🍻🔥",
+    "🚀 ¡Que empiece la jarana! ¡El que no baile en la Media Luna paga la ronda! 💃🕺",
+    "🚀 ¡Peligro: Comisión de Fiestas suelta con ganas de juerga! 📢🎉",
+    "🚀 ¡Vecinos y forasteros: que nadie se quede con el vaso vacío! 🥂🎊",
+    "🚀 ¡Menos agua y más vino de las bodegas! ¡Viva Abraveses de Tera! 🍷✨"
+  ];
+
+  function getAudioContext() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
+      if (!AudioCtx) return null;
+      if (!sharedAudioCtx || sharedAudioCtx.state === "closed") {
+        sharedAudioCtx = new AudioCtx();
+      }
+      return sharedAudioCtx;
+    } catch (_) {
+      return null;
+    }
+  }
 
-      const runOscillators = () => {
-        soundPlayedOnce = true;
-        const now = ctx.currentTime;
+  // --- Actualizar Chupinazómetro ---
+  function initChupinazometro() {
+    const countEl = document.getElementById("chupinazoCount");
+    if (countEl) {
+      countEl.textContent = chupinazoCount.toLocaleString("es-ES");
+    }
 
-        // 1. Silbido ascendente del cohete (250Hz -> 1800Hz)
+    if (hasFirebase()) {
+      try {
+        firebase.database().ref("stats/chupinazos").on("value", (snap) => {
+          const val = snap.val();
+          if (typeof val === "number" && val >= chupinazoCount) {
+            chupinazoCount = val;
+            localStorage.setItem("abraveses_chupinazos_count", String(chupinazoCount));
+            if (countEl) {
+              countEl.textContent = chupinazoCount.toLocaleString("es-ES");
+            }
+          }
+        });
+      } catch (_) {}
+    }
+  }
+
+  function incrementChupinazometro() {
+    chupinazoCount++;
+    localStorage.setItem("abraveses_chupinazos_count", String(chupinazoCount));
+    const countEl = document.getElementById("chupinazoCount");
+    if (countEl) {
+      countEl.textContent = chupinazoCount.toLocaleString("es-ES");
+      countEl.classList.add("bump");
+      setTimeout(() => countEl.classList.remove("bump"), 250);
+    }
+    if (hasFirebase()) {
+      try {
+        firebase.database().ref("stats/chupinazos").transaction((curr) => {
+          return (curr || 348) + 1;
+        });
+      } catch (_) {}
+    }
+  }
+
+  // --- Sonidos Web Audio API (Charanga, Cohete, Dud y Vapor) ---
+  function playCharangaFanfare(ctx) {
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    // Fanfarria verbenera española: Sol4 - Do5 - Mi5 - Sol5 ... Mi5 - Sol5!
+    const melody = [
+      { freq: 392.00, start: 0.00, dur: 0.12 },
+      { freq: 523.25, start: 0.13, dur: 0.12 },
+      { freq: 659.25, start: 0.26, dur: 0.14 },
+      { freq: 783.99, start: 0.41, dur: 0.32 },
+      { freq: 659.25, start: 0.78, dur: 0.12 },
+      { freq: 783.99, start: 0.91, dur: 0.45 }
+    ];
+
+    melody.forEach((note) => {
+      try {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
 
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(250, now);
-        osc.frequency.exponentialRampToValueAtTime(1800, now + 0.6);
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(note.freq, now + note.start);
+
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(2400, now + note.start);
+        filter.frequency.exponentialRampToValueAtTime(700, now + note.start + note.dur);
+
+        gain.gain.setValueAtTime(0.001, now + note.start);
+        gain.gain.linearRampToValueAtTime(0.24, now + note.start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + note.start + note.dur);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now + note.start);
+        osc.stop(now + note.start + note.dur);
+      } catch (_) {}
+    });
+  }
+
+  function playBoomSound(ctx, isMega = false) {
+    try {
+      const bufferLen = isMega ? ctx.sampleRate * 1.5 : ctx.sampleRate * 1.1;
+      const boomBuffer = ctx.createBuffer(1, bufferLen, ctx.sampleRate);
+      const data = boomBuffer.getChannelData(0);
+      const decay = isMega ? 0.32 : 0.22;
+      for (let i = 0; i < data.length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * decay));
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = boomBuffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(isMega ? 580 : 460, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + (isMega ? 1.2 : 0.8));
+
+      const boomGain = ctx.createGain();
+      boomGain.gain.setValueAtTime(isMega ? 0.9 : 0.65, ctx.currentTime);
+      boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + (isMega ? 1.4 : 1.0));
+
+      noise.connect(filter);
+      filter.connect(boomGain);
+      boomGain.connect(ctx.destination);
+      noise.start();
+
+      if (isMega) {
+        setTimeout(() => {
+          try {
+            const noise2 = ctx.createBufferSource();
+            noise2.buffer = boomBuffer;
+            const boomGain2 = ctx.createGain();
+            boomGain2.gain.setValueAtTime(0.75, ctx.currentTime);
+            boomGain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.0);
+            noise2.connect(filter);
+            filter.connect(boomGain2);
+            boomGain2.connect(ctx.destination);
+            noise2.start();
+          } catch (_) {}
+        }, 130);
+      }
+    } catch (_) {}
+  }
+
+  function playChupinazoSound(isMega = false) {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const run = () => {
+        soundPlayedOnce = true;
+        const now = ctx.currentTime;
+        const duration = isMega ? 0.48 : 0.7;
+
+        // 1. Silbido ascendente
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = isMega ? "sawtooth" : "sine";
+        osc.frequency.setValueAtTime(isMega ? 320 : 250, now);
+        osc.frequency.exponentialRampToValueAtTime(isMega ? 2500 : 1850, now + duration);
 
         gain.gain.setValueAtTime(0.01, now);
-        gain.gain.linearRampToValueAtTime(0.25, now + 0.3);
-        gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+        gain.gain.linearRampToValueAtTime(isMega ? 0.35 : 0.24, now + duration * 0.5);
+        gain.gain.linearRampToValueAtTime(0.01, now + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+
+        // 2. Explosión BOOM
+        setTimeout(() => {
+          playBoomSound(ctx, isMega);
+          // 3. Fanfarria de trompetas de charanga
+          setTimeout(() => {
+            playCharangaFanfare(ctx);
+          }, 160);
+        }, duration * 1000);
+      };
+
+      if (ctx.state === "suspended") {
+        ctx.resume().then(run).catch(() => {});
+      } else {
+        run();
+      }
+    } catch (_) {}
+  }
+
+  function playDudSound() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const run = () => {
+        const now = ctx.currentTime;
+        // Pedorreta cómica: onda cuadrada de 16Hz modulando tono descendente
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const lfo = ctx.createOscillator();
+        const lfoGain = ctx.createGain();
+
+        lfo.type = "square";
+        lfo.frequency.setValueAtTime(16, now);
+        lfoGain.gain.setValueAtTime(25, now);
+        lfo.connect(lfoGain);
+
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.exponentialRampToValueAtTime(65, now + 1.1);
+        lfoGain.connect(osc.frequency);
+
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
 
         osc.connect(gain);
         gain.connect(ctx.destination);
 
+        lfo.start(now);
         osc.start(now);
-        osc.stop(now + 0.6);
+        lfo.stop(now + 1.2);
+        osc.stop(now + 1.2);
 
-        // 2. Explosión del cohete (BOOM!)
+        // Pop final
         setTimeout(() => {
           try {
-            const boomBuffer = ctx.createBuffer(1, ctx.sampleRate * 1.2, ctx.sampleRate);
-            const data = boomBuffer.getChannelData(0);
-            for (let i = 0; i < data.length; i++) {
-              data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.22));
-            }
-
-            const noise = ctx.createBufferSource();
-            noise.buffer = boomBuffer;
-
-            const filter = ctx.createBiquadFilter();
-            filter.type = "lowpass";
-            filter.frequency.setValueAtTime(450, ctx.currentTime);
-            filter.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.8);
-
-            const boomGain = ctx.createGain();
-            boomGain.gain.setValueAtTime(0.65, ctx.currentTime);
-            boomGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.0);
-
-            noise.connect(filter);
-            filter.connect(boomGain);
-            boomGain.connect(ctx.destination);
-
-            noise.start();
+            const popOsc = ctx.createOscillator();
+            const popGain = ctx.createGain();
+            popOsc.type = "sine";
+            popOsc.frequency.setValueAtTime(150, ctx.currentTime);
+            popOsc.frequency.exponentialRampToValueAtTime(45, ctx.currentTime + 0.12);
+            popGain.gain.setValueAtTime(0.2, ctx.currentTime);
+            popGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+            popOsc.connect(popGain);
+            popGain.connect(ctx.destination);
+            popOsc.start();
+            popOsc.stop(ctx.currentTime + 0.12);
           } catch (_) {}
-        }, 620);
+        }, 1150);
       };
 
       if (ctx.state === "suspended") {
-        ctx.resume().then(() => {
-          runOscillators();
-        }).catch(() => {
-          // Autoplay policy móvil: desbloquear sonido en el primer toque de pantalla
-          const unlockAudio = () => {
-            if (!soundPlayedOnce) {
-              playChupinazoSound();
-            }
-          };
-          window.addEventListener("pointerdown", unlockAudio, { once: true });
-          window.addEventListener("touchstart", unlockAudio, { once: true });
-          window.addEventListener("click", unlockAudio, { once: true });
-        });
+        ctx.resume().then(run).catch(() => {});
       } else {
-        runOscillators();
+        run();
       }
-    } catch (e) {
-      console.warn("AudioContext no disponible:", e);
-    }
+    } catch (_) {}
   }
 
-  function launchConfetti() {
+  function playOverheatSound() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.5, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.25;
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(3200, now);
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.22, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(now);
+    } catch (_) {}
+  }
+
+  // --- Animación visual del cohete despegando ---
+  function spawnFlyingRocket(type = "normal") {
+    const wrap = document.getElementById("chupinazoFlyerWrap");
+    if (!wrap) return;
+
+    const rocket = document.createElement("div");
+    rocket.className = `chupinazo-rocket chupinazo-rocket--${type}`;
+
+    const tagHtml = type === "dud" ? '<span class="rocket-tag">Hacendado</span>' : "";
+    const colorBody = type === "mega" ? "#dc2626" : (type === "dud" ? "#15803d" : "#ea580c");
+    const colorStripe = type === "mega" ? "#fbbf24" : (type === "dud" ? "#facc15" : "#fef08a");
+
+    rocket.innerHTML = `
+      <div class="chupinazo-rocket-graphic">
+        <svg viewBox="0 0 40 96" width="38" height="92" class="rocket-svg" aria-hidden="true">
+          <line x1="20" y1="42" x2="20" y2="94" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" />
+          <rect x="12" y="18" width="16" height="28" rx="3" fill="${colorBody}" stroke="${colorStripe}" stroke-width="1.5" />
+          <line x1="12" y1="25" x2="28" y2="25" stroke="${colorStripe}" stroke-width="2" />
+          <line x1="12" y1="32" x2="28" y2="32" stroke="${colorStripe}" stroke-width="2" />
+          <line x1="12" y1="39" x2="28" y2="39" stroke="${colorStripe}" stroke-width="2" />
+          <polygon points="20,2 10,18 30,18" fill="#f59e0b" stroke="${colorStripe}" stroke-width="1.5" />
+        </svg>
+        ${tagHtml}
+        <div class="rocket-fuse">
+          <span class="fuse-spark">${type === "mega" ? "🔥" : "✨"}</span>
+          <span class="fuse-smoke">💨</span>
+        </div>
+      </div>
+    `;
+
+    wrap.appendChild(rocket);
+
+    const duration = type === "mega" ? 540 : (type === "dud" ? 1450 : 800);
+    setTimeout(() => {
+      if (rocket && rocket.parentNode) {
+        rocket.parentNode.removeChild(rocket);
+      }
+    }, duration + 100);
+  }
+
+  function triggerScreenShake(isMega = false) {
+    const cls = isMega ? "screen-shake-mega" : "screen-shake";
+    document.body.classList.add(cls);
+    setTimeout(() => {
+      document.body.classList.remove(cls);
+    }, isMega ? 650 : 450);
+
+    // Destello de explosión
+    const flash = document.createElement("div");
+    flash.className = "chupinazo-flash";
+    document.body.appendChild(flash);
+    setTimeout(() => {
+      if (flash.parentNode) flash.parentNode.removeChild(flash);
+    }, 400);
+  }
+
+  function launchConfetti(isMega = false) {
     const canvas = document.getElementById("confettiCanvas");
     if (!canvas) return;
 
@@ -1396,18 +1661,22 @@
     const height = (canvas.height = window.innerHeight);
 
     const colors = ["#ff3b30", "#ff8a00", "#ffcc00", "#0284c7", "#10b981", "#8b5cf6", "#ec4899", "#f59e0b", "#38bdf8"];
-    const count = 160;
+    const fiestaIcons = ["🍷", "🍻", "🎶", "🔔", "🚀", "✨", "🎉", "🧀"];
+    const count = isMega ? 280 : 160;
     const particles = [];
 
     for (let i = 0; i < count; i++) {
       const fromLeft = i % 2 === 0;
+      const isEmoji = i % 4 === 0;
       particles.push({
         x: fromLeft ? width * 0.35 + (Math.random() - 0.5) * 80 : width * 0.65 + (Math.random() - 0.5) * 80,
-        y: height * 0.42,
-        vx: (Math.random() - 0.5) * 18,
-        vy: -Math.random() * 15 - 7,
-        size: Math.random() * 8 + 4,
+        y: height * 0.32,
+        vx: (Math.random() - 0.5) * (isMega ? 26 : 18),
+        vy: -Math.random() * (isMega ? 22 : 15) - 7,
+        size: isEmoji ? (Math.random() * 8 + 14) : (Math.random() * 8 + 4),
         color: colors[Math.floor(Math.random() * colors.length)],
+        isEmoji: isEmoji,
+        emoji: fiestaIcons[Math.floor(Math.random() * fiestaIcons.length)],
         rotation: Math.random() * 360,
         rotationSpeed: (Math.random() - 0.5) * 14,
         opacity: 1
@@ -1433,13 +1702,21 @@
           ctx.translate(p.x, p.y);
           ctx.rotate((p.rotation * Math.PI) / 180);
           ctx.globalAlpha = Math.max(0, p.opacity);
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+
+          if (p.isEmoji) {
+            ctx.font = `${Math.round(p.size)}px "Segoe UI Emoji", "Apple Color Emoji", sans-serif`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(p.emoji, 0, 0);
+          } else {
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          }
           ctx.restore();
         }
       });
 
-      if (alive && frame < 200) {
+      if (alive && frame < 220) {
         frame++;
         requestAnimationFrame(render);
       } else {
@@ -1450,13 +1727,82 @@
     requestAnimationFrame(render);
   }
 
-  function triggerChupinazo() {
-    playChupinazoSound();
-    if (navigator.vibrate) {
-      navigator.vibrate([100, 50, 100, 50, 300]);
+  function triggerChupinazo(isAuto = false) {
+    if (isOverheated) return;
+
+    // Control de clics seguidos como un loco ("¡Frena Manolo!")
+    if (!isAuto) {
+      const now = Date.now();
+      clickTimestamps.push(now);
+      clickTimestamps = clickTimestamps.filter((t) => now - t < 2600);
+
+      if (clickTimestamps.length >= 5) {
+        isOverheated = true;
+        const btn = document.getElementById("btnChupinazo");
+        if (btn) btn.classList.add("is-overheated");
+        playOverheatSound();
+        showToast("🔥 ¡Frena Manolo, que nos quemas la Ermita antes de empezar! 😂 Déjalo enfriar...");
+        setTimeout(() => {
+          isOverheated = false;
+          if (btn) btn.classList.remove("is-overheated");
+          showToast("✅ ¡Mecha fría! ¡A seguir tirando cohetes!");
+        }, 3000);
+        return;
+      }
     }
-    launchConfetti();
-    showToast("🚀 ¡BOOOOOM! ¡Vivan las fiestas de Abraveses de Tera! 🎉🥂");
+
+    if (isRocketFlying && !isAuto) return;
+    isRocketFlying = true;
+
+    // Comprobar si toca el Gag del "Cohete de Hacendado" (fallido)
+    const isDud = !isAuto && !isPendingMega && consecutiveLaunches > 0 && consecutiveLaunches % 7 === 0;
+
+    if (isDud) {
+      consecutiveLaunches++;
+      isPendingMega = true; // El próximo será un Mega-Trallazo doble
+      spawnFlyingRocket("dud");
+      playDudSound();
+      if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
+      setTimeout(() => {
+        showToast("¡Vaya por Dios, este cohete era de hacendado! 🤦‍♂️💨 Dale otra vez con ganas a la mecha...");
+        isRocketFlying = false;
+      }, 1300);
+      return;
+    }
+
+    const isMega = !isAuto && isPendingMega;
+    if (isMega) {
+      isPendingMega = false;
+      consecutiveLaunches = 0;
+    } else if (!isAuto) {
+      consecutiveLaunches++;
+    }
+
+    // Despegue normal o Mega
+    incrementChupinazometro();
+    spawnFlyingRocket(isMega ? "mega" : "normal");
+    playChupinazoSound(isMega);
+
+    const flightTime = isMega ? 520 : 760;
+
+    setTimeout(() => {
+      // Al llegar arriba: ¡BOOOM!
+      triggerScreenShake(isMega);
+      if (navigator.vibrate) {
+        navigator.vibrate(isMega ? [140, 60, 140, 60, 450] : [100, 50, 100, 50, 300]);
+      }
+      launchConfetti(isMega);
+
+      if (isMega) {
+        showToast("🚀 ¡AHORA SÍ! ¡MENUDO TRALLAZO! 🎆🥂 ¡VIVA ABRAVESES DE TERA!");
+      } else {
+        const quote = CHUPINAZO_QUOTES[Math.floor(Math.random() * CHUPINAZO_QUOTES.length)];
+        showToast(quote);
+      }
+
+      isRocketFlying = false;
+    }, flightTime);
   }
 
   // ==========================================================================

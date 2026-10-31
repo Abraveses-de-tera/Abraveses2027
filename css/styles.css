@@ -2170,6 +2170,328 @@ body.theme-dark .leaflet-popup-tip {
 }
 
 /* ==========================================================================
+   CHUPINAZO FESTIVO INTERACTIVO (COHETE, CHUPINAZÓMETRO Y FIESTA)
+   ========================================================================== */
+
+/* Chupinazómetro en Hero */
+.chupinazometro-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 14px auto 0;
+  padding: 6px 15px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chupinazometro-wrap:hover {
+  background: rgba(255, 255, 255, 0.26);
+  transform: translateY(-1px);
+}
+
+.chupinazometro-wrap:active {
+  transform: scale(0.97);
+}
+
+.chupinazometro-flame {
+  display: inline-block;
+  animation: flame-flicker 1.4s infinite ease-in-out;
+  font-size: 1.05rem;
+}
+
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1) rotate(-3deg); }
+  50% { transform: scale(1.22) rotate(5deg); }
+}
+
+.chupinazometro-label {
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.chupinazometro-count {
+  font-weight: 900;
+  color: #fef08a;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.22s ease;
+}
+
+.chupinazometro-count.bump {
+  transform: scale(1.45);
+  color: #f97316;
+}
+
+.chupinazometro-unit {
+  opacity: 0.88;
+  font-size: 0.76rem;
+}
+
+/* Estado recalentado del botón ("¡Frena Manolo!") */
+.hero-btn--chupinazo.is-overheated {
+  background: linear-gradient(135deg, #b91c1c 0%, #450a0a 100%) !important;
+  box-shadow: 0 0 25px #ef4444, inset 0 0 12px #f87171 !important;
+  border-color: #fca5a5 !important;
+  animation: overheat-pulse 0.3s infinite alternate;
+  pointer-events: none;
+  filter: saturate(1.6);
+  cursor: not-allowed;
+}
+
+@keyframes overheat-pulse {
+  from { transform: scale(0.96); }
+  to { transform: scale(1.04); }
+}
+
+/* Contenedor del Cohete Volador */
+.chupinazo-flyer-wrap {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 100000;
+  overflow: hidden;
+}
+
+.chupinazo-rocket {
+  position: absolute;
+  bottom: -90px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.6));
+}
+
+.chupinazo-rocket-graphic {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rocket-svg {
+  display: block;
+}
+
+.rocket-fuse {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.fuse-spark {
+  animation: spark-spin 0.2s infinite linear;
+}
+
+@keyframes spark-spin {
+  0% { transform: scale(0.8) rotate(0deg); opacity: 0.8; }
+  50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+  100% { transform: scale(0.8) rotate(360deg); opacity: 0.8; }
+}
+
+.fuse-smoke {
+  font-size: 0.9rem;
+  margin-top: -4px;
+  opacity: 0.8;
+  animation: smoke-float 0.3s infinite ease-out;
+}
+
+@keyframes smoke-float {
+  0% { transform: translateY(0) scale(0.8); opacity: 0.8; }
+  100% { transform: translateY(12px) scale(1.4); opacity: 0; }
+}
+
+/* Animación: Vuelo normal con zigzag y aceleración */
+.chupinazo-rocket--normal {
+  animation: rocket-flight 0.78s cubic-bezier(0.2, 0.6, 0.35, 1) forwards;
+}
+
+@keyframes rocket-flight {
+  0% {
+    bottom: -80px;
+    left: 50%;
+    transform: translate(-50%, 0) rotate(-6deg) scale(0.9);
+    opacity: 1;
+  }
+  20% {
+    transform: translate(calc(-50% + 22px), 0) rotate(7deg) scale(1.05);
+  }
+  45% {
+    transform: translate(calc(-50% - 18px), 0) rotate(-6deg) scale(1.2);
+  }
+  70% {
+    transform: translate(calc(-50% + 14px), 0) rotate(5deg) scale(1.35);
+  }
+  96% {
+    bottom: 68vh;
+    left: 50%;
+    transform: translate(-50%, 0) rotate(0deg) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    bottom: 70vh;
+    left: 50%;
+    transform: translate(-50%, 0) scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Animación: Mega Trallazo (ultra rápido y potente) */
+.chupinazo-rocket--mega {
+  filter: drop-shadow(0 0 20px #ef4444) drop-shadow(0 0 35px #f59e0b);
+  animation: rocket-flight-mega 0.52s cubic-bezier(0.15, 0.7, 0.25, 1) forwards;
+}
+
+@keyframes rocket-flight-mega {
+  0% {
+    bottom: -80px;
+    left: 50%;
+    transform: translate(-50%, 0) scale(1.1);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(calc(-50% + 12px), 0) scale(1.4);
+  }
+  70% {
+    transform: translate(calc(-50% - 10px), 0) scale(1.7);
+  }
+  96% {
+    bottom: 72vh;
+    left: 50%;
+    transform: translate(-50%, 0) scale(2);
+    opacity: 1;
+  }
+  100% {
+    bottom: 74vh;
+    left: 50%;
+    transform: translate(-50%, 0) scale(2.3);
+    opacity: 0;
+  }
+}
+
+/* Animación: Cohete de Hacendado (falla, se ahoga y cae) */
+.chupinazo-rocket--dud {
+  animation: rocket-flight-dud 1.45s ease-in-out forwards;
+}
+
+.chupinazo-rocket--dud .rocket-tag {
+  position: absolute;
+  top: 24px;
+  background: #ffffff;
+  color: #15803d;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+@keyframes rocket-flight-dud {
+  0% {
+    bottom: -80px;
+    left: 50%;
+    transform: translate(-50%, 0) scale(0.9);
+    opacity: 1;
+  }
+  35% {
+    bottom: 28vh;
+    transform: translate(calc(-50% + 15px), 0) rotate(14deg) scale(1);
+  }
+  60% {
+    bottom: 37vh;
+    transform: translate(calc(-50% - 10px), 0) rotate(50deg) scale(0.98);
+  }
+  80% {
+    bottom: 34vh;
+    transform: translate(calc(-50% + 20px), 0) rotate(115deg) scale(0.92);
+    opacity: 0.85;
+  }
+  100% {
+    bottom: 18vh;
+    transform: translate(calc(-50% + 40px), 0) rotate(165deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Flash de explosión radial */
+.chupinazo-flash {
+  position: fixed;
+  top: 30vh;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #ffffff 10%, #fef08a 40%, rgba(249, 115, 22, 0.8) 70%, transparent 100%);
+  pointer-events: none;
+  z-index: 100001;
+  animation: flash-burst 0.38s ease-out forwards;
+}
+
+@keyframes flash-burst {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(45); opacity: 0; }
+}
+
+/* Screen Shake (Temblor de pantalla festivo) */
+@keyframes screen-shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-6px, 4px) rotate(-0.6deg); }
+  30% { transform: translate(6px, -4px) rotate(0.6deg); }
+  45% { transform: translate(-4px, 3px) rotate(-0.4deg); }
+  60% { transform: translate(4px, -2px) rotate(0.4deg); }
+  75% { transform: translate(-2px, 1px) rotate(-0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes screen-shake-mega {
+  0% { transform: translate(0, 0) scale(1); }
+  15% { transform: translate(-10px, 7px) rotate(-1.5deg) scale(1.02); }
+  30% { transform: translate(10px, -7px) rotate(1.5deg) scale(1.02); }
+  45% { transform: translate(-7px, 5px) rotate(-1deg); }
+  60% { transform: translate(7px, -4px) rotate(1deg); }
+  75% { transform: translate(-4px, 2px) rotate(-0.5deg); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.screen-shake {
+  animation: screen-shake 0.45s ease-out;
+}
+
+.screen-shake-mega {
+  animation: screen-shake-mega 0.65s ease-out;
+}
+
+/* Dark mode para chupinazómetro */
+body.theme-dark .chupinazometro-wrap {
+  background: rgba(19, 28, 46, 0.75);
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+/* ==========================================================================
    WIDGET DEL TIEMPO EN DIRECTO (OPEN-METEO ABRAVESES)
    ========================================================================== */
 .weather-widget {

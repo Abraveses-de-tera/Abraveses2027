@@ -3,7 +3,7 @@
  * Estrategia de caché para funcionamiento 100% offline
  */
 
-const CACHE_NAME = "abraveses-2027-v3.2.0";
+const CACHE_NAME = "abraveses-2027-v3.3.0";
 
 const PRECACHE_ASSETS = [
   "./",

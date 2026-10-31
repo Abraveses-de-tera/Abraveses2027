@@ -121,6 +121,14 @@
           <span aria-hidden="true">🚀</span> Chupinazo
         </button>
       </div>
+
+      <!-- Chupinazómetro interactivo -->
+      <div class="chupinazometro-wrap" id="chupinazometroWrap" role="button" tabindex="0" title="Cohetes tirados por los vecinos · ¡Toca para lanzar otro!">
+        <span class="chupinazometro-flame" aria-hidden="true">🔥</span>
+        <span class="chupinazometro-label">Chupinazómetro:</span>
+        <span class="chupinazometro-count" id="chupinazoCount">348</span>
+        <span class="chupinazometro-unit">cohetes lanzados</span>
+      </div>
     </header>
 
     <!-- SECCIÓN PRINCIPAL: AGENDA -->
@@ -419,6 +427,9 @@
 
   <!-- LIENZO DE CONFETI PARA CELEBRACIONES -->
   <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- CONTENEDOR DEL COHETE VOLADOR (CHUPINAZO) -->
+  <div id="chupinazoFlyerWrap" class="chupinazo-flyer-wrap" aria-hidden="true"></div>
 
   <!-- TOAST NOTIFICACIÓN -->
   <div class="toast" id="appToast" role="status" aria-live="polite" hidden></div>
