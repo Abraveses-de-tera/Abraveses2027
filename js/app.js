@@ -338,19 +338,21 @@
       const mapsUrl = loc.mapUrl || `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
       return `
         <li class="location-item">
-          <div class="location-item-info">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:1.3rem;">${loc.icon || "📍"}</span>
-              <h4>${loc.name}</h4>
+          <div class="location-item-main">
+            <span class="location-item-icon" aria-hidden="true">${loc.icon || "📍"}</span>
+            <div class="location-item-text">
+              <div class="location-item-title-row">
+                <h4 class="location-item-name">${loc.name}</h4>
+                <span class="location-item-badge">${loc.tag || "Punto festivo"}</span>
+              </div>
+              <p class="location-item-desc">${loc.description}</p>
             </div>
-            <span class="location-item-badge">${loc.tag || "Punto de fiesta"}</span>
-            <p>${loc.description}</p>
           </div>
-          <div style="display:flex; flex-direction:column; gap:6px; align-self:center;">
-            <button type="button" class="location-nav-btn btn-focus-loc-map" data-loc-id="${loc.id}" title="Centrar en el mapa interactivo">
+          <div class="location-item-actions">
+            <button type="button" class="mini-pill btn-focus-loc-map" data-loc-id="${loc.id}" title="Centrar en el mapa de Abraveses">
               <span>🗺️ Ver</span>
             </button>
-            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="location-nav-btn" style="background:#0284c7; color:#ffffff;" title="Navegación GPS">
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="mini-pill mini-pill--gps" title="Navegación GPS en Google Maps">
               <span>↗️ GPS</span>
             </a>
           </div>
@@ -534,28 +536,39 @@
             <div class="event-details-body">
               <p class="event-full-detail">${ev.detail || ev.description || "Sin descripción adicional disponible."}</p>
               
-              <div class="location-action-bar">
-                <button type="button" class="location-map-btn btn-open-interactive-map" data-location-name="${ev.location || "Plaza del pueblo"}">
-                  <span aria-hidden="true">🗺️</span> Ver en mapa de Abraveses
-                </button>
-                <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="location-map-btn" style="background:#0284c7; color:#ffffff;">
-                  <span aria-hidden="true">📍</span> Google Maps ↗
-                </a>
+              <div class="event-meta-strip">
+                <div class="meta-strip-row">
+                  <div class="meta-strip-info">
+                    <span class="meta-strip-icon" aria-hidden="true">📍</span>
+                    <span class="meta-strip-text">${ev.location || "Abraveses de Tera"}</span>
+                  </div>
+                  <div class="meta-strip-actions">
+                    <button type="button" class="mini-pill btn-open-interactive-map" data-location-name="${ev.location || "Plaza del pueblo"}" title="Ver en el mapa de Abraveses">
+                      <span>🗺️ Mapa</span>
+                    </button>
+                    <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="mini-pill mini-pill--gps" title="Cómo llegar con Google Maps">
+                      <span>↗️ GPS</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="meta-strip-row">
+                  <div class="meta-strip-info">
+                    <span class="meta-strip-icon" aria-hidden="true">📅</span>
+                    <span class="meta-strip-text">Añadir aviso:</span>
+                  </div>
+                  <div class="meta-strip-actions">
+                    <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer" class="mini-pill" title="Añadir a Google Calendar">
+                      <span>Google</span>
+                    </a>
+                    <button type="button" class="mini-pill ics-download-btn" data-event-id="${ev.eventId}" data-day-id="${day.id}" title="Descargar recordatorio .ics (Apple Calendar / Outlook)">
+                      <span>Apple/iCal</span>
+                    </button>
+                  </div>
+                </div>
               </div>
 
               ${externalLinkHtml}
-
-              <div class="calendar-bar">
-                <span class="calendar-bar-title">Añadir a mi calendario</span>
-                <div class="calendar-btn-group">
-                  <a href="${gcalUrl}" target="_blank" rel="noopener noreferrer" class="cal-button">
-                    <span aria-hidden="true">📅</span> Google Calendar
-                  </a>
-                  <button type="button" class="cal-button ics-download-btn" data-event-id="${ev.eventId}" data-day-id="${day.id}">
-                    <span aria-hidden="true">🍏</span> Apple / Outlook (.ics)
-                  </button>
-                </div>
-              </div>
 
               <div class="attendance-bar">
                 <div class="attendance-row">

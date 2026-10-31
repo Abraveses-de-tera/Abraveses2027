@@ -811,29 +811,114 @@ img {
   color: #334155;
 }
 
-/* Botón de mapa / ubicación en detalle */
-.location-action-bar {
-  margin-top: 14px;
-}
-
-.location-map-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+/* --------------------------------------------------------------------------
+   BARRA COMPACTA Y AMIGABLE: UBICACION Y CALENDARIO
+   -------------------------------------------------------------------------- */
+.event-meta-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #f8fafc;
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1d4ed8;
-  font-size: 0.84rem;
-  font-weight: 750;
-  text-decoration: none;
   transition: all var(--transition);
 }
 
-.location-map-btn:hover {
-  background-color: #dbeafe;
+@media (min-width: 540px) {
+  .event-meta-strip {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 12px;
+    align-items: center;
+  }
+}
+
+.meta-strip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.meta-strip-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.meta-strip-icon {
+  font-size: 0.92rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.meta-strip-text {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta-strip-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+/* Pastillas compactas de accion (Ubicacion, GPS y Calendario) */
+.mini-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  line-height: 1.25;
+}
+
+.mini-pill:hover {
+  background-color: #eff6ff;
+  border-color: #0284c7;
+  color: #0284c7;
   transform: translateY(-1px);
+}
+
+.mini-pill--gps {
+  background-color: #0284c7;
+  color: #ffffff !important;
+  border-color: #0284c7;
+}
+
+.mini-pill--gps:hover {
+  background-color: #0369a1;
+  border-color: #0369a1;
+  color: #ffffff !important;
+}
+
+/* Compatibilidad retroactiva */
+.location-map-btn, .cal-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
 }
 
 /* Enlaces externos (Instagram, etc.) */
@@ -841,12 +926,12 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 12px;
-  padding: 9px 16px;
+  margin-top: 10px;
+  padding: 7px 14px;
   border-radius: var(--radius-full);
   background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
   color: #ffffff;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 800;
   text-decoration: none;
   box-shadow: 0 4px 12px rgba(221, 42, 123, 0.3);
@@ -856,51 +941,6 @@ img {
 .event-external-link:hover {
   transform: translateY(-2px);
 }
-
-/* Acciones de calendario */
-.calendar-bar {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--line);
-}
-
-.calendar-bar-title {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 850;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.calendar-btn-group {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.cal-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line);
-  background-color: #ffffff;
-  color: var(--ink);
-  font-size: 0.78rem;
-  font-weight: 750;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all var(--transition);
-}
-
-.cal-button:hover {
-  background-color: #f8fafc;
-  border-color: var(--ink-light);
-}
-
 /* Asistencia */
 .attendance-bar {
   display: flex;
@@ -1247,41 +1287,106 @@ img {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .location-item {
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  background-color: var(--paper-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-.location-item-info h4 {
+.location-item:hover {
+  border-color: var(--blue);
+}
+
+.location-item-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.location-item-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.location-item-text {
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.location-item-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.location-item-name {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 800;
+  color: var(--ink);
+  line-height: 1.25;
 }
 
-.location-item-info p {
-  margin: 3px 0 0;
-  font-size: 0.82rem;
+.location-item-badge {
+  font-size: 0.65rem;
+  font-weight: 750;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  background: #f1f5f9;
+  color: #475569;
+  line-height: 1.2;
+}
+
+.location-item-desc {
+  margin: 2px 0 0;
+  font-size: 0.75rem;
   color: var(--muted);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .location-item-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+  }
+}
+
+.location-item-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
 .location-nav-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 8px 12px;
+  padding: 4px 10px;
   border-radius: var(--radius-full);
   background-color: #eff6ff;
   color: #1d4ed8;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 800;
   text-decoration: none;
   flex-shrink: 0;
@@ -1290,7 +1395,6 @@ img {
 .location-nav-btn:hover {
   background-color: #dbeafe;
 }
-
 /* --------------------------------------------------------------------------
    TOAST DE NOTIFICACIÓN
    -------------------------------------------------------------------------- */
@@ -1691,6 +1795,131 @@ body.theme-dark .admin-panel-link {
 body.theme-dark .admin-panel-link:hover {
   color: #38bdf8 !important;
 }
+/* Modo noche: barra compacta de metadatos */
+body.theme-dark .event-meta-strip {
+  background-color: #0f172a !important;
+  border-color: #223047 !important;
+}
+
+body.theme-dark .meta-strip-text {
+  color: #f1f5f9 !important;
+}
+
+body.theme-dark .mini-pill {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+body.theme-dark .mini-pill:hover {
+  background-color: #334155 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+body.theme-dark .mini-pill--gps {
+  background-color: #0284c7 !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+}
+
+body.theme-dark .mini-pill--gps:hover {
+  background-color: #0369a1 !important;
+}
+
+/* Modo noche: lista compacta de lugares */
+body.theme-dark .location-item {
+  background-color: #131c2e !important;
+  border-color: #223047 !important;
+}
+
+body.theme-dark .location-item:hover {
+  border-color: #38bdf8 !important;
+}
+
+body.theme-dark .location-item-name {
+  color: #ffffff !important;
+}
+
+body.theme-dark .location-item-badge {
+  background-color: #1e293b !important;
+  color: #93c5fd !important;
+  border: 1px solid #1d4ed8 !important;
+}
+
+body.theme-dark .location-item-desc {
+  color: #94a3b8 !important;
+}
+
+/* Modo noche: mapa interactivo Leaflet */
+body.theme-dark .map-frame {
+  border-color: #223047 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.theme-dark .abraveses-leaflet-map {
+  background: #090e17 !important;
+}
+
+body.theme-dark .leaflet-tile-pane {
+  filter: brightness(0.7) invert(1) contrast(1.15) hue-rotate(195deg) saturate(0.55);
+}
+
+body.theme-dark .leaflet-control-zoom {
+  border: 1px solid #334155 !important;
+  border-radius: var(--radius-sm) !important;
+  overflow: hidden;
+}
+
+body.theme-dark .leaflet-control-zoom a {
+  background-color: #131c2e !important;
+  color: #f8fafc !important;
+  border-bottom: 1px solid #223047 !important;
+}
+
+body.theme-dark .leaflet-control-zoom a:hover {
+  background-color: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+body.theme-dark .leaflet-control-attribution {
+  background: rgba(11, 17, 32, 0.85) !important;
+  color: #64748b !important;
+}
+
+body.theme-dark .leaflet-control-attribution a {
+  color: #94a3b8 !important;
+}
+
+body.theme-dark .leaflet-popup-content-wrapper {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1.5px solid #223047 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75) !important;
+}
+
+body.theme-dark .leaflet-popup-tip {
+  background: #0f172a !important;
+}
+
+body.theme-dark .map-popup-title {
+  color: #ffffff !important;
+}
+
+body.theme-dark .map-popup-desc {
+  color: #cbd5e1 !important;
+}
+
+body.theme-dark .map-popup-tag {
+  background: #0c2d48 !important;
+  color: #7dd3fc !important;
+}
+
+body.theme-dark .map-popup-btn {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
 
 /* Boton de reset de filtros en modo noche */
 body.theme-dark .btn-reset-filters {
@@ -2134,10 +2363,11 @@ body.theme-dark .map-pill.is-active {
 }
 
 /* Contenedor del mapa Leaflet */
+@media (min-width: 520px) { .map-frame { height: 260px !important; } }
 .map-frame {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: 220px;
   border-radius: var(--radius-md);
   overflow: hidden;
   border: 1px solid var(--line);
